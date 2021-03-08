@@ -1,0 +1,252 @@
+
+<div ng-controller="mapOperationalCtrl">
+
+  <div id="menu-left" class="sidenav sidenav-menu">
+    <div class="">
+      <div class="searching-form"
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <!-- <div class="col-sm-6">
+            <div class="form-group">
+            <label for="exampleInputEmail1">SEARCH BY STORM ID</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" value="">
+          </div>
+        </div> -->
+        <div class="col-sm-12">
+          <span class="closeMenu">&times;</span>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="exampleInputEmail1">STORM CATEGORY </label>
+            <button data-toggle="tooltip" data-html="true" data-placement="bottom" title="Storm categories" class="tooltip-btn" >i</button>
+            <div class="row">
+              <div class="col-sm-12">
+                <select class="form-control" id="storm_cat_selector" style="font-size: 12px; padding: 0; padding-left: 10px;">
+                  <option value="undefined"> </option>
+                  <option value="lev1">Level 1</option>
+                  <option value="lev2">Level 2</option>
+                  <option value="lev3">Level 3</option>
+                  <option value="lev4">Level 4</option>
+                  <option value="lev5">Level 5</option>
+                  <option value="lev6">Level 6</option>
+                  <option value="lev7">Level 7</option>
+                  <option value="lev8">Level 8</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="exampleInputEmail1">STORM VOLUME </label>
+            <button data-toggle="tooltip" data-html="true" data-placement="bottom" title="Total storm volume (km3)" class="tooltip-btn" >i</button>
+            <div class="row">
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="start_vol" value="">
+              </div>
+              <div class="col-sm-1" style="color:#FFF;">
+                TO
+              </div>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="end_vol" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="exampleInputEmail1">STORM DURATION</label>
+            <button data-toggle="tooltip" data-html="true" data-placement="bottom" title="Defind duration range <br> (hours)" class="tooltip-btn" >i</button>
+            <div class="row">
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="start_duration" value="">
+              </div>
+              <div class="col-sm-1" style="color:#FFF;">
+                TO
+              </div>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="end_duration" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="">MAX INTENSITY (mm/hr)</label>
+            <button data-toggle="tooltip" data-html="true" data-placement="bottom" title="Maximum intensity (mm/h)" class="tooltip-btn" >i</button>
+            <div class="divSlider">
+              <div style="width:95%; margin:3px;">
+                <input type="text" class="js-range-slider" id="slider-max" name="slider-max" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <hr>
+          <button type="submit" class="btn btn-primary" id="search-filter-btn">SEARCH</button>
+          <button type="submit" class="btn btn-primary" id="search-all-btn" style="float:right;">SHOW ALL</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+
+<div id="menu-layers" class="sidenav sidenav-menu">
+  <div class="">
+    <div class="searching-form"
+      <div class="container">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="col-sm-12">
+              <span class="closeMenu">&times;</span>
+              <label style="font-size:12px; font-weight: 700;"><b>LAYERS</b></label>
+              <ul class="toggles-list">
+                <li class="toggle"><label class="switch_layer"><input  name="storm_events" id="storm_events" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm Events </label></li>
+                <li class="toggle" id="toggle_storm_image" style="display:none;"><label class="switch_layer"><input  name="storm_image" id="storm_image"  checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm  Image </label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="geographic_coverage" id="geographic_coverage" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Geographic Coverage</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="mekong_bb" id="mekong_bb" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Lower Mekong Bounding Box</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="mekong_country" id="mekong_country" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Country boundary</label></li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sidenav-table" class="sidenav" style="right:0px;padding-bottom: 150px;">
+  <div class="table-items">
+    <label>Storm Events</label><span style="float:right;" id="found-no"></span>
+    <span class="closebtn" id="table-close">&times;</span>
+    <div class="">
+      <button id='DLtoExcel' class="btn btn-default btn-sm">Export Data</button>
+      <button data-toggle="tooltip" data-html="true" data-placement="bottom" title="Download list of storm(s) in excel format" class="tooltip-btn" >i</button>
+    </div>
+    <ul id="tableList"></ul>
+  </div>
+</div>
+
+<div id="detail-panel" class="sidenav detail-right">
+  <span class="minimizebtn" id="detail-minimize">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-up-right" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z"/>
+      <path fill-rule="evenodd" d="M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z"/>
+    </svg>
+  </span>
+  <span class="closebtn box-closebtn" id="detail-close">&times;</span>
+  <div class="">
+    <p id="date-text" class="date-text-detail"></p>
+    <p id="time-text" class="time-text-detail"></p>
+    <div class="text-center">
+      <button type="button" name="button" class="btn btn-prev">prev</button>
+      <button type="button" name="button" class="btn btn-play">play</button>
+      <button type="button" name="button" class="btn btn-next">next</button>
+
+    </div>
+
+  </div>
+  <div class="table-detail">
+
+
+  </div>
+</div>
+
+<div id="minimize-detail-panel" class="sidenav hide">
+  <span class="minimizebtn" id="detail-minimize-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-up-right" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z"/>
+      <path fill-rule="evenodd" d="M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z"/>
+    </svg>
+  </span>
+  <span class="closebtn box-closebtn" id="detail-close-2">&times;</span>
+  <p>Storm Detail</p>
+</div>
+
+
+<div class="main">
+  <nav>
+    <ul id="mainMenu">
+    </ul>
+  </nav>
+  <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; width: 100%;height: 100%;">
+    <div id="loader" class="map-loading" >
+        <!-- <i class="loading-img fas fa-spinner fa-pulse fa-4x"></i> -->
+        <div class="loading-text">
+          Loading...
+        </div>
+
+    </div>
+
+    <!-- <div class="control-panel map-component">
+      <div class="scalebar-container"></div>
+      <ul>
+        <li class="zoom-in pointer" id="zoom-in">
+          <svg class="panel-icon">
+            <use xlink:href="#icon-plus">
+              <svg id="icon-plus" viewBox="0 0 1024 1024">
+                <title>Zoom In</title>
+                <path d="M573.44 245.76h-122.88v204.8h-204.8v122.88h204.8v204.8h122.88v-204.8h204.8v-122.88h-204.8v-204.8z" class="path1"></path>
+              </svg>
+            </use>
+          </svg>
+        </li>
+        <li class="zoom-in pointer" id="zoom-out">
+          <svg class="panel-icon">
+            <svg id="icon-minus" viewBox="0 0 1024 1024">
+              <title>Zoom Out</title>
+              <path d="M778.24 573.44h-532.48v-122.88h532.48v122.88z" class="path1"></path>
+            </svg>
+          </svg>
+        </li>
+        <li class="zoom-in pointer" id="layer-control">
+          <svg class="panel-icon">
+            <svg width="1.5em" height="1.5em" viewBox="-5 -5 20 20" class="bi bi-layers-fill" fill="#333" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M7.765 1.559a.5.5 0 0 1 .47 0l7.5 4a.5.5 0 0 1 0 .882l-7.5 4a.5.5 0 0 1-.47 0l-7.5-4a.5.5 0 0 1 0-.882l7.5-4z"/>
+              <path fill-rule="evenodd" d="M2.125 8.567l-1.86.992a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882l-1.86-.992-5.17 2.756a1.5 1.5 0 0 1-1.41 0l-5.17-2.756z"/>
+            </svg>
+
+          </svg>
+        </li>
+      </ul>
+    </div> -->
+
+
+    <div class="legend-area  map-component">
+      <div class="legend-map" id ="legend-marker">
+        <img src="/img/legend-point-storm-class-2.png" height=40px;  alt="rainstorms legend">
+      </div>
+      <div class="legend-map" id="legend-img" style="display: none;">
+        <img src="/img/legend-img-storm-class-2.png" height=40px;  alt="rainstorms legend">
+      </div>
+    </div>
+
+
+</div>
+  <div class="slide-tab-right">
+    <p style="font-size:12px; font-weight:700;">STORM EVENTS</p>
+  </div>
+
+  <div class="slide-tab-search" >
+    <p style="font-size:12px; font-weight:700;">SEARCH</p>
+  </div>
+  <div class="slide-tab-layer" >
+    <p style="font-size:12px; font-weight:700;">LAYERS</p>
+  </div>
+
+</div>
+
+
+</div>

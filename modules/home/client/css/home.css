@@ -1,0 +1,107 @@
+.cover-photo{
+    background-image: url("/modules/home/client/img/Typhoon-Nora-from-space.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 550px;
+}
+
+p {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    letter-spacing: .5px;
+}
+ ul, ol {
+   list-style-type: decimal;
+    padding-left: 40px;
+    color: #666;
+ }
+
+ .home h2{
+   margin: 10px 0;
+    color: #007ba2;
+    font-weight: 600;
+    letter-spacing: 1px;
+ }
+
+ .contact-list p{
+   font-size: 14px;
+ }
+ .overlay-layer{
+   height: 100%;
+    background: rgb(0 0 0 / 22%);
+    padding: 50px;
+ }
+ .overlay-text{
+   color: #FFF;
+   font-size: 40px;
+   margin-left: 350px;
+   margin-top: 50px;
+ }
+
+ .home-usaid {
+     background-size: auto 50px;
+     width: 190px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-nasa {
+     background-size: auto 50px;
+     width: 90px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-adpc {
+     background-size: auto 50px;
+     width: 110px !important;
+     float: left;
+     margin-right: 10px;
+     margin-bottom: 20px;
+ }
+
+ .home-sig {
+     background-size: auto 50px;
+     width: 210px !important;
+     float: left;
+     margin-right: 10px;
+     margin-bottom: 20px;
+ }
+
+
+ .home-delft {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-delft-u {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-wageningen {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-servir {
+     float: left;
+     background-size: auto 35px;
+     width: 220px !important;
+     padding-top: 10px;
+     margin-bottom: 20px;
+ }

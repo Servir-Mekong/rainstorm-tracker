@@ -1,0 +1,198 @@
+<div ng-controller="inputCtl">
+  <div class="home">
+    <div class="col-lg-12" style="margin-bottom: 300px; margin-top: 80px;padding: 0px 70px;">
+      <div class="row justify-content-md-center">
+
+        <div class="col-lg-12">
+          <div class="cover-photo">
+            <div class="overlay-layer">
+              <div class="overlay-text">
+                Rain Storm Tracking System (Demo Version)
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <br>
+      <br>
+
+      <div class="row justify-content-md-center" >
+
+        <div class="col-lg-8 col-md-6">
+          <h2>Storm Tracker (In Production)</h2>
+          <p>This is a climatology of monsoonal rainstorm events over the Lower Mekong Region. We are using a spatiotemporal Object-based rainfall method for analysing GPM-IMERG datasets and providing user-friendly products for operational applications.</p>
+          <p>The Spatiotemporal Contiguous Object-based Rainfall Analysis method (ST-CORA) was used to identify the main storm features of the storm events. This method enables a complete description of the storm event in space and time. Storm features include storm duration, maximum extension, total volume and maximum intensity.</p>
+
+          <!-- <h2>Application Purpose</h2>
+          <p>This regional web-based information system application is aimed to</p> -->
+
+          <ol style="list-style-type: decimal; margin-bottom: 20px;font-size: 16px;">
+            <!-- <li></li>
+            <li></li>
+            <li></li>
+            <li></li> -->
+          </ol>
+
+          <!-- <h2>Application Uses</h2> -->
+          <p></p>
+          <br>
+
+
+
+
+          <!-- <b>Earth Observations and NASA Products Used</b>
+          <ul style="list-style-type: decimal;">
+            <li>AQUA and TERRA/ MODIS Aerosol Optical Depth</li>
+            <li>MODIS, and VIIRS true-color imagery</li>
+            <li>GEOS Air Quality Forecasts  bias-corrected using machine learning algorithm</li>
+            <li>Fire product from MODIS and VIIRS: fire radiative power, number of fires</li>
+          </ul> -->
+
+          <h3>Production Supported by</h3>
+          <br>
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/usaid.png" alt="" class="grow img-responsive home-usaid">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>United States Agency for International Development (USAID)</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/nasa.png" alt="" class="grow img-responsive home-nasa">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>The National Aeronautics and Space Administration</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/adpc.png" alt="" class="grow img-responsive home-adpc">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>Asian Disaster Preparedness Center</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/sig.png" alt="" class="grow img-responsive home-sig">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>Spatial Information Group</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/ihe-delft.png" alt="" class="grow img-responsive home-delft">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>IHE Delft Institute for Water Education</p>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/tu-delft-university.png" alt="" class="grow img-responsive home-delft-u">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>Delft University of Technology</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-6">
+              <img src="modules/home/client/img/partners/wageningen_university.png" alt="" class="grow img-responsive home-wageningen">
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <p>Wageningen University</p>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="col-lg-4 col-md-6">
+          <b>Geographic Region</b>
+          <br>
+          <p>Lower Mekong Region</p>
+          <br>
+
+          <b>Satellite product</b>
+          <br>
+          <p>Integrated Multi-satellite Retrievals for the Global Precipitation Mission (GPM-IMERG) - Final version</p>
+          <br>
+
+          <b>Period of analysis</b>
+          <br>
+          <p>2014-2019 Monsoon seasons (June - October)</p>
+          <br>
+
+          <b>Overview of Web Portal</b>
+          <br>
+          <p>Searching options</p>
+          <ul style="list-style-type: circle;">
+            <li>Date</li>
+            <li>Total volume</li>
+            <li>Maximum intensity</li>
+          </ul>
+          <br>
+          <p>Storm features</p>
+          <ul style="list-style-type: circle;">
+            <li>Storm features</li>
+            <li>Centroid (lat, lon)</li>
+            <li>Weighted Centroid (lat, lon)</li>
+            <li>Total volume (km3)</li>
+            <li>Duration (hours)</li>
+            <li>Maximum extension (km2)</li>
+            <li>Maximum intensity (mm/h)</li>
+            <li>Tracking vector</li>
+          </ul>
+          <br>
+          <p>Outputs</p>
+          <ul style="list-style-type: circle;">
+            <li>List of storm(s) (.csv)</li>
+            <li>Total storm event raster map (.asc, png )</li>
+          </ul>
+          <br>
+
+          <b>Period of analysis</b>
+          <br>
+          <p>2014-2019 Monsoon seasons (June - October)</p>
+          <br>
+
+          <b>References</b>
+          <br>
+          <p>Huffman, G.J., Bolvin, D.T., Braithwaite, D., Hsu, K., Joyce, R., Xie, P. and Yoo, S.H., 2015. NASA global precipitation measurement (GPM) integrated multi-satellite retrievals for GPM (IMERG). Algorithm Theoretical Basis Document (ATBD) Version, 4, p.26.</p>
+          <br>
+
+          <hr>
+
+
+
+          <div class="row">
+            <div class="col-lg-12 col-md-6">
+              <p>Version 1.0</p>
+              <p>© 2020, SERVIR Mekong</p><br>
+              <div class="contact-list">
+                <p><b>For Technical Inquiries:</b></p>
+                <p><b>Data and Information Related:</b> Miguel Angel Laverde(mlaverdeb@gmail.com) Chinaporn Meechiya(chinaporn.m@adpc.net)</p>
+                <p><b>Portal Related:</b> Thannarot Kunlamai (thannarot.kunlamai@adpc.net )</p>
+              </div>
+
+
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+      </div>
+  </div>
+</div>

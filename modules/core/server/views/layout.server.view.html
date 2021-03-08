@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html data-framework="angularjs">
+
+<head>
+  <meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=1024">
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">-->
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+	<style type="text/css">
+		/** Hide when Angular is not yet loaded and initialized */
+		[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			display: none !important;
+		}
+	</style>
+
+	<base href="/">
+	<title>{{title}}</title>
+	<meta name="description" content="{{description}}">
+	<meta name="fragment" content="!">
+	<meta name="keywords" content="{{keywords}}">
+
+	<!-- Apple META -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Fav Icon -->
+	<link href="{{favicon}}" rel="shortcut icon" type="image/x-icon">
+
+
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Bai+Jamjuree&display=swap" rel="stylesheet">
+	<!-- Application CSS Files -->
+	{% for cssFile in cssFiles %}
+	<link rel="stylesheet" href="{{cssFile}}">{% endfor %}
+
+</head>
+
+<body>
+	<div ng-cloak class="container-fluid">
+
+		<div ng-include src="'/modules/navigation/client/views/navigation.client.view.html'"></div>
+
+		<div class="">
+			{% block main_container %} {% endblock %}
+		</div>
+
+		<!-- /.wrapper-collapse -->
+	</div>
+
+  <!--Embedding The User Object-->
+  <script type="text/javascript">
+    var user = {{ user | json | safe }};
+  </script>
+
+  <!--Load The Socket.io File-->
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <!--Application JavaScript Files-->
+  {% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %}
+
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+
+
+
+
+  {% if livereload %}
+  <!--Livereload script rendered -->
+  <!-- <script type="text/javascript" src="{{host}}:35729/livereload.js"></script> -->
+  {% endif %}
+</body>
+
+</html>
