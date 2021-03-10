@@ -2,7 +2,7 @@ body { margin: 0; padding: 0; }
 body, html {
     overflow-x: hidden;
     overflow-y: auto;
-    font-family: 'Bai Jamjuree', sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     color: #FFF;
 }
 
@@ -1000,7 +1000,7 @@ input:checked + .slider_toggle:before {
         display: block;
         font-size: 30px;
         color: #EEE;
-        font-family: Georgia, serif;
+        font-family: 'Roboto Condensed', sans-serif;
         margin: auto;
         text-align: center;
       }
@@ -1009,7 +1009,7 @@ input:checked + .slider_toggle:before {
         display: block;
         font-size: 50px;
         color: #40E0D0;
-        font-family: Georgia, serif;
+        font-family: 'Roboto Condensed', sans-serif;
         margin: auto;
         text-align: center;
       }

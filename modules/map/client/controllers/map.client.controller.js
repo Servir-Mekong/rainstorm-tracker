@@ -942,35 +942,35 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					'<div class="col-sm-12">'+
 					'<table style="width:100%; font-size:14px;">'+
 					'<tr>'+
-					'<td><b>Centroid</b></td>'+
+					'<td>Centroid</td>'+
 					'<td style="text-align: right;">'+ items["center_lat"].toFixed(2)+', '+items["center_lng"].toFixed(2)+ '</td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Weighted Centroid</b></td>'+
+					'<td>Weighted Centroid</td>'+
 					'<td style="text-align: right;">'+ items["w_center_lat"].toFixed(2)+', '+items["w_center_lng"].toFixed(2)+ '</td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Total volume</b></td>'+
+					'<td>Total volume</td>'+
 					'<td style="text-align: right;">'+ items["mcvol"].toFixed(2)+ ' km<sup>3</sup> </td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Duration</b></td>'+
+					'<td>Duration</td>'+
 					'<td style="text-align: right;">'+ items["mctime"]+ ' hrs </td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Maximum spatial extension</b></td>'+
+					'<td>Maximum spatial extension</td>'+
 					'<td style="text-align: right;">'+ items["mcspace"].toFixed(2)+' km<sup>3</sup></td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Max intensity</b></td>'+
+					'<td>Max intensity</td>'+
 					'<td style="text-align: right;">'+ items["mcmax"].toFixed(2)+' mm/h </td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>Start storm location</b></td>'+
+					'<td>Start storm location</td>'+
 					'<td style="text-align: right;">'+ items["lat_start"].toFixed(2)+', '+items["lon_start"].toFixed(2)+' </td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td><b>End storm location</b></td>'+
+					'<td>End storm location</td>'+
 					'<td style="text-align: right;">'+ items["lat_end"].toFixed(2)+', '+items["lon_end"].toFixed(2)+'</td>'+
 					'</tr>'+
 					'</table>'+

@@ -2,7 +2,7 @@ body { margin: 0; padding: 0; }
 body, html {
     overflow-x: hidden;
     overflow-y: auto;
-    font-family: 'Bai Jamjuree', sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     color: #FFF;
 }
 
