@@ -25,7 +25,11 @@ module.exports = {
 				'public/lib/ion-rangeslider/js/ion.rangeSlider.min.js',
 				'public/lib/leaflet/dist/leaflet.js',
 				'https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js',
-				'public/lib/leaflet-timedimension/dist/leaflet.timedimension.src.js'
+				'public/lib/leaflet-timedimension/dist/leaflet.timedimension.src.js',
+				'public/lib/moment/min/moment.min.js',
+
+				'public/lib/moment-timezone/builds/moment-timezone-with-data.min.js',
+
 			]
 		},
 		css: [

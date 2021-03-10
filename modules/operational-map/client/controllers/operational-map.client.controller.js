@@ -6,8 +6,6 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 	$scope.rssFeeds = [];
 	var filterArea = 'none';
-	var tdWmsLayer;
-	var tdWmsRainLayer
 
 	$(document).ready(function(){
 
@@ -207,7 +205,8 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			zoomControl: false,
 			minZoom: 0,
 			maxZoom: 20,
-			maxBounds: [ [-10, 160],[50, 20]]
+			maxBounds: [ [-10, 160],[50, 20]],
+			timeDimension: true,
 		}).setView([15.8700, 100.9925], 6);
 
 		/**
@@ -218,74 +217,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 		basemap_layer.addTo(map);
 
-		var timeDimension = new L.TimeDimension();
-      map.timeDimension = timeDimension;
 
-      var player = new L.TimeDimension.Player({
-          loop: true,
-          startOver: true
-      }, timeDimension);
-
-      var timeDimensionControlOptions = {
-          player: player,
-          timeDimension: timeDimension,
-          position: 'bottomleft',
-          autoPlay: false,
-          minSpeed: 1,
-          speedStep: 0.5,
-          maxSpeed: 20,
-          timeSliderDragUpdate: true,
-					playReverseButton: true,
-          loopButton: false,
-          limitSliders: false,
-      };
-
-
-					$('.btn-prev').click(function() {
-							map.timeDimension.previousTime(1);
-					});
-					$('.btn-next').click(function() {
-							map.timeDimension.nextTime();
-					});
-
-					$('.btn-play').click(function() {
-							var btn = $(this);
-							if (player.isPlaying()) {
-									btn.removeClass("btn-pause");
-									btn.addClass("btn-play");
-									btn.html("Play");
-									player.stop();
-							} else {
-									btn.removeClass("btn-play");
-									btn.addClass("btn-pause");
-									btn.html("Pause");
-									player.start();
-							}
-					});
-
-					$('.btn-pause').click(function() {
-							var btn = $(this);
-							if (player.isPlaying()) {
-									btn.removeClass("btn-pause");
-									btn.addClass("btn-play");
-									btn.html("Play");
-									player.stop();
-							} else {
-									btn.removeClass("btn-play");
-									btn.addClass("btn-pause");
-									btn.html("Pause");
-									player.start();
-							}
-					});
-					// Date.prototype.format = function (mask, utc) {
-					// 		return dateFormat(this, mask, utc);
-					// };
-					//
-					// L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
-					// 		_getDisplayDateFormat: function (date) {
-					// 				return date.format("mmmm dd,yyyy HH:MM");
-					// 		}
-					// });
 
 		// Load geographic coverage area Geojson
 		var storm_boundingbox;
@@ -669,18 +601,6 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			map.removeLayer(routePolyline);
 		}
 
-		// if (map.getLayer("wms-test-layer")) {
-		// 	map.removeLayer("wms-test-layer");
-		// }
-		// if (map.getSource("wms-test-source")) {
-		// 	map.removeSource("wms-test-source");
-		// }
-		// if (map.getLayer("route")) {
-		// 	map.removeLayer("route");
-		// }
-		// if (map.getSource("route")) {
-		// 	map.removeSource("route");
-		// }
 		if (currentMarkers!==null) {
 	    for (var i = currentMarkers.length - 1; i >= 0; i--) {
 	      currentMarkers[i].remove();
@@ -846,10 +766,10 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 	// markers saved here
 	var currentMarkers=[];
-
+	var tdWmsLayer;
+	// var tdWmsRainLayer;
 	var routePolyline;
-	//var timeDimensionControl = new L.Control.TimeDimensionCustom(timeDimensionControlOptions);
-	//map.addControl(timeDimensionControl);
+
 	function getDetail(sid) {
 
 		$("#legend-img").css("display", "none");
@@ -990,29 +910,33 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 								var _month =  _date[1];
 								var _year =  _date[0];
 								var dateNewFormat = _date_1+"/"+_month+"/"+_year+" "+ _time;
-
 								if(i === 0){
-									var trackPoint = new L.CircleMarker([trackJson[i].lat, trackJson[i].Lon], {radius: 4, fillOpacity: 0.85, fillColor: 'red', color: 'white',}).addTo(map);
-									var text = L.tooltip({
-					            permanent: true,
-					            direction: 'center',
-					            className: 'text-route'
-					        })
-					        .setContent('START')
-					        .setLatLng([trackJson[i].lat, trackJson[i].Lon]);
-					        text.addTo(map);
+
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: 'START',
+											className: 'track-route-start',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
+
 								}else if (i === trackJson.length-2){
-									var trackPoint = new L.CircleMarker([trackJson[i].lat, trackJson[i].Lon], {radius: 4, fillOpacity: 0.85, fillColor: 'green', color: 'white',}).addTo(map);
-									var text = L.tooltip({
-					            permanent: true,
-					            direction: 'center',
-					            className: 'text-route'
-					        })
-					        .setContent('END')
-					        .setLatLng([trackJson[i].lat, trackJson[i].Lon]);
-					        text.addTo(map);
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: 'END',
+											className: 'track-route-end',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
+
 								}else{
-									var trackPoint = new L.CircleMarker([trackJson[i].lat, trackJson[i].Lon], {radius: 4, fillOpacity: 0.85, fillColor: '#eee', color: 'white',}).addTo(map);
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: '',
+											className: 'track-route',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
 
 								}
 								trackPoint.bindPopup(
@@ -1050,15 +974,14 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				    }
 					});
 
-
-
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
 
-					tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/operational/"+storm_raster+".nc", {
+
+					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/operational/"+storm_raster+".nc", {
 						layers: 'rain',
 						format: 'image/png',
-						//time: '2021-02-26T01:30:00.000Z',
+						time: date+'T'+_time+':00:00.000Z',
 						transparent: true,
 						styles: 'boxfill/rainbow',
 						opacity:1,
@@ -1079,6 +1002,51 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 						map.removeLayer(routePolyline);
 					}
 
+					var timeDimension = new L.TimeDimension();
+						map.timeDimension = timeDimension;
+
+						var player = new L.TimeDimension.Player({
+								loop: true,
+								startOver: true
+						}, timeDimension);
+
+							$('.btn-prev').click(function() {
+									map.timeDimension.previousTime(1);
+							});
+							$('.btn-next').click(function() {
+									map.timeDimension.nextTime();
+							});
+
+							$('.btn-play').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
+							$('.btn-pause').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
 
 					tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
 	            updateTimeDimension: true,
@@ -1087,26 +1055,22 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	            zIndex: 100,
 	        });
 	        tdWmsLayer.addTo(map);
-
+					$('.btn-play').click();
 
 					map.timeDimension.on('timeload', function(data) {
-						    var date = new Date(map.timeDimension.getCurrentTime());
-								//console.log(moment(date).format("YYYY/MM/DD hh:mm"))
-						    $("#date-text").html(moment(date).format("YYYY/MM/DD"));
-						    $("#time-text").html(moment(date).format("hh:mm"));
-						    if (data.time == map.timeDimension.getCurrentTime()) {
-						        $('.map-loading').css('display', 'none');
-						    }
+								var date = new Date(map.timeDimension.getCurrentTime());
+								var zone = "Europe/London" //UTC
+								$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
+								$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
+								if (data.time == map.timeDimension.getCurrentTime()) {
+										$('.map-loading').css('display', 'none');
+								}
 						});
-						map.timeDimension.on('timeloading', function(data) {
-						    if (data.time == map.timeDimension.getCurrentTime()) {
-						        $('.map-loading').css('display', 'block');
-						    }
-						});
-
-
-
-
+					map.timeDimension.on('timeloading', function(data) {
+							if (data.time == map.timeDimension.getCurrentTime()) {
+									$('.map-loading').css('display', 'block');
+							}
+					});
 
 				},
 				function (error) {
@@ -1115,6 +1079,12 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				}
 			);
 		}
+
+
+
+
+
+
 
 
 		$('input[type=checkbox][name=storm_events]').click(function(){

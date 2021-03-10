@@ -8,6 +8,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	var filterArea = 'none';
 
 	$(document).ready(function(){
+
 		$("#storm_cat_selector").change(function() {
 			var checkedVal = $("#storm_cat_selector option:selected").val();
 			var instance = $("#slider-max").data("ionRangeSlider");
@@ -166,6 +167,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		$("#end_date").datepicker({
 			format: 'dd/mm/yyyy'
 		});
+
+
 	});
 
 	$('#month_range').ionRangeSlider({
@@ -195,109 +198,138 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 
 
-	mapboxgl.accessToken = 'pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g';
-	var map = new mapboxgl.Map({
-		container: 'map',
-		style: 'mapbox://styles/servirmekong/ckecozln92fkk19mjhuoqxhuw', //statlleite
-		zoom: 4,
-		center: [102.104, 16.610]
-	});
-	//drak theme basemap
-	//styles/v1/servirmekong/ckduef35613el19qlsoug6u2h
+	/**
+		* initialize leaflet map
+		*/
+		var map = L.map('map',{
+			zoomControl: false,
+			minZoom: 0,
+			maxZoom: 20,
+			maxBounds: [ [-10, 160],[50, 20]],
+			timeDimension: true,
+		}).setView([15.8700, 100.9925], 6);
+
+		/**
+		* initial white theme basemap
+		*/
+		var mbAttr = 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors';
+		var mbUrl = 'https://api.mapbox.com/styles/v1/servirmekong/ckecozln92fkk19mjhuoqxhuw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g';
+		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+		basemap_layer.addTo(map);
+
+		var timeDimension = new L.TimeDimension();
+      map.timeDimension = timeDimension;
+
+      var player = new L.TimeDimension.Player({
+          loop: true,
+          startOver: true
+      }, timeDimension);
+
+      var timeDimensionControlOptions = {
+          player: player,
+          timeDimension: timeDimension,
+          position: 'bottomleft',
+          autoPlay: false,
+          minSpeed: 1,
+          speedStep: 0.5,
+          maxSpeed: 20,
+          timeSliderDragUpdate: true,
+					playReverseButton: true,
+          loopButton: false,
+          limitSliders: false,
+      };
 
 
-	map.on('load', function () {
+					$('.btn-prev').click(function() {
+							map.timeDimension.previousTime(1);
+					});
+					$('.btn-next').click(function() {
+							map.timeDimension.nextTime();
+					});
+
+					$('.btn-play').click(function() {
+							var btn = $(this);
+							if (player.isPlaying()) {
+									btn.removeClass("btn-pause");
+									btn.addClass("btn-play");
+									btn.html("Play");
+									player.stop();
+							} else {
+									btn.removeClass("btn-play");
+									btn.addClass("btn-pause");
+									btn.html("Pause");
+									player.start();
+							}
+					});
+
+					$('.btn-pause').click(function() {
+							var btn = $(this);
+							if (player.isPlaying()) {
+									btn.removeClass("btn-pause");
+									btn.addClass("btn-play");
+									btn.html("Play");
+									player.stop();
+							} else {
+									btn.removeClass("btn-play");
+									btn.addClass("btn-pause");
+									btn.html("Pause");
+									player.start();
+							}
+					});
+      L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({});
 
 		// Load geographic coverage area Geojson
+		var storm_boundingbox;
 		 $.getJSON('data/storm_boundingbox.geojson')
 			.done(function (data, status) {
-				map.addSource('storm_boundingbox', {
-				'type': 'geojson',
-				'data': data
+				storm_boundingbox = L.geoJSON(data, {
+					style: {
+				     fillColor: '#9999ff',
+				     weight: 2,
+				     opacity: 1,
+				     color: 'white',
+				     dashArray: '3',
+				     fillOpacity: 0.1
+				   }
 				});
-
+				storm_boundingbox.addTo(map);
 			});
 
 		// Load mekong BBox area Geojson
+		var mekong_bb;
 		 $.getJSON('data/mekong_bb.geojson')
 			.done(function (data, status) {
-				map.addSource('mekong_bb', {
-				'type': 'geojson',
-				'data': data
+				mekong_bb = L.geoJSON(data, {
+					style: {
+				     fillColor: '#9999ff',
+				     weight: 1,
+				     opacity: 1,
+				     color: 'white',
+				     dashArray: '3',
+				     fillOpacity: 0.1
+				   }
 				});
+				mekong_bb.addTo(map);
 
 			});
 
 		// lond country boundary
+		var adm0;
 		$.getJSON('data/adm0.geojson')
 		 .done(function (data, status) {
-			 map.addSource('mekong_country', {
-					 'type': 'geojson',
-					 'data': data
+			 adm0 = L.geoJSON(data, {
+				 style: {
+						fillColor: '#9999ff',
+						weight: 1,
+						opacity: 1,
+						color: 'white',
+						dashArray: '3',
+						fillOpacity: 0.1
+					}
 			 });
-
-			 map.addLayer({
-					 'id': 'state-fills',
-					 'type': 'fill',
-					 'source': 'mekong_country',
-					 'layout': {},
-					 'paint': {
-							 'fill-color': '#9999ff',
-							 'fill-opacity': [
-									 'case',
-									 ['boolean', ['feature-state', 'hover'], false],
-									 0.5,
-									 0.2
-							 ]
-					 }
-			 });
-
-			 map.addLayer({
-					 'id': 'state-borders',
-					 'type': 'line',
-					 'source': 'mekong_country',
-					 'layout': {},
-					 'paint': {
-							 'line-color': '#FFFFFF',
-							 'line-width': 0.5
-					 }
-			 });
+			 adm0.addTo(map);
 		 });
-});
 
-	//hide mekong BBox and geographic coverage area
-	$("#mekong_bb").click();
-	$("#geographic_coverage").click();
-
-	var hoveredStateId = null;
-	// When the user moves their mouse over the state-fill layer, we'll update the
-	// feature state for the feature under the mouse.
-	map.on('mousemove', 'state-fills', function (e) {
-		if (e.features.length > 0) {
-			if (hoveredStateId) {
-				map.setFeatureState(
-				{ source: 'mekong_country', id: hoveredStateId },
-				{ hover: false }
-				);
-			}
-			hoveredStateId = e.features[0].id;
-			map.setFeatureState(
-				{ source: 'mekong_country', id: hoveredStateId },
-				{ hover: true }
-			);
-		}
-	});
-
-
-	map.on('mouseleave', 'state-fills', function () {
-		if (hoveredStateId) {
-			map.setFeatureState(
-				{ source: 'mekong_country', id: hoveredStateId },
-				{ hover: false }
-			);
-		}
-			hoveredStateId = null;
-	});
 
 	// colors to use for the categories
 	var colors = ['#cbd3e6', '#90a5c2', '#5a7ba8', '#1a4e87', '#153e6c'];
@@ -377,7 +409,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	    return str;
 	}
 
-
+	var stormMarkers;
+	var markers;
 	// /////////////////////////////////////////////////////////////////////////////
 	var createLiEvents = function(data){
 		loadCount = 0;
@@ -435,95 +468,85 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		'Load More'+
 		'</li>');
 		$("#loadmore-btn").click();
+		markers = L.DonutCluster({
+				chunkedLoading: true
+		}, {
+				key: 'title'
+				, arcColorDict: {
+												1: colors[0],
+												2: colors[1],
+												3: colors[2],
+												4: colors[3],
+												5: colors[4],
+												6: colors[5],
+												7: colors[6],
+												8: colors[7],
+												9: colors[8]
+										}
+		})
 
-		setTimeout(function(){
+		stormMarkers = L.geoJSON(geojson, {
+		    style: function(feature) {
+		        return {color: colors[feature.properties.storm_class - 1]};
+		    },
+		    pointToLayer: function(feature, latlng) {
 
-			var total_mag1 = ['==', ['get', 'storm_class'], 1];
-			var total_mag2 = ['==', ['get', 'storm_class'], 2];
-			var total_mag3 = ['==', ['get', 'storm_class'], 3];
-			var total_mag4 = ['==', ['get', 'storm_class'], 4];
-			var total_mag5 = ['==', ['get', 'storm_class'], 5];
-			var total_mag6 = ['==', ['get', 'storm_class'], 6];
-			var total_mag7 = ['==', ['get', 'storm_class'], 7];
-			var total_mag8 = ['==', ['get', 'storm_class'], 8];
-			var total_mag9 = ['==', ['get', 'storm_class'], 9];
+						var marker = new L.marker(latlng, {
 
+							// radius: 10,
+							// fillOpacity: 0.85,
+							title: feature.properties.storm_class,
+							icon: L.divIcon({
+								html: feature.properties.mcvol.toFixed(2).toString(),
+								className: 'marker-icon-'+ (feature.properties.storm_class - 1),
+								iconSize: L.point(25, 25)
+							})//.bindTooltip(feature.properties.storm_class)
+					});
+						markers.addLayer(marker);
+		        return marker;
+		    },
+		    onEachFeature: function (feature, layer) {
+						// var text = L.tooltip({
+		        //     permanent: true,
+		        //     direction: 'center',
+		        //     className: 'text'
+		        // })
+		        // .setContent(feature.properties.mcvol.toFixed(2).toString())
+		        // .setLatLng(layer.getLatLng());
+		        // text.addTo(map);
 
-			// add a clustered GeoJSON source for a sample set of rainstorms
-			map.addSource('rainstorms', {
-				'type': 'geojson',
-				'data':geojson,
-				'cluster': true,
-				'clusterRadius': 45,
-				'clusterProperties': {
-					// keep separate counts for each total_magnitude category in a cluster
-					'total_mag1': ['+', ['case', total_mag1, 1, 0]],
-					'total_mag2': ['+', ['case', total_mag2, 1, 0]],
-					'total_mag3': ['+', ['case', total_mag3, 1, 0]],
-					'total_mag4': ['+', ['case', total_mag4, 1, 0]],
-					'total_mag5': ['+', ['case', total_mag5, 1, 0]],
-					'total_mag6': ['+', ['case', total_mag6, 1, 0]],
-					'total_mag7': ['+', ['case', total_mag7, 1, 0]],
-					'total_mag8': ['+', ['case', total_mag8, 1, 0]],
-					'total_mag9': ['+', ['case', total_mag9, 1, 0]]
-				}
-			});
-			// circle and symbol layers for rendering individual rainstorms (unclustered points)
-			map.addLayer({
-				'id': 'storm_circle',
-				'type': 'circle',
-				'source': 'rainstorms',
-				'filter': ['!=', 'cluster', true],
-				'paint': {
-					'circle-color': [
-						'case',
-						total_mag1,
-						colors[0],
-						total_mag2,
-						colors[1],
-						total_mag3,
-						colors[2],
-						total_mag4,
-						colors[3],
-						total_mag5,
-						colors[4],
-						total_mag6,
-						colors[5],
-						total_mag7,
-						colors[6],
-						total_mag8,
-						colors[7],
-						colors[8]
-					],
-					'circle-opacity': 0.8,
-					'circle-radius': 12
-				}
-			});
-			map.addLayer({
-				'id': 'storm_label',
-				'type': 'symbol',
-				'source': 'rainstorms',
-				'filter': ['!=', 'cluster', true],
-				'layout': {
-					'text-field': [
-						'number-format',
-						['get', 'mcvol'],
-						{ 'min-fraction-digits': 1, 'max-fraction-digits': 2 }
-					],
-					'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-					'text-size': 10
-				},
-				'paint': {
-					'text-color': [
-						'case',
-						['<', ['get', 'mcvol'], 3],
-						'black',
-						'white'
-					]
-				}
-			});
+						var content = '<h4>' + feature.properties.date + '</h4>'+
+							'<table class="table table-striped">'+
+								'<tbody>'+
+									'<tr>'+
+										'<th scope="row"> Storm Volume</th>'+
+										'<td>'+ feature.properties.mcvol.toFixed(2) +' km<sup>3</sup></td>'+
+									'</tr>'+
+									'<tr>'+
+										'<th scope="row">Storm Duration</th>'+
+										'<td>'+ feature.properties.mctime.toFixed(2) +' hrs</td>'+
+									'</tr>'+
+								'</tbody>'+
+							'</table>';
 
-		}, 1000);
+						var text2 = L.tooltip({
+	            direction: 'top',
+							className: 'leaflet-tooltip-custom'
+		        })
+		        .setContent(content)
+		        .setLatLng(layer.getLatLng());
+						layer.bindTooltip(content);
+		    }
+		});
+
+		map.addLayer(markers);
+		//stormMarkers.addTo(map);
+
+		markers.on("click", function (event) {
+			console.log(event)
+				var clickedMarker = event.layer;
+				getDetail(clickedMarker.feature.properties.id);
+		});
 	}
 
 	$scope.fetchEvents = function () {
@@ -552,212 +575,6 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	};
 
 	$scope.fetchEvents();
-	// objects for caching and keeping track of HTML marker objects (for performance)
-	var markers = {};
-	var markersOnScreen = {};
-
-	function updateMarkers() {
-		var newMarkers = {};
-		var features = map.querySourceFeatures('rainstorms');
-
-		// for every cluster on the screen, create an HTML marker for it (if we didn't yet),
-		// and add it to the map if it's not there already
-		for (var i = 0; i < features.length; i++) {
-
-			var coords = features[i].geometry.coordinates;
-			var props = features[i].properties;
-			if (!props.cluster) continue;
-			var id = props.cluster_id;
-
-			var marker = markers[id];
-			if (!marker) {
-				var el = createDonutChart(props);
-				marker = markers[id] = new mapboxgl.Marker({
-					element: el
-				}).setLngLat(coords)
-
-			}
-			newMarkers[id] = marker;
-
-			if (!markersOnScreen[id]) marker.addTo(map);
-		}
-		// for every marker we've added previously, remove those that are no longer visible
-		for (id in markersOnScreen) {
-			if (!newMarkers[id]) markersOnScreen[id].remove();
-		}
-		markersOnScreen = newMarkers;
-	}
-
-	// after the GeoJSON data is loaded, update markers on the screen and do so on every map move/moveend
-	map.on('data', function(e) {
-		if (e.sourceId !== 'rainstorms' || !e.isSourceLoaded) return;
-
-		map.on('move', updateMarkers);
-		map.on('moveend', updateMarkers);
-		updateMarkers();
-	});
-
-
-	// code for creating an SVG donut chart from feature properties
-	function createDonutChart(props) {
-		var offsets = [];
-		var counts = [
-			props.total_mag1,
-			props.total_mag2,
-			props.total_mag3,
-			props.total_mag4,
-			props.total_mag5,
-			props.total_mag6,
-			props.total_mag7,
-			props.total_mag8,
-			props.total_mag9
-		];
-		var total = 0;
-		for (var i = 0; i < counts.length; i++) {
-			offsets.push(total);
-			total += counts[i];
-		}
-
-		var fontSize = total >= 1000 ? 18 : total >= 100 ? 16 : total >= 10 ? 14 : 12;
-		//circle size category
-		// var r = total >= 1000 ? 45 : total >= 100 ? 35 : total >= 10 ? 25 : 18;
-		var r =  18;
-		var r0 = Math.round(r * 0.5 );
-		var w = r * 2;
-
-		var html =
-		'<div><svg width="' +
-		w +
-		'" height="' +
-		w +
-		'" viewbox="0 0 ' +
-		w +
-		' ' +
-		w +
-		'" text-anchor="middle" style="font: ' +
-		fontSize +
-		'px Bai Jamjuree; display: block; color:#FFFFFF00">';
-
-		for (var i = 0; i < counts.length; i++) {
-
-			html += donutSegment(
-				offsets[i] / total,
-				(offsets[i] + counts[i]) / total,
-				r,
-				r0,
-				colors[i]
-			);
-		}
-
-			html +=
-			'<circle cx="' +
-			r +
-			'" cy="' +
-			r +
-			'" r="' +
-			r0 +
-			'" fill="#FFFFFF00" /><text dominant-baseline="central" transform="translate(' +
-			r +
-			', ' +
-			r +
-			')">' +
-			//show number of cluter points
-			// total.toLocaleString() +
-			'</text></svg></div>';
-		var el = document.createElement('div');
-		el.innerHTML = html;
-		return el.firstChild;
-	}
-
-	function donutSegment(start, end, r, r0, color) {
-
-		if (end - start === 1) end -= 0.00001;
-		var a0 = 2 * Math.PI * (start - 0.25);
-		var a1 = 2 * Math.PI * (end - 0.25);
-		var x0 = Math.cos(a0),
-		y0 = Math.sin(a0);
-		var x1 = Math.cos(a1),
-		y1 = Math.sin(a1);
-		var largeArc = end - start > 0.5 ? 1 : 0;
-
-		return [
-			'<path d="M',
-			r + r0 * x0,
-			r + r0 * y0,
-			'L',
-			r + r * x0,
-			r + r * y0,
-			'A',
-			r,
-			r,
-			0,
-			largeArc,
-			1,
-			r + r * x1,
-			r + r * y1,
-			'L',
-			r + r0 * x1,
-			r + r0 * y1,
-			'A',
-			r0,
-			r0,
-			0,
-			largeArc,
-			0,
-			r + r0 * x0,
-			r + r0 * y0,
-			'" stroke="#fff" stroke-width="1" fill="' + color + '" />'
-		].join(' ');
-	}
-
-
-	// inspect a cluster on click
-	map.on('click', 'storm_circle', function (e) {
-		map.setLayoutProperty('state-fills', 'visibility', 'none');
-		var features = map.queryRenderedFeatures(e.point, { layers: ['storm_circle'] });
-		var clusterId = features[0].properties;
-		getDetail(e.features[0].properties.id);
-	});
-	var popupStorm;
-	map.on('mouseenter', 'storm_circle', function (e) {
-		map.setLayoutProperty('state-fills', 'visibility', 'none');
-		map.getCanvas().style.cursor = 'pointer';
-		popupStorm = new mapboxgl.Popup({ closeOnClick: false })
-		.setLngLat(e.lngLat)
-		.setHTML(
-			'<h4>' + e.features[0].properties.date + '</h4>'+
-				'<table class="table table-striped">'+
-				  '<tbody>'+
-				    '<tr>'+
-				      '<th scope="row"> Storm Volume</th>'+
-				      '<td>'+ e.features[0].properties.mcvol.toFixed(2) +' km<sup>3</sup></td>'+
-				    '</tr>'+
-				    '<tr>'+
-				      '<th scope="row">Storm Duration</th>'+
-				      '<td>'+ e.features[0].properties.mctime.toFixed(2) +' hrs</td>'+
-				    '</tr>'+
-				  '</tbody>'+
-				'</table>')
-		.addTo(map)
-
-
-
-	});
-	map.on('mouseleave', 'storm_circle', function () {
-		//map.setLayoutProperty('state-fills', 'visibility', 'visible');
-		popupStorm.remove();
-	});
-
-
-	// When a click event occurs on a feature in the places layer, open a popup at the
-	// location of the feature, with description HTML from its properties.
-	map.on('click', 'state-fills', function (e) {
-	var coordinates = e.features[0].geometry.coordinates.slice();
-	var country_name_0 = e.features[0].properties.NAME_0;
-	filterArea = e.features[0].properties.NAME_0;
-	$('#search-filter-btn').click();
-
-	});
 
 	/**
 	 * Use Mapbox GL JS's `flyTo` to move the camera smoothly
@@ -765,16 +582,13 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	 **/
 
 	function flyToStore(lat, lng) {
-	  map.flyTo({
-	    center: [lng, lat],
-	    zoom: 7
-	  });
+	  map.setView([lat, lng], 7);
 	}
 
 	function hideStromPoints(){
-			map.setLayoutProperty('state-fills', 'visibility', 'none');
-			map.setLayoutProperty('storm_label', 'visibility', 'none');
-			map.setLayoutProperty('storm_circle', 'visibility', 'none');
+
+			map.removeLayer(markers);
+			$(".leaflet-tooltip.text").addClass("tooltip-hidden");
 			// Uncheck
 			document.getElementById("storm_events").checked = false;
 			$("#legend-img").css("display", "block");
@@ -782,31 +596,13 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	}
 
 	function showStromPoints(){
-			map.setLayoutProperty('state-fills', 'visibility', 'visible');
-			map.setLayoutProperty('storm_label', 'visibility', 'visible');
-			map.setLayoutProperty('storm_circle', 'visibility', 'visible');
+			map.addLayer(markers);
+			$(".leaflet-tooltip.text").removeClass("tooltip-hidden");
 			// check
 			document.getElementById("storm_events").checked = true;
 			$("#legend-img").css("display", "none");
 			$("#legend-marker").css("display", "block");
 	}
-
-	//hide storm points when zoom out
-	// map.on('zoom', function () {
-	// 	console.log(map.getZoom());
-	// 	if (map.getZoom() < 5) {
-	// 		console.log("< 10");
-	// 		map.setLayoutProperty('state-fills', 'visibility', 'visible');
-	// 		map.setLayoutProperty('storm_label', 'visibility', 'visible');
-	// 		map.setLayoutProperty('storm_circle', 'visibility', 'visible');
-	// 		document.getElementById("storm_events").checked = true;
-	// 		} else {
-	// 			map.setLayoutProperty('state-fills', 'visibility', 'none');
-	// 			map.setLayoutProperty('storm_label', 'visibility', 'none');
-	// 			map.setLayoutProperty('storm_circle', 'visibility', 'none');
-	// 			document.getElementById("storm_events").checked = false;
-	// 	}
-	// });
 
 
 	$('#slider-max').ionRangeSlider({
@@ -832,7 +628,6 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	$('#layer-control').click(function(){
 
 	});
-
 
 	$('#streets-v11').click(function(){
 		map.setStyle('mapbox://styles/mapbox/streets-v11');
@@ -890,18 +685,26 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 	$('.box-closebtn').click(function() {
 		$("#detail-panel").css("width", "0px");
-		if (map.getLayer("wms-test-layer")) {
-			map.removeLayer("wms-test-layer");
+
+		if(map.hasLayer(tdWmsLayer)){
+			map.removeLayer(tdWmsLayer);
 		}
-		if (map.getSource("wms-test-source")) {
-			map.removeSource("wms-test-source");
+		if(map.hasLayer(routePolyline)){
+			map.removeLayer(routePolyline);
 		}
-		if (map.getLayer("route")) {
-			map.removeLayer("route");
-		}
-		if (map.getSource("route")) {
-			map.removeSource("route");
-		}
+
+		// if (map.getLayer("wms-test-layer")) {
+		// 	map.removeLayer("wms-test-layer");
+		// }
+		// if (map.getSource("wms-test-source")) {
+		// 	map.removeSource("wms-test-source");
+		// }
+		// if (map.getLayer("route")) {
+		// 	map.removeLayer("route");
+		// }
+		// if (map.getSource("route")) {
+		// 	map.removeSource("route");
+		// }
 		if (currentMarkers!==null) {
 	    for (var i = currentMarkers.length - 1; i >= 0; i--) {
 	      currentMarkers[i].remove();
@@ -969,17 +772,17 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 	$('#search-filter-btn').click(function() {
 		//loadCount = 0;
-		if (map.getLayer("wms-test-layer")) {
-			map.removeLayer("wms-test-layer");
-		}
-
-		if (map.getSource("wms-test-source")) {
-			map.removeSource("wms-test-source");
-		}
-		if (map.getLayer("route")) {
-			map.removeLayer("route");
-			map.removeSource("route");
-		}
+		// if (map.getLayer("wms-test-layer")) {
+		// 	map.removeLayer("wms-test-layer");
+		// }
+		//
+		// if (map.getSource("wms-test-source")) {
+		// 	map.removeSource("wms-test-source");
+		// }
+		// if (map.getLayer("route")) {
+		// 	map.removeLayer("route");
+		// 	map.removeSource("route");
+		// }
 		// remove markers
 		if (currentMarkers!==null) {
 			for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -1001,15 +804,6 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 			yearRange = yearRange + i + ',';
 		}
 		yearRange = yearRange + end_year;
-
-
-		for(var i = startMonth; i < endMonth; i++){
-			if (i <= 9) i = '0'+ i.toString();
-			monthRange = monthRange + i + ',';
-		}
-		if (endMonth <= 9) endMonth = '0'+ endMonth.toString();
-		monthRange = monthRange + endMonth;
-
 
 		var start_vol = $("#start_vol").val();
 		var end_vol = $("#end_vol").val();
@@ -1036,9 +830,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 				var items = response.data;
 				$("#tableList").html("");
 
-				map.removeLayer('storm_circle');
-				map.removeLayer('storm_label');
-				map.removeSource('rainstorms');
+				map.removeLayer(markers);
+
 				createLiEvents(response.data);
 				$('#menu-close').click();
 				$('.slide-tab-right').click();
@@ -1053,17 +846,17 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 	$('#search-all-btn').click(function() {
 		filterArea = 'none';
-		if (map.getLayer("wms-test-layer")) {
-			map.removeLayer("wms-test-layer");
-		}
-
-		if (map.getSource("wms-test-source")) {
-			map.removeSource("wms-test-source");
-		}
-		if (map.getLayer("route")) {
-			map.removeLayer("route");
-			map.removeSource("route");
-		}
+		// if (map.getLayer("wms-test-layer")) {
+		// 	map.removeLayer("wms-test-layer");
+		// }
+		//
+		// if (map.getSource("wms-test-source")) {
+		// 	map.removeSource("wms-test-source");
+		// }
+		// if (map.getLayer("route")) {
+		// 	map.removeLayer("route");
+		// 	map.removeSource("route");
+		// }
 		// remove markers
 		if (currentMarkers!==null) {
 			for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -1077,9 +870,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 				// Success Callback
 				var items = response.data;
 				$("#tableList").html("");
-				map.removeLayer('storm_circle');
-				map.removeLayer('storm_label');
-				map.removeSource('rainstorms');
+				map.removeLayer(markers);
+
 				createLiEvents(response.data);
 				$('#menu-close').click();
 				$('.slide-tab-right').click();
@@ -1093,6 +885,10 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 	// markers saved here
 	var currentMarkers=[];
+	var tdWmsLayer;
+	// var tdWmsRainLayer;
+	var routePolyline;
+
 	function getDetail(sid) {
 
 		$("#legend-img").css("display", "none");
@@ -1104,29 +900,32 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 			function (response) {
 				// Success Callback
 				var items = response.data[0];
+				console.log(items)
 				var date_split = items["date"].split(" ");
 
-				var date = date_split[0].split("/");
-				var _date = date[1];
-				if (_date < 10) _date = '0' + _date;
-				var _month = date[0];
-				if (_month < 10) _month = '0' + _month;
-				var _year = date[2];
+				var date = date_split[0];
+				// var _date = date[1];
+				// if (_date < 10) _date = '0' + _date;
+				// var _month = date[0];
+				// if (_month < 10) _month = '0' + _month;
+				// var _year = date[2];
 
 				var time = date_split[1].split(":");
 				var _time = time[0]
-				if (_time < 10) _time = '0' + _time;
+				console.log(_time)
+				//if (_time < 10) _time = '0' + _time;
 
-				var storm_figures = "MCS_"+_year+"-"+_month+"-"+_date+"_"+_time+"0000.png";
-				var storm_raster = "MCS_"+_year+"-"+_month+"-"+_date+"_"+_time+"0000";
-				var downloadRasterurl = "https://geoserver.adpc.net/geoserver/stroms-mk/wcs?service=WCS&version=2.0.1&request=GetCoverage&CoverageId="+storm_raster+"&format=image/tiff"
+				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
+				var storm_raster = "MCS_"+date+"_"+_time+"0000";
+				// console.log(_year, _month, _date, _time)
+				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/historical/"+storm_raster+".nc"
 				flyToStore(items["center_lat"], items["center_lng"]);
 				hideStromPoints();
 
-				var dateFormat = items["date2"] + ' '+ items["date"].split(" ")[1];
+				var dateText = items["date2"] + ' '+ items["date"].split(" ")[1];
 				$(".table-detail").html(
 					'<div class="row">'+
-					'<div class="col-sm-12"><p class="place-name">'+ dateFormat +'</p></div>'+
+					// '<div class="col-sm-12"><p class="place-name">'+ dateText +'</p></div>'+
 					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/storm-figures/'+storm_figures+'" target="_blank" title="Dowload a figure" download>'+
 					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
 					'<path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-12-1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12z"/>'+
@@ -1139,8 +938,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					'<path fill-rule="evenodd" d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z"/>'+
 					'<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 1z"/>'+
 					'</svg></a></li></ul></div>'+
-					'<div class="col-sm-5"><img src="/img/storm-figures/'+storm_figures+'" alt="" style="width:100%;margin-bottom: 20px;"></div>'+
-					'<div class="col-sm-7">'+
+					'<div class="col-sm-12"><img src="/img/storm-figures/'+storm_figures+'" alt="" style="width:100%;margin-bottom: 20px;"></div>'+
+					'<div class="col-sm-12">'+
 					'<table style="width:100%; font-size:14px;">'+
 					'<tr>'+
 					'<td><b>Centroid</b></td>'+
@@ -1178,7 +977,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					'</div>'+
 					'</div>');
 
-					$('#detail-panel').css("width", "500px");
+					$('#detail-panel').css("width", "300px");
 					if($('#sidenav-table').css("width") == "280px"){
 						$(".detail-right").css("right", "285px");
 						$(".detail-right").css("height", "auto");
@@ -1200,18 +999,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 					$("#toggle_storm_image").css('display', 'block');
 
-					if (map.getLayer("wms-test-layer")) {
-						map.removeLayer("wms-test-layer");
-					}
 
-					if (map.getSource("wms-test-source")) {
-						map.removeSource("wms-test-source");
-					}
-
-					if (map.getLayer("route")) {
-						map.removeLayer("route");
-						map.removeSource("route");
-					}
 					// remove markers
 					if (currentMarkers!==null) {
 						for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -1220,27 +1008,20 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					}
 
 					var trackRoute = []
-					// Uncheck
-					// document.getElementById("mekong_country").checked = false;
-					map.setLayoutProperty('state-fills', 'visibility', 'none');
-					map.setLayoutProperty('state-borders', 'visibility', 'none');
+					//Uncheck
+					document.getElementById("mekong_country").checked = false;
+					// map.setLayoutProperty('state-fills', 'visibility', 'none');
+					// map.setLayoutProperty('state-borders', 'visibility', 'none');
 
 					$.ajax("/tracks_csv/"+storm_raster+".csv", {
-				    success: function(data) {
-				        var trackJson =  JSON.parse(CSV2JSON(data));
+						success: function(data) {
+								var trackJson =  JSON.parse(CSV2JSON(data));
+								console.log(trackJson)
 								//length - 1 because there is last blank line
 							for(var i=0; i<trackJson.length-1; i++){
 
-								trackRoute.push([trackJson[i].Lon, trackJson[i].lat]);
-								// create a HTML element for each feature
-								var el1 = document.createElement('div');
-								if(i === 0){
-									el1.className = 'marker marker-start';
-								}else if(i === trackJson.length-2){
-									el1.className = 'marker marker-end';
-								}else{
-									el1.className = 'marker marker-track';
-								}
+								trackRoute.push([trackJson[i].lat, trackJson[i].Lon]);
+								console.log(trackJson[i].Dates)
 								var date = trackJson[i].Dates.split(" ");
 								var _date = date[0].split("-");
 								var _time = date[1];
@@ -1249,85 +1030,167 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 								var _year =  _date[0];
 								var dateNewFormat = _date_1+"/"+_month+"/"+_year+" "+ _time;
 
+								if(i === 0){
 
-								var trackPoint = 	new mapboxgl.Marker(el1)
-								.setLngLat([trackJson[i].Lon, trackJson[i].lat])
-								.setPopup(
-									new mapboxgl.Popup({ closeOnClick: false }) // add popups
-									.setHTML(
-										'<h4>' + dateNewFormat + '</h4>'+
-											'<table class="table table-striped">'+
-												'<tbody>'+
-													'<tr>'+
-														'<th scope="row"> Magnitude</th>'+
-														'<td>'+ parseInt(trackJson[i].Magnitude).toFixed(2) +' mm</td>'+
-													'</tr>'+
-													'<tr>'+
-														'<th scope="row">Intensity</th>'+
-														'<td>'+ parseInt(trackJson[i].Intensity).toFixed(2) +' mm/h</td>'+
-													'</tr>'+
-												'</tbody>'+
-											'</table>')
-									) .addTo(map);
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: 'START',
+											className: 'track-route-start',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
+
+								}else if (i === trackJson.length-2){
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: 'END',
+											className: 'track-route-end',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
+
+								}else{
+									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
+										icon: L.divIcon({
+											html: '',
+											className: 'track-route',
+											iconSize: L.point(10, 10)
+										})
+								}).addTo(map);
+
+								}
+								trackPoint.bindPopup(
+									'<h4>' + dateNewFormat + '</h4>'+
+									'<table class="table">'+
+										'<tbody>'+
+											'<tr>'+
+												'<th scope="row"> Magnitude</th>'+
+												'<td>'+ parseInt(trackJson[i].Magnitude).toFixed(2) +' mm</td>'+
+											'</tr>'+
+											'<tr>'+
+												'<th scope="row">Intensity</th>'+
+												'<td>'+ parseInt(trackJson[i].Intensity).toFixed(2) +' mm/h</td>'+
+											'</tr>'+
+										'</tbody>'+
+									'</table>'
+								);
 								currentMarkers.push(trackPoint);
 
 							}
+							//var pathLine = L.polyline(trackRoute).addTo(map)
 
-							map.addSource('route', {
-								'type': 'geojson',
-								'data': {
-									'type': 'Feature',
-									'properties': {},
-									'geometry': {
-										'type': 'LineString',
-										'coordinates': trackRoute
-									}
-								}
-							});
-							map.addLayer({
-								'id': 'route',
-								'type': 'line',
-								'source': 'route',
-								'layout': {
-									'line-join': 'round',
-									'line-cap': 'round'
-								},
-								'paint': {
-									'line-color': '#FFF',
-									'line-width': 1,
-									'line-dasharray': [5, 4],
-								}
-							});
+							routePolyline = new L.polyline(trackRoute, {
+							color: 'white',
+							weight: 1.5,
+							opacity: 0.5,
+							smoothFactor: 1,
+							dashArray: '5, 5',
+							dashOffset: '0'
+						}).addTo(map);
 
-				    },
-				    error: function() {
-				        alert("error")
-				    }
+						},
+						error: function() {
+								alert("error")
+						}
 					});
-
 
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
 
-					// var linkLegend = "https://geoserver.adpc.net/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=10&HEIGHT=10&LAYER=stroms-mk:"+storm_raster+"&style=rainstorms_2&transparent=TRUE&LEGEND_OPTIONS=dx:0.5;dy:0.2;mx:0.2;my:0.2;fontStyle:normal;fontColor:30302E;fontSize:10";
-					// $('#img-legend').attr('src',linkLegend);
-					map.addSource('wms-test-source', {
-						'id': 'wms-test-layer',
-						'type': 'raster',
-						'tiles': [
-							'https://geoserver.adpc.net/geoserver/stroms-mk/wms?service=WMS&version=1.3.0&request=GetMap&layers=stroms-mk:'+storm_raster+'&transparent=true&styles=rainstorms_2&width=256&height=256&srs=EPSG:3857&bbox={bbox-epsg-3857}&FORMAT=image/png'
-							//'http://thredds-servir.adpc.net/thredds/wms/mk_aqx/fire/MCS_2016-07-22_200000.nc?service=WMS&request=GetMap&layers=Band1&styles=boxfill%2Falg&format=image%2Fpng&transparent=true&version=1.3.0&width=256&height=256&crs=EPSG%3A3857&bbox={bbox-epsg-3857}'
-						],
-						'tileSize': 256
+
+					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/historical/"+storm_raster+".nc", {
+						layers: 'rain',
+						format: 'image/png',
+						time: date+'T'+_time+':00:00.000Z',
+						transparent: true,
+						styles: 'boxfill/rainbow',
+						opacity:1,
+						version:'1.3.0',
+						zIndex:100,
+						colorscalerange:'0,150',
+						bounds: [[0, 90], [22, 120]],
+						logscale: false,
+						abovemaxcolor:'extend',
+						belowmincolor:'extend',
+						numcolorbands: 150,
 					});
-					map.addLayer(
-						{
-							'id': 'wms-test-layer',
-							'type': 'raster',
-							'source': 'wms-test-source',
-							'paint': {}
-						}
-					);
+
+					if(map.hasLayer(tdWmsLayer)){
+						map.removeLayer(tdWmsLayer);
+					}
+					if(map.hasLayer(routePolyline)){
+						map.removeLayer(routePolyline);
+					}
+
+					var timeDimension = new L.TimeDimension();
+						map.timeDimension = timeDimension;
+
+						var player = new L.TimeDimension.Player({
+								loop: true,
+								startOver: true
+						}, timeDimension);
+
+							$('.btn-prev').click(function() {
+									map.timeDimension.previousTime(1);
+							});
+							$('.btn-next').click(function() {
+									map.timeDimension.nextTime();
+							});
+
+							$('.btn-play').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
+							$('.btn-pause').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
+
+					tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
+							updateTimeDimension: true,
+							setDefaultTime: true,
+							cache: 365,
+							zIndex: 100,
+					});
+					tdWmsLayer.addTo(map);
+					$('.btn-play').click();
+
+					map.timeDimension.on('timeload', function(data) {
+								var date = new Date(map.timeDimension.getCurrentTime());
+								var zone = "Europe/London" //UTC
+								$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
+								$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
+								if (data.time == map.timeDimension.getCurrentTime()) {
+										$('.map-loading').css('display', 'none');
+								}
+						});
+					map.timeDimension.on('timeloading', function(data) {
+							if (data.time == map.timeDimension.getCurrentTime()) {
+									$('.map-loading').css('display', 'block');
+							}
+					});
 
 				},
 				function (error) {
@@ -1339,72 +1202,52 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 
 
 
-		$('input[type=checkbox][name=storm_events]').click(function(){
-			if(this.checked) {
-				// if($('input[type=checkbox][name=mekong_country]').checked){
-				// 	map.setLayoutProperty('state-fills', 'visibility', 'visible');
-				// }
 
-				map.setLayoutProperty('storm_label', 'visibility', 'visible');
-				map.setLayoutProperty('storm_circle', 'visibility', 'visible');
+
+
+		$('input[type=checkbox][name=storm_events]').click(function(){
+			var tooltipPanes = document.getElementsByClassName("leaflet-tooltip-pane");
+			if(this.checked) {
+				tooltipPanes[0].classList.remove("tooltip-hidden");
+				map.addLayer(markers);
 				$("#legend-img").css("display", "none");
 				$("#legend-marker").css("display", "block");
 			}else{
-				map.setLayoutProperty('storm_label', 'visibility', 'none');
-				map.setLayoutProperty('storm_circle', 'visibility', 'none');
+				tooltipPanes[0].classList.add("tooltip-hidden");
+				if (map.hasLayer(markers)) {
+					markers.closeTooltip();
+					map.removeLayer(markers);
+				}
 			}
 
 		});
 		$('input[type=checkbox][name=mekong_bb]').click(function(){
 			if(this.checked) {
-				if (map.getLayer("mekong_bb")) {
-					map.setLayoutProperty('mekong_bb', 'visibility', 'visible');
-				}else{
-					map.addLayer({
-						'id': 'mekong_bb',
-						'type': 'fill',
-						'source': 'mekong_bb',
-						'layout': {},
-						'paint': {
-							'fill-color': '#9999ff',
-							'fill-opacity': 0.1,
-						}
-					});
-				}
+				map.addLayer(mekong_bb);
 			}else{
-				map.setLayoutProperty('mekong_bb', 'visibility', 'none');
+				if (map.hasLayer(mekong_bb)) {
+					map.removeLayer(mekong_bb);
+				}
 			}
 		});
 
 		$('input[type=checkbox][name=geographic_coverage]').click(function(){
 			if(this.checked) {
-				if (map.getLayer("storm_boundingbox")) {
-					map.setLayoutProperty('storm_boundingbox', 'visibility', 'visible');
-				}else{
-				map.addLayer({
-					'id': 'storm_boundingbox',
-					'type': 'fill',
-					'source': 'storm_boundingbox',
-					'layout': {},
-					'paint': {
-						'fill-color': '#9999ff',
-						'fill-opacity': 0.1,
-						'fill-outline-color': "#9999ff",
-					}
-				});
-			}
+				map.addLayer(storm_boundingbox);
 			}else{
-				map.setLayoutProperty('storm_boundingbox', 'visibility', 'none');
+				if (map.hasLayer(storm_boundingbox)) {
+					map.removeLayer(storm_boundingbox);
+				}
 			}
 		});
 
 		$('input[type=checkbox][name=mekong_country]').click(function(){
 			if(this.checked) {
-				map.setLayoutProperty('state-fills', 'visibility', 'visible');
-				map.setLayoutProperty('state-borders', 'visibility', 'visible');
+				map.addLayer(adm0);
 			}else{
-				map.setLayoutProperty('state-fills', 'visibility', 'none');
-				map.setLayoutProperty('state-borders', 'visibility', 'none');
+				if (map.hasLayer(adm0)) {
+					map.removeLayer(adm0);
+				}
 			}
 		});
 

@@ -848,3 +848,63 @@ input:checked + .slider_toggle:before {
         font-weight: 700;
         font-size: 14px;
       }
+
+      .leaflet-marker-icon {
+            color: #FFF;
+            font-size: 10px;
+            line-height: 25px;
+            text-align: center;
+            vertical-align: bottom;
+            /* border: none; */
+            /* box-shadow: 2px 1px 4px rgba(0,0,0,0.2); */
+            border-radius: 30px;
+            border-width: 3px;
+            border: 0 solid #fff;
+            opacity: .7;
+        }
+
+        .marker-icon-0 {
+            background: #E8E8E8
+        }
+
+        .marker-icon-1 {
+            background: #BBD5F1
+        }
+
+        .marker-icon-2 {
+            background: #02B0EF
+        }
+        .marker-icon-3 {
+            background: #04AD4E
+        }
+
+        .marker-icon-4 {
+            background: #8ED047
+        }
+        .marker-icon-5 {
+            background: #FAFA06
+        }
+
+        .marker-icon-6 {
+            background: #FEBF02
+        }
+        .marker-icon-7 {
+            background: #F90000
+        }
+
+        .marker-icon-8 {
+            background: #C40001
+        }
+
+      .track-route-start {
+        background: #C40001;
+        border: 1px solid #fff;
+      }
+      .track-route-end {
+        background: green;
+        border: 1px solid #fff;
+      }
+      .track-route {
+        background: gray;
+        border: 1px solid #fff;
+      }
