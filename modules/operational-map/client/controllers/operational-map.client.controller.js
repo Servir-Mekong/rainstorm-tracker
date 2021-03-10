@@ -1239,7 +1239,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				'</li>')
 			}
 			if($scope.events.length > endNumber){
-				$("#tableList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;">'+
+				$("#tableList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
 				'Load More'+
 				'</li>');
 			}

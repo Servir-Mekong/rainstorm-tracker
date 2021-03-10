@@ -66,17 +66,6 @@ label {
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #007ba2;
-    border-color: #FFF;
-    font-size: 12px;
-}
-
-.btn-primary:hover {
-    background-color: #555;
-    border-color: #007ba2;
-}
 
 .sidenav {
   height: 100%;
