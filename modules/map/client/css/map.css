@@ -20,9 +20,6 @@ label {
     font-size: 12px;
 }
 
-.mapbox-improve-map {
-    display: none;
-}
 
 .sidenav .closeMenu {
     position: absolute;
@@ -775,71 +772,9 @@ input:checked + .slider_toggle:before {
       }
 
 
-      .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-          -webkit-align-self: center;
-          align-self: center;
-          border-bottom: none;
-          border-top-color: #fff;
-          display: none;
-      }
-      /* Marker tweaks */
-      .mapboxgl-popup {
-        padding-bottom: 10px;
-
-      }
-
-      .mapboxgl-popup-close-button {
-        display: block;
-      }
-      .mapboxgl-popup-content {
-          position: relative;
-          background: #fff;
-          border-radius: 3px;
-          box-shadow: 0 1px 2px rgba(0,0,0,.1);
-          padding: 5px;
-          pointer-events: auto;
-      }
-      .mapboxgl-popup-content {
-        font: 400 15px/22px 'Bai Jamjuree', sans-serif;
-        padding: 5px 5px;
-        width: auto;
-        pointer-events: none;
-        background: #1a1a1a;
-        color: #39b2c6;
-        border-color: #666d87;
-        border-radius: 4px;
-        border-style: solid;
-        border-width: 3px;
-        font-size: 0px;
-        text-align: left;
-        z-index: 1000 !important;
-        backface-visibility: hidden;
-        font: 12px/20px 'Bai Jamjuree', sans-serif;
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-        -webkit-font-smoothing: subpixel-antialiased;
-      }
-      .mapboxgl-popup-content-wrapper {
-        padding: 1%;
-      }
-      .mapboxgl-popup-content table,  .mapboxgl-popup-content p{
-        margin-bottom: 5px;
-        color: #333;
-      }
-      .table-striped{
-        font-size: 8px;
-        margin-bottom: 5px;
-        color: #333;
-      }
-
-      .mapboxgl-popup-content h4 {
-        color: #39b2c6;
-        font-weight: 700;
-        font-size: 14px;
-      }
 
       .leaflet-marker-icon {
-            color: #FFF;
+            color: #333;
             font-size: 10px;
             line-height: 25px;
             text-align: center;
@@ -849,7 +784,7 @@ input:checked + .slider_toggle:before {
             border-radius: 30px;
             border-width: 3px;
             border: 0 solid #fff;
-            opacity: .7;
+            opacity: .8;
         }
 
         .marker-icon-0 {

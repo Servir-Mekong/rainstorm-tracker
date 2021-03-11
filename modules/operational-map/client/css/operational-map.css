@@ -20,9 +20,6 @@ label {
     font-size: 12px;
 }
 
-.mapbox-improve-map {
-    display: none;
-}
 
 .sidenav .closeMenu {
     position: absolute;
@@ -175,44 +172,42 @@ label {
 
 .slide-tab-search {
   transition: 0.5s;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
   cursor: pointer;
   position: absolute;
-  background: #FFF;
-  padding: 1px;
+  background: rgb(0 0 0 / 72%);
+  padding: 5px;
   color: #286090;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   left: 0;
-  height: 100px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   text-align: center;
-  top: 95px;
-  border-radius: 0px 10px 10px 0px;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);
+  top: 85px;
+  border-radius: 0;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 30%);
   z-index: 999;
+  border: 1px solid #000;
 }
 
 .slide-tab-layer {
   transition: 0.5s;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
   cursor: pointer;
   position: absolute;
-  background: #FFF;
-  padding: 1px;
+  background: rgb(0 0 0 / 72%);
+  padding: 5px;
   color: #286090;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   left: 0;
-  height: 100px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   text-align: center;
-  top: 200px;
-  border-radius: 0px 10px 10px 0px;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);
+  top: 115px;
+  border-radius: 0;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 30%);
   z-index: 999;
+  border: 1px solid #000;
 }
 
 .sidenav-top {
@@ -774,70 +769,6 @@ input:checked + .slider_toggle:before {
         height: 0;
         clear: both;
         visibility: hidden;
-      }
-
-
-      .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-          -webkit-align-self: center;
-          align-self: center;
-          border-bottom: none;
-          border-top-color: #fff;
-          display: none;
-      }
-      /* Marker tweaks */
-      .mapboxgl-popup {
-        padding-bottom: 10px;
-
-      }
-
-      .mapboxgl-popup-close-button {
-        display: block;
-      }
-      .mapboxgl-popup-content {
-          position: relative;
-          background: #fff;
-          border-radius: 3px;
-          box-shadow: 0 1px 2px rgba(0,0,0,.1);
-          padding: 5px;
-          pointer-events: auto;
-      }
-      .mapboxgl-popup-content {
-        font: 400 15px/22px 'Bai Jamjuree', sans-serif;
-        padding: 5px 5px;
-        width: auto;
-        pointer-events: none;
-        background: #1a1a1a;
-        color: #39b2c6;
-        border-color: #666d87;
-        border-radius: 4px;
-        border-style: solid;
-        border-width: 3px;
-        font-size: 0px;
-        text-align: left;
-        z-index: 1000 !important;
-        backface-visibility: hidden;
-        font: 12px/20px 'Bai Jamjuree', sans-serif;
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
-        -webkit-font-smoothing: subpixel-antialiased;
-      }
-      .mapboxgl-popup-content-wrapper {
-        padding: 1%;
-      }
-      .mapboxgl-popup-content table,  .mapboxgl-popup-content p{
-        margin-bottom: 5px;
-        color: #333;
-      }
-      .table-striped{
-        font-size: 8px;
-        margin-bottom: 5px;
-        color: #333;
-      }
-
-      .mapboxgl-popup-content h4 {
-        color: #39b2c6;
-        font-weight: 700;
-        font-size: 14px;
       }
 
       .leaflet-tooltip-pane .text {

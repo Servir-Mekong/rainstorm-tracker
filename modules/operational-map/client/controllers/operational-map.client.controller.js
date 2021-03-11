@@ -233,7 +233,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				     fillOpacity: 0.1
 				   }
 				});
-				storm_boundingbox.addTo(map);
+				//storm_boundingbox.addTo(map);
 			});
 
 		// Load mekong BBox area Geojson
@@ -250,7 +250,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				     fillOpacity: 0.1
 				   }
 				});
-				mekong_bb.addTo(map);
+				//mekong_bb.addTo(map);
 
 			});
 
@@ -408,47 +408,49 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		'Load More'+
 		'</li>');
 		$("#loadmore-btn").click();
+
+
 		stormMarkers = L.geoJSON(geojson, {
 		    style: function(feature) {
 		        return {color: colors[feature.properties.storm_class - 1]};
 		    },
 		    pointToLayer: function(feature, latlng) {
-
-		        return new L.CircleMarker(latlng, {radius: 10, fillOpacity: 0.85});
+					var marker = new L.marker(latlng, {
+						title: feature.properties.storm_class,
+						icon: L.divIcon({
+							html: feature.properties.mcvol.toFixed(2).toString(),
+							className: 'marker-icon-'+ (feature.properties.storm_class - 1),
+							iconSize: L.point(25, 25)
+						})
+				});
+					return marker;
 		    },
 		    onEachFeature: function (feature, layer) {
-						var text = L.tooltip({
-		            permanent: true,
-		            direction: 'center',
-		            className: 'text'
-		        })
-		        .setContent(feature.properties.mcvol.toFixed(2).toString())
-		        .setLatLng(layer.getLatLng());
-		        text.addTo(map);
 
-						var content = '<h4>' + feature.properties.date + '</h4>'+
-							'<table class="table table-striped">'+
-								'<tbody>'+
-									'<tr>'+
-										'<th scope="row"> Storm Volume</th>'+
-										'<td>'+ feature.properties.mcvol.toFixed(2) +' km<sup>3</sup></td>'+
-									'</tr>'+
-									'<tr>'+
-										'<th scope="row">Storm Duration</th>'+
-										'<td>'+ feature.properties.mctime.toFixed(2) +' hrs</td>'+
-									'</tr>'+
-								'</tbody>'+
-							'</table>';
+					var content = '<h4>' + feature.properties.date + '</h4>'+
+						'<table class="table table-striped">'+
+							'<tbody>'+
+								'<tr>'+
+									'<th scope="row"> Storm Volume</th>'+
+									'<td>'+ feature.properties.mcvol.toFixed(2) +' km<sup>3</sup></td>'+
+								'</tr>'+
+								'<tr>'+
+									'<th scope="row">Storm Duration</th>'+
+									'<td>'+ feature.properties.mctime.toFixed(2) +' hrs</td>'+
+								'</tr>'+
+							'</tbody>'+
+						'</table>';
 
-						var text2 = L.tooltip({
-	            direction: 'top',
-							className: 'leaflet-tooltip-custom'
-		        })
-		        .setContent(content)
-		        .setLatLng(layer.getLatLng());
-						layer.bindTooltip(content);
+					var text2 = L.tooltip({
+						direction: 'top',
+						className: 'leaflet-tooltip-custom'
+					})
+					.setContent(content)
+					.setLatLng(layer.getLatLng());
+					layer.bindTooltip(content);
 		    }
 		});
+
 		stormMarkers.addTo(map);
 
 		stormMarkers.on("click", function (event) {
@@ -606,7 +608,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	      currentMarkers[i].remove();
 	    }
 		}
-		$("#toggle_storm_image").css('display', 'block');
+		// $("#toggle_storm_image").css('display', 'block');
 		showStromPoints();
 	});
 
@@ -727,17 +729,6 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 	$('#search-all-btn').click(function() {
 		filterArea = 'none';
-		// if (map.getLayer("wms-test-layer")) {
-		// 	map.removeLayer("wms-test-layer");
-		// }
-		//
-		// if (map.getSource("wms-test-source")) {
-		// 	map.removeSource("wms-test-source");
-		// }
-		// if (map.getLayer("route")) {
-		// 	map.removeLayer("route");
-		// 	map.removeSource("route");
-		// }
 		// remove markers
 		if (currentMarkers!==null) {
 			for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -781,24 +772,12 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			function (response) {
 				// Success Callback
 				var items = response.data[0];
-				console.log(items)
 				var date_split = items["date"].split(" ");
-
 				var date = date_split[0];
-				// var _date = date[1];
-				// if (_date < 10) _date = '0' + _date;
-				// var _month = date[0];
-				// if (_month < 10) _month = '0' + _month;
-				// var _year = date[2];
-
 				var time = date_split[1].split(":");
 				var _time = time[0]
-				console.log(_time)
-				//if (_time < 10) _time = '0' + _time;
-
 				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
 				var storm_raster = "MCS_"+date+"_"+_time+"0000";
-				// console.log(_year, _month, _date, _time)
 				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/operational/"+storm_raster+".nc"
 				flyToStore(items["center_lat"], items["center_lng"]);
 				hideStromPoints();
@@ -878,7 +857,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 					}
 
 
-					$("#toggle_storm_image").css('display', 'block');
+					// $("#toggle_storm_image").css('display', 'block');
 
 
 					// remove markers
@@ -891,18 +870,13 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 					var trackRoute = []
 					//Uncheck
 					document.getElementById("mekong_country").checked = false;
-					// map.setLayoutProperty('state-fills', 'visibility', 'none');
-					// map.setLayoutProperty('state-borders', 'visibility', 'none');
-
 					$.ajax("/op-tracks_csv/"+storm_raster+".csv", {
 				    success: function(data) {
 				        var trackJson =  JSON.parse(CSV2JSON(data));
-								console.log(trackJson)
 								//length - 1 because there is last blank line
 							for(var i=0; i<trackJson.length-1; i++){
 
 								trackRoute.push([trackJson[i].lat, trackJson[i].Lon]);
-								console.log(trackJson[i].Dates)
 								var date = trackJson[i].Dates.split(" ");
 								var _date = date[0].split("-");
 								var _time = date[1];
@@ -1134,13 +1108,13 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		});
 
 
-		$('input[type=checkbox][name=storm_image]').click(function(){
-			if(this.checked){
-				map.setLayoutProperty('wms-test-layer', 'visibility', 'visible');
-			}else{
-				map.setLayoutProperty('wms-test-layer', 'visibility', 'none');
-			}
-		});
+		// $('input[type=checkbox][name=storm_image]').click(function(){
+		// 	if(this.checked){
+		// 		map.setLayoutProperty('wms-test-layer', 'visibility', 'visible');
+		// 	}else{
+		// 		map.setLayoutProperty('wms-test-layer', 'visibility', 'none');
+		// 	}
+		// });
 
 
 		/**

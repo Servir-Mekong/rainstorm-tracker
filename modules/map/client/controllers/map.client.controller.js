@@ -292,7 +292,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 				     fillOpacity: 0.1
 				   }
 				});
-				storm_boundingbox.addTo(map);
+				//storm_boundingbox.addTo(map);
 			});
 
 		// Load mekong BBox area Geojson
@@ -309,7 +309,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 				     fillOpacity: 0.1
 				   }
 				});
-				mekong_bb.addTo(map);
+				//mekong_bb.addTo(map);
 
 			});
 
@@ -483,7 +483,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 												8: colors[7],
 												9: colors[8]
 										}
-		})
+		});
 
 		stormMarkers = L.geoJSON(geojson, {
 		    style: function(feature) {
@@ -543,7 +543,6 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		//stormMarkers.addTo(map);
 
 		markers.on("click", function (event) {
-			console.log(event)
 				var clickedMarker = event.layer;
 				getDetail(clickedMarker.feature.properties.id);
 		});
@@ -710,7 +709,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	      currentMarkers[i].remove();
 	    }
 		}
-		$("#toggle_storm_image").css('display', 'block');
+		// $("#toggle_storm_image").css('display', 'block');
 		showStromPoints();
 	});
 
@@ -804,6 +803,15 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 			yearRange = yearRange + i + ',';
 		}
 		yearRange = yearRange + end_year;
+
+
+		for(var i = startMonth; i < endMonth; i++){
+			if (i <= 9) i = '0'+ i.toString();
+			monthRange = monthRange + i + ',';
+		}
+		if (endMonth <= 9) endMonth = '0'+ endMonth.toString();
+		monthRange = monthRange + endMonth;
+
 
 		var start_vol = $("#start_vol").val();
 		var end_vol = $("#end_vol").val();
@@ -900,24 +908,13 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 			function (response) {
 				// Success Callback
 				var items = response.data[0];
-				console.log(items)
 				var date_split = items["date"].split(" ");
-
 				var date = date_split[0];
-				// var _date = date[1];
-				// if (_date < 10) _date = '0' + _date;
-				// var _month = date[0];
-				// if (_month < 10) _month = '0' + _month;
-				// var _year = date[2];
-
 				var time = date_split[1].split(":");
 				var _time = time[0]
-				console.log(_time)
-				//if (_time < 10) _time = '0' + _time;
 
 				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
 				var storm_raster = "MCS_"+date+"_"+_time+"0000";
-				// console.log(_year, _month, _date, _time)
 				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/historical/"+storm_raster+".nc"
 				flyToStore(items["center_lat"], items["center_lng"]);
 				hideStromPoints();
@@ -997,7 +994,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					}
 
 
-					$("#toggle_storm_image").css('display', 'block');
+					// $("#toggle_storm_image").css('display', 'block');
 
 
 					// remove markers
@@ -1016,12 +1013,10 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					$.ajax("/tracks_csv/"+storm_raster+".csv", {
 						success: function(data) {
 								var trackJson =  JSON.parse(CSV2JSON(data));
-								console.log(trackJson)
 								//length - 1 because there is last blank line
 							for(var i=0; i<trackJson.length-1; i++){
 
 								trackRoute.push([trackJson[i].lat, trackJson[i].Lon]);
-								console.log(trackJson[i].Dates)
 								var date = trackJson[i].Dates.split(" ");
 								var _date = date[0].split("-");
 								var _time = date[1];
@@ -1175,7 +1170,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 							zIndex: 100,
 					});
 					tdWmsLayer.addTo(map);
-					$('.btn-play').click();
+
 
 					map.timeDimension.on('timeload', function(data) {
 								var date = new Date(map.timeDimension.getCurrentTime());
@@ -1252,13 +1247,13 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		});
 
 
-		$('input[type=checkbox][name=storm_image]').click(function(){
-			if(this.checked){
-				map.setLayoutProperty('wms-test-layer', 'visibility', 'visible');
-			}else{
-				map.setLayoutProperty('wms-test-layer', 'visibility', 'none');
-			}
-		});
+		// $('input[type=checkbox][name=storm_image]').click(function(){
+		// 	if(this.checked){
+		// 		map.setLayoutProperty('wms-test-layer', 'visibility', 'visible');
+		// 	}else{
+		// 		map.setLayoutProperty('wms-test-layer', 'visibility', 'none');
+		// 	}
+		// });
 
 
 		/**
