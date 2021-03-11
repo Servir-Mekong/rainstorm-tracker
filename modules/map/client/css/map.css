@@ -823,10 +823,12 @@ input:checked + .slider_toggle:before {
       .track-route-start {
         background: #C40001;
         border: 1px solid #fff;
+        color: #FFF;
       }
       .track-route-end {
         background: green;
         border: 1px solid #fff;
+        color: #FFF;
       }
       .track-route {
         background: gray;
