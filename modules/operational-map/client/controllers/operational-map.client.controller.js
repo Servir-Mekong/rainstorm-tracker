@@ -404,7 +404,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				geojson.features.push({ "type": "Feature","properties": { "id": sid, "date": sdate, "mctime": mctime, "mcspace": mcspace, "mcmax": mcmax , "mcvol": mcvol, "total_mag": total_mag, "storm_class": megClass}, "geometry": {"type": "Point","coordinates": [lng, lat]} });
 		}
 
-		$("#tableList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;">'+
+		$("#tableOperationalList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;">'+
 		'Load More'+
 		'</li>');
 		$("#loadmore-btn").click();
@@ -467,7 +467,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				// Success Callback
 				loadCount = 0;
 				$scope.events = response.data;
-				$("#tableList").html("");
+				$("#tableOperationalList").html("");
 				$("#sidenav-table").css("width", "280px");
 				createLiEvents(response.data)
 				$(".detail-right").css("right", "285px");
@@ -711,7 +711,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				loadCount = 0;
 				$scope.events = response.data;
 				var items = response.data;
-				$("#tableList").html("");
+				$("#tableOperationalList").html("");
 
 				map.removeLayer(stormMarkers);
 
@@ -741,7 +741,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			function (response) {
 				// Success Callback
 				var items = response.data;
-				$("#tableList").html("");
+				$("#tableOperationalList").html("");
 				map.removeLayer(stormMarkers);
 
 				createLiEvents(response.data);
@@ -1198,7 +1198,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 					var megClass = colors[8];
 				}
 
-				$("#tableList").append('<li>'+
+				$("#tableOperationalList").append('<li>'+
 				'<a href="#" class="liPlaceName" data-id="'+sid+'">'+
 				'<div class="row">'+
 				'<div class="col-sm-3"><div class="meg-number" style="background-color:'+megClass+'"><p>'+mcvol.toFixed(2)+'</p></div></div>'+
@@ -1213,7 +1213,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				'</li>')
 			}
 			if($scope.events.length > endNumber){
-				$("#tableList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
+				$("#tableOperationalList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
 				'Load More'+
 				'</li>');
 			}
