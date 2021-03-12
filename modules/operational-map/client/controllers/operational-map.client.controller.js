@@ -404,10 +404,10 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				geojson.features.push({ "type": "Feature","properties": { "id": sid, "date": sdate, "mctime": mctime, "mcspace": mcspace, "mcmax": mcmax , "mcvol": mcvol, "total_mag": total_mag, "storm_class": megClass}, "geometry": {"type": "Point","coordinates": [lng, lat]} });
 		}
 
-		$("#tableOperationalList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;">'+
+		$("#tableOperationalList").append('<li id="loadmore-op-btn" style="text-align:center;cursor: pointer;">'+
 		'Load More'+
 		'</li>');
-		$("#loadmore-btn").click();
+		$("#loadmore-op-btn").click();
 
 
 		stormMarkers = L.geoJSON(geojson, {
@@ -467,7 +467,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				// Success Callback
 				loadCount = 0;
 				$scope.events = response.data;
-				$("#tableOperationalList").html("");
+				$("#tableOperationalList").empty();
 				$("#sidenav-table").css("width", "280px");
 				createLiEvents(response.data)
 				$(".detail-right").css("right", "285px");
@@ -711,7 +711,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				loadCount = 0;
 				$scope.events = response.data;
 				var items = response.data;
-				$("#tableOperationalList").html("");
+				$("#tableOperationalList").empty();
 
 				map.removeLayer(stormMarkers);
 
@@ -740,8 +740,11 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
 				// Success Callback
+				loadCount = 0;
+				$scope.events = response.data;
 				var items = response.data;
-				$("#tableOperationalList").html("");
+				console.log(items)
+				$("#tableOperationalList").empty();
 				map.removeLayer(stormMarkers);
 
 				createLiEvents(response.data);
@@ -1055,12 +1058,6 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		}
 
 
-
-
-
-
-
-
 		$('input[type=checkbox][name=storm_events]').click(function(){
 			var tooltipPanes = document.getElementsByClassName("leaflet-tooltip-pane");
 			if(this.checked) {
@@ -1151,7 +1148,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			getDetail($(this).attr('data-id'));
 		});
 
-		$(document).on('click', '#loadmore-btn', function() {
+		$(document).on('click', '#loadmore-op-btn', function() {
 			this.remove();
 			var endNumber = loadCount + 10;
 			if($scope.events.length < endNumber){
@@ -1213,7 +1210,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				'</li>')
 			}
 			if($scope.events.length > endNumber){
-				$("#tableOperationalList").append('<li id="loadmore-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
+				$("#tableOperationalList").append('<li id="loadmore-op-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
 				'Load More'+
 				'</li>');
 			}

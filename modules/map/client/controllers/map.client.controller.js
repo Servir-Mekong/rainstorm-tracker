@@ -876,6 +876,8 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
 				// Success Callback
+				loadCount = 0;
+				$scope.events = response.data;
 				var items = response.data;
 				$("#tableList").html("");
 				map.removeLayer(markers);
@@ -1020,6 +1022,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 								var date = trackJson[i].Dates.split(" ");
 								var _date = date[0].split("-");
 								var _time = date[1];
+
 								var _date_1 = _date[2];
 								var _month =  _date[1];
 								var _year =  _date[0];
@@ -1092,7 +1095,26 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
 
+					var timeInt = parseInt(_time)
+					if(timeInt === 0){
+							_time = '23';
+							var d = new Date(date);
+							var oneDaysAgo = d.getDate()-1;  //change day here
+							if(oneDaysAgo < 10){
+								oneDaysAgo = '0'+oneDaysAgo;
+							}
+							var d_month = d.getMonth();
+							if(d_month < 10){
+								d_month = '0'+ (d_month+1);
+							}
+							var d_year = d.getFullYear();
+							date = d_year+'-'+d_month+'-'+oneDaysAgo;
 
+					}else if(timeInt < 10){
+						_time = '0'+ timeInt-1;
+					}
+
+					console.log(date+'T'+_time+':00:00.000Z')
 					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/historical/"+storm_raster+".nc", {
 						layers: 'rain',
 						format: 'image/png',
@@ -1170,6 +1192,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 							zIndex: 100,
 					});
 					tdWmsLayer.addTo(map);
+
 
 
 					map.timeDimension.on('timeload', function(data) {
