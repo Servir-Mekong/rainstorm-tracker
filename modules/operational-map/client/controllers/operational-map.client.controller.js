@@ -845,7 +845,9 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 						$(".detail-right").css("right", "285px");
 						$(".detail-right").css("height", "auto");
 						$(".detail-right").css("top", "90px");
+						$(".detail-right").css("max-height", "600px");
 						$(".detail-right").css("padding-top", "10px");
+						$(".detail-right").css("overflow-y", "scroll");
 
 						$("#minimize-detail-panel").css("width", "190px");
 						$("#minimize-detail-panel").css("right", "285px");
