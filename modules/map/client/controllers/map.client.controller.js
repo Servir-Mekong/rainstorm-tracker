@@ -184,9 +184,6 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 	});
 
 
-	/**
-	* RSS Feed
-	*/
 	var apiCall = function (url, method) {
 		//console.log(method, url);
 		return $http({

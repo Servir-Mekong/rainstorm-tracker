@@ -3,14 +3,16 @@
 
       <div class="row justify-content-md-center">
         <div class="cover-photo">
-        <div class="container">
+        <div class="">
             <div class="overlay-layer">
               <div class="overlay-text">
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="col-lg-5" style="text-align: left;">
                       Rain Storm Tracking System
-                      <p style="color: #a8c9cf;">This is a climatology of monsoonal rainstorm events over the Lower Mekong Region. We are using a spatiotemporal Object-based rainfall method for analysing GPM-IMERG datasets and providing user-friendly products for operational applications.</p>
+                      <p style="color: #a8c9cf;">
+                        Rainstorm Tracker tool is an operational storm analyser developed to monitor and alert the severity of storm events over the Lower Mekong basin in near-real time. This system employs a 4D object-based recognition approach to track and evaluate the severity of storms detected by satellites. With the rainstorm tracker, regional organizations can improve the flash flood early warnings capabilities thereby reducing risk.
+                      </p>
 
                       <a href="/map" class="btn-home">HISTORICAL</a>
                       <a href="/operational-map" class="btn-home btn-transparent">NEAR REAL TIME</a>
@@ -27,28 +29,92 @@
       </div>
       <br>
       <br>
+      <div class="container" style="padding-top:50px;">
+        <div class="row justify-content-md-center">
+          <div class="col-lg-6 col-md-6">
+            <div id="container" style="height: 400px; width: 500px"></div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="dashboard-1">
+                  THAILAND
+                  <div class="no-storms" id="Thailand"></div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="dashboard-1">
+                  LAOS
+                  <div class="no-storms" id="Laos"></div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="dashboard-1">
+                  MYANMAR
+                  <div class="no-storms" id="Myanmar"></div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="dashboard-1">
+                  CAMBODIA
+                  <div class="no-storms" id="Cambodia"></div>
+                </div>
+              </div>
 
-      <div style=" background-image: url('/modules/home/client/img/blue-bg.png'); background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%; height: 450px;min-height: 550px;padding-top:50px;">
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-lg-12 col-md-6">
+                <div class="dashboard-1">
+                  VIETNAM
+                  <div class="no-storms" id="Vietnam"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style=" background-image: url('/modules/home/client/img/blue-bg.png'); background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%; height: auto;min-height: 550px;padding-top:50px; padding-bottom: 60px;">
         <div class="container">
           <div class="col-lg-12 col-md-6">
-            <h2>Storm Tracker (In Production)</h2>
-            <p>This is a climatology of monsoonal rainstorm events over the Lower Mekong Region. We are using a spatiotemporal Object-based rainfall method for analysing GPM-IMERG datasets and providing user-friendly products for operational applications.</p>
-            <p>The Spatiotemporal Contiguous Object-based Rainfall Analysis method (ST-CORA) was used to identify the main storm features of the storm events. This method enables a complete description of the storm event in space and time. Storm features include storm duration, maximum extension, total volume and maximum intensity.</p>
+            <h2>Rainstorms tracker</h2>
+            <p>
+              The rainstorm tracker relies on a  peer-reviewed spatiotemporal storm recognition method called Spatiotemporal Object-based Rainfall Analysis method (ST-CORA).
+              This method is developed by <a href="https://www.sciencedirect.com/science/article/pii/B9780128116890000057">Laverde-Barajas et al.(2019)</a> to analyse the main characteristics of the storm events at the catchment scale.
+              With ST-CORA with Multivariate kernel density estimation (KED) proposed <a href="https://www.mdpi.com/2072-4292/12/21/3538">Laverde-Barajas et al. (2020a)</a> storm can be segmented using the four-dimensions of the storm.  The 4D object-based storm recognition is composed into the following steps.
+            </p>
 
-            <h2>Application Purpose</h2>
-            <p>This regional web-based information system application is aimed to</p>
+            <div class="row">
+              <div class="col-lg-12 col-md-6 text-center">
+                <img src="/modules/home/client/img/rainstorm-info.png" alt="" width="70%">
+              </div>
+              <div class="col-lg-3 col-md-6">
+                <p>
+                  A.	Spatiotemporal Continuous rainfall Analysis (ST-CRA): A multidimensional connected-labelling component is implemented to identify convective rainfall systems in space and time.
+                </p>
+              </div>
+              <div class="col-lg-3 col-md-6">
+                <p>
+                  B.	Probabilistic storm segmentation (KED): Storm events are segmentation using a multivariate edge detection based on Kernel Density Estimation
+                </p>
+              </div>
+              <div class="col-lg-3 col-md-6">
+                <p>
+                  C.	Multi Threshold analysis:  This process is applied to identify substorm events over large convective systems.
+                </p>
+              </div>
+              <div class="col-lg-3 col-md-6">
+                <p>
+                  D.	Storm track detection: Definition of the storm track using the skeletal structure of the storm event.
+                </p>
+              </div>
 
-            <ol style="list-style-type: none; margin-bottom: 20px;font-size: 16px;">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ol>
-
-            <!-- <h2>Application Uses</h2> -->
-            <p></p>
-            <br>
-
+            </div>
 
           </div>
         </div>
@@ -73,34 +139,33 @@
           </div>
           <br>
           <div class="row justify-content-md-center">
-            <div class="col-lg-3 col-md-6 logo-box">
+            <div class="col-lg-4 col-md-6 logo-box">
               <img src="modules/home/client/img/partners/sig.png" alt="" style="width:auto; height:45px;margin-bottom:10px;">
               <p>Spatial Information Group</p>
             </div>
-            <div class="col-lg-3 col-md-6 logo-box">
+            <div class="col-lg-4 col-md-6 logo-box">
               <img src="modules/home/client/img/partners/ihe-delft.png" alt="" style="width:auto; height:60px;">
               <p>IHE Delft Institute for Water Education</p>
             </div>
-            <div class="col-lg-3 col-md-6 logo-box">
+            <div class="col-lg-4 col-md-6 logo-box">
               <img src="modules/home/client/img/partners/tu-delft-university.png" alt="" style="width:auto; height:60px;">
               <p>Delft University of Technology</p>
             </div>
-            <div class="col-lg-3 col-md-6 logo-box">
+            <!-- <div class="col-lg-3 col-md-6 logo-box">
               <img src="modules/home/client/img/partners/wageningen_university.png" alt="" style="width:auto; height:40px;margin-bottom:10px;margin-top:10px;">
               <p>Wageningen University</p>
-            </div>
+            </div> -->
           </div>
 
         </div>
       </section>
 
       <footer id="footer">
-<!-- 
-			<div class="footer-top" style="background-image: url('/static/images/icons/mdcw_footer_v1.png');height: 400px;">
-        <div class="container">
 
+			<div class="footer-top" style="background-image: url('modules/home/client/img/dark-blue-bg.png');height: 100px;background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%;">
+        <div class="container">
         </div>
-      </div> -->
+      </div>
 			<div class="footer-top" style="background:#243549;">
         <div class="container">
           <div class="row">
