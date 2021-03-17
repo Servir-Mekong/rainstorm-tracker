@@ -15,7 +15,7 @@
     "npm": ">=2.0.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "export NODE_ENV=production&& node server.js"
   },
   "dependencies": {
     "acl": "^0.4.11",
