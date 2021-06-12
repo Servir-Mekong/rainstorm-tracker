@@ -233,7 +233,7 @@ exports.filterOperationalEvents = function (req, res) {
   if(min_intensity !== '9999' || max_intensity !== '9999') main_sql = main_sql + " AND mcmax < "+max_intensity;
   //if(start_date !== '9999' || end_date !== '9999') main_sql = main_sql + " AND to_date(date2,'DD/MM/YYYY') BETWEEN '"+start_date+"' AND '"+end_date+"'";
   if(filter_area !== 'none') main_sql = main_sql + " AND ST_DWithin(ST_SetSRID(ST_MakePoint(center_lng, center_lat),4326), (SELECT geom FROM adm0 WHERE name_0 = '"+ filter_area +"'), 0) "
-  main_sql = main_sql + " AND  mcmax > 45.44";
+  //main_sql = main_sql + " AND  mcmax > 45.44";
   var query = main_sql + " ORDER BY to_date(date2,'YYYY-MM-DD') ASC) as table1 WHERE 1=1  "
 
   if(start_vol !== '9999' || end_vol !== '9999') query = query + " AND mcvol >= "+start_vol ;
@@ -269,7 +269,7 @@ exports.filterRealTimeEvents = function (req, res) {
   if(min_intensity !== '9999' || max_intensity !== '9999') main_sql = main_sql + " AND mcmax < "+max_intensity;
   //if(start_date !== '9999' || end_date !== '9999') main_sql = main_sql + " AND to_date(date2,'DD/MM/YYYY') BETWEEN '"+start_date+"' AND '"+end_date+"'";
   if(filter_area !== 'none') main_sql = main_sql + " AND ST_DWithin(ST_SetSRID(ST_MakePoint(center_lng, center_lat),4326), (SELECT geom FROM adm0 WHERE name_0 = '"+ filter_area +"'), 0) "
-  main_sql = main_sql + " AND  mcmax > 45.44";
+  //main_sql = main_sql + " AND  mcmax > 45.44";
   var query = main_sql + " ORDER BY to_date(date2,'YYYY-MM-DD') ASC) as table1 WHERE 1=1  "
 
   if(start_vol !== '9999' || end_vol !== '9999') query = query + " AND mcvol >= "+start_vol ;

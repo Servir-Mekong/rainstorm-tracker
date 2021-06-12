@@ -739,6 +739,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				currentMarkers[i].remove();
 			}
 		}
+		$("#tableOperationalList").empty();
 		var typeOptionsURL = '/' + $.param({action: 'get-operational-events'});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(

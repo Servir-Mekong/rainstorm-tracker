@@ -738,6 +738,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 				currentMarkers[i].remove();
 			}
 		}
+		$("#tableOperationalList").empty();
 		var typeOptionsURL = '/' + $.param({action: 'get-realtime-events'});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
