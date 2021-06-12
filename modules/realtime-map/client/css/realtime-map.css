@@ -1000,13 +1000,6 @@ content: 'LOADING...';
   margin-bottom: 10px;
 }
 
-.panel-heading {
-  padding: 0 0;
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-}
-
 .sidenav a {
   padding: 8px;
   text-decoration: none;

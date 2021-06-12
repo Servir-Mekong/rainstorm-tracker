@@ -21,9 +21,11 @@ coverage/
 # ======================
 public/dist/
 public/op-tracks_csv/
+public/realtime-tracks_csv/
 public/tracks_csv/
 public/img/storm-figures/
 public/img/op-storm-figures/
+public/img/realtime-figures/
 uploads
 modules/users/client/img/profile/uploads
 config/env/local.js

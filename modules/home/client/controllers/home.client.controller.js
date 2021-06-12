@@ -1,7 +1,12 @@
 
 'use strict';
 angular.module('home').controller('inputCtl', function ($scope, $http) {
+  $(".navbar-brand.navmenu").html("");
+  $(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
 
+  var totalEvents = 0;
+  var totalEventLand = 0;
+  var totalEventOcean = 0;
   var apiCall = function (url, method) {
 		//console.log(method, url);
 		return $http({
@@ -20,13 +25,16 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
         console.log(response.data)
         var res = response.data;
         for(var i=0; i< res.length; i++){
-          $("#"+res[i].name_0).text(res[i].total)
+          $("#"+res[i].name_0).text(res[i].total);
+          totalEventLand += parseInt(res[i].total);
         }
+        	$scope.fetchEvents();
 			},
 			function (error) {
 				// Error Callback
 				console.log('ERROR: ' + error);
 			}
+
 		);
 	};
 
@@ -42,6 +50,7 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
         var data = response.data;
         console.log(data)
         var totalStorm = data.length;
+        totalEvents = totalStorm;
         var level1 = 0;
         var level2 = 0;
         var level3 = 0;
@@ -170,7 +179,8 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
                   }).add();
                 });
 
-
+                totalEventOcean = totalEvents - totalEventLand;
+                $("#China-Ocean").text(totalEventOcean);
 
 			},
 			function (error) {
@@ -180,7 +190,8 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
 		);
 	};
 
-	$scope.fetchEvents();
+
+
 
 
 

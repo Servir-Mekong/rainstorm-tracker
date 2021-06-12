@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('core').controller('mapOperationalCtrl', function ($scope, $http) {
+angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 
 	$scope.rssFeeds = [];
 	var filterArea = 'none';
@@ -209,7 +209,6 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			maxZoom: 20,
 			maxBounds: [ [-10, 160],[50, 20]],
 			timeDimension: true,
-
 		}).setView([15.8700, 100.9925], 6);
 
 		/**
@@ -464,7 +463,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	}
 
 	$scope.fetchEvents = function () {
-		var eventsURL = '/' + $.param({action: 'get-operational-events'});
+		var eventsURL = '/' + $.param({action: 'get-realtime-events'});
 		// Make a request
 		apiCall(eventsURL, 'POST').then(
 			function (response) {
@@ -707,7 +706,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		if(!start_duration) start_duration = 9999;
 		if(!end_duration) end_duration = 9999;
 
-		var typeOptionsURL = '/' + $.param({action: 'filter-operational-events', start_vol:start_vol, end_vol:end_vol, start_duration:start_duration, end_duration:end_duration, min_intensity:min_intensity, max_intensity:max_intensity, filter_area: filter_area});
+		var typeOptionsURL = '/' + $.param({action: 'filter-realtime-events', start_vol:start_vol, end_vol:end_vol, start_duration:start_duration, end_duration:end_duration, min_intensity:min_intensity, max_intensity:max_intensity, filter_area: filter_area});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
@@ -739,7 +738,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				currentMarkers[i].remove();
 			}
 		}
-		var typeOptionsURL = '/' + $.param({action: 'get-operational-events'});
+		var typeOptionsURL = '/' + $.param({action: 'get-realtime-events'});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
@@ -769,7 +768,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	var routePolyline;
 
 	function getIntersectArea(sid) {
-		var typeOptionsURL = '/' + $.param({action: 'get-intersect-area', id:sid});
+		var typeOptionsURL = '/' + $.param({action: 'get-realtime-intersect-area', id:sid});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
@@ -820,16 +819,15 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 					// Error Callback
 					console.log('ERROR: ' + error);
 				}
-			);
-		};
-
+		);
+	};
 
 	function getDetail(sid) {
 
 		$("#legend-img").css("display", "none");
 		$("#legend-marker").css("display", "block");
 
-		var typeOptionsURL = '/' + $.param({action: 'get-operational-detail', id:sid});
+		var typeOptionsURL = '/' + $.param({action: 'get-realtime-detail', id:sid});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
@@ -841,7 +839,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				var _time = time[0]
 				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
 				var storm_raster = "MCS_"+date+"_"+_time+"0000";
-				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/operational/"+items["folder"]+"nc"
+				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/realtime/"+items["folder"]+"nc"
 				flyToStore(items["center_lat"], items["center_lng"]);
 				hideStromPoints();
 
@@ -849,13 +847,13 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				$(".table-detail").html(
 					'<div class="row">'+
 					// '<div class="col-sm-12"><p class="place-name">'+ dateText +'</p></div>'+
-					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/op-storm-figures/'+storm_figures+'" target="_blank" title="Dowload a figure"  style="color: #fff; font-size: 25px;" download>'+
+					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/op-storm-figures/'+storm_figures+'" target="_blank" title="Dowload a figure" download>'+
 					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
 					'<path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-12-1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12z"/>'+
 					'<path d="M10.648 7.646a.5.5 0 0 1 .577-.093L15.002 9.5V14h-14v-2l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z"/>'+
 					'<path fill-rule="evenodd" d="M4.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>'+
 					'</svg></a></li>'+
-					'<li style="float:left; margin:0;"><a href="'+downloadRasterurl+'" target="_blank" title="Dowload a raster file"  style="color: #fff; font-size: 25px;" download>'+
+					'<li style="float:left; margin:0;"><a href="'+downloadRasterurl+'" target="_blank" title="Dowload a raster file" download>'+
 					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
 					'<path fill-rule="evenodd" d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8z"/>'+
 					'<path fill-rule="evenodd" d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z"/>'+
@@ -935,7 +933,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 					var trackRoute = []
 					//Uncheck
 					document.getElementById("mekong_country").checked = false;
-					$.ajax("/op-tracks_csv/"+items["folder"]+"csv", {
+					$.ajax("/real-time-tracks/"+items["folder"]+"csv", {
 				    success: function(data) {
 				        var trackJson =  JSON.parse(CSV2JSON(data));
 								//length - 1 because there is last blank line
@@ -1015,9 +1013,9 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
-
-
-					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/operational/"+items["folder"]+"nc", {
+					
+					//var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/"+items["folder"]+"nc", {
+					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/MCS_2021-06-11_230000_ID22.nc", {
 						layers: 'rain',
 						format: 'image/png',
 						time: date+'T'+_time+':00:00.000Z',
@@ -1033,7 +1031,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 						belowmincolor:'extend',
 						numcolorbands: 150,
 					});
-					//console.log(date+'T'+_time+':00:00.000Z')
+					console.log(date+'T'+_time+':00:00.000Z')
 
 					if(map.hasLayer(tdWmsLayer)){
 						map.removeLayer(tdWmsLayer);
@@ -1095,35 +1093,22 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	            zIndex: 100,
 	        });
 	        tdWmsLayer.addTo(map);
-					//map.timeDimension.previousTime(1);
-					//$('.btn-prev').click();
+					//$('.btn-play').click();
 
-					var test = [];
-					var firstLoad = 0;
 					map.timeDimension.on('timeload', function(data) {
 								var date = new Date(map.timeDimension.getCurrentTime());
 								var zone = "Europe/London" //UTC
 								$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
 								$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
-
-								firstLoad += 1;
-								setTimeout(function(){
-									if(firstLoad === 1){
-									$('.btn-prev').click();
-									}
-								}, 5);
-
 								if (data.time == map.timeDimension.getCurrentTime()) {
 										$('.map-loading').css('display', 'none');
 								}
 						});
-
-						map.timeDimension.on('timeloading', function(data) {
-								if (data.time == map.timeDimension.getCurrentTime()) {
-										$('.map-loading').css('display', 'block');
-								}
-						});
-
+					map.timeDimension.on('timeloading', function(data) {
+							if (data.time == map.timeDimension.getCurrentTime()) {
+									$('.map-loading').css('display', 'block');
+							}
+					});
 
 				},
 				function (error) {
