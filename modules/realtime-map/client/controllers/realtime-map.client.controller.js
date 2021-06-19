@@ -934,7 +934,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 					var trackRoute = []
 					//Uncheck
 					document.getElementById("mekong_country").checked = false;
-					$.ajax("/real-time-tracks/"+items["folder"]+"csv", {
+					$.ajax("/realtime-tracks_csv/"+items["folder"]+"csv", {
 				    success: function(data) {
 				        var trackJson =  JSON.parse(CSV2JSON(data));
 								//length - 1 because there is last blank line
