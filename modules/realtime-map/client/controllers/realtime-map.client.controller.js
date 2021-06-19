@@ -989,6 +989,10 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 												'<th scope="row">Intensity</th>'+
 												'<td>'+ parseInt(trackJson[i].Intensity).toFixed(2) +' mm/h</td>'+
 											'</tr>'+
+											'<tr>'+
+												'<th scope="row">Speed</th>'+
+												'<td>'+ parseInt(trackJson[i].Speed).toFixed(2) +' </td>'+
+											'</tr>'+
 										'</tbody>'+
 									'</table>'
 								);
@@ -1015,8 +1019,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
 					
-					//var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/"+items["folder"]+"nc", {
-					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/MCS_2021-06-11_230000_ID22.nc", {
+					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/"+items["folder"]+"nc", {
 						layers: 'rain',
 						format: 'image/png',
 						time: date+'T'+_time+':00:00.000Z',
