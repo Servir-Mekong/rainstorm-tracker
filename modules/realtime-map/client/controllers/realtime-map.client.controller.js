@@ -838,7 +838,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 				var date = date_split[0];
 				var time = date_split[1].split(":");
 				var _time = time[0]
-				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
+				var storm_figures = items["folder"]+"png";
 				var storm_raster = "MCS_"+date+"_"+_time+"0000";
 				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/realtime/"+items["folder"]+"nc"
 				flyToStore(items["center_lat"], items["center_lng"]);
@@ -848,19 +848,19 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 				$(".table-detail").html(
 					'<div class="row">'+
 					// '<div class="col-sm-12"><p class="place-name">'+ dateText +'</p></div>'+
-					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/op-storm-figures/'+storm_figures+'" target="_blank" title="Dowload a figure" download>'+
+					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/realtime-figures/'+storm_figures+'" style="color:#FFF;font-size:20px;" target="_blank" title="Dowload a figure" download>'+
 					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
 					'<path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-12-1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12z"/>'+
 					'<path d="M10.648 7.646a.5.5 0 0 1 .577-.093L15.002 9.5V14h-14v-2l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z"/>'+
 					'<path fill-rule="evenodd" d="M4.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>'+
 					'</svg></a></li>'+
-					'<li style="float:left; margin:0;"><a href="'+downloadRasterurl+'" target="_blank" title="Dowload a raster file" download>'+
+					'<li style="float:left; margin:0;"><a href="'+downloadRasterurl+'" style="color:#FFF;font-size:20px;" target="_blank" title="Dowload a raster file" download>'+
 					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
 					'<path fill-rule="evenodd" d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8z"/>'+
 					'<path fill-rule="evenodd" d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z"/>'+
 					'<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 1z"/>'+
 					'</svg></a></li></ul></div>'+
-					'<div class="col-sm-12"><img src="/img/op-storm-figures/'+storm_figures+'" alt="" style="width:100%;margin-bottom: 20px;"></div>'+
+					'<div class="col-sm-12"><img src="/img/realtime-figures/'+storm_figures+'" alt="" style="width:100%;margin-bottom: 20px;"></div>'+
 					'<div class="col-sm-12">'+
 					'<table style="width:100%; font-size:14px;">'+
 					'<tr>'+
