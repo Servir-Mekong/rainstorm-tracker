@@ -291,7 +291,23 @@ exports.intersectArea = function(req, res) {
   var params = req.params;
   var storm_id = params.id;
 
-  var sql = "SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326)) FROM adm1, tbl_operational_events e WHERE id= "+storm_id+" AND ST_Intersects(adm1.geom,  ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326))";
+  var sql="SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakePolygon(ST_MakeLine(array[ \
+    ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+])))\
+FROM adm1, tbl_operational_events e WHERE id= "+storm_id+"\
+AND ST_Intersects(adm1.geom, ST_MakePolygon(ST_MakeLine(array[\
+    ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+])))"
+
+  //var sql = "SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326)) FROM adm1, tbl_operational_events e WHERE id= "+storm_id+" AND ST_Intersects(adm1.geom,  ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326))";
   db.any(sql)
 	.then(data => {
 		// success
@@ -308,7 +324,24 @@ exports.realtimeintersectArea = function(req, res) {
   var params = req.params;
   var storm_id = params.id;
 
-  var sql = "SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326)) FROM adm1, tbl_realtime_events e WHERE id= "+storm_id+" AND ST_Intersects(adm1.geom,  ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326))";
+  var sql="SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakePolygon(ST_MakeLine(array[ \
+    ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+])))\
+FROM adm1, tbl_realtime_events e WHERE id= "+storm_id+"\
+AND ST_Intersects(adm1.geom, ST_MakePolygon(ST_MakeLine(array[\
+    ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+   ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+])))"
+
+
+ // var sql = "SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326)) FROM adm1, tbl_realtime_events e WHERE id= "+storm_id+" AND ST_Intersects(adm1.geom,  ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326))";
   db.any(sql)
 	.then(data => {
 		// success
