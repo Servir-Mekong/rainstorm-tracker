@@ -7,6 +7,7 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
   var totalEvents = 0;
   var totalEventLand = 0;
   var totalEventOcean = 0;
+
   var apiCall = function (url, method) {
 		//console.log(method, url);
 		return $http({
@@ -16,8 +17,15 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
 		});
 	};
 
-  $scope.getNumberofStorms = function () {
-		var eventsURL = '/' + $.param({action: 'get-number-events'});
+  $scope.getNumberofStorms = function (type) {
+
+    if(type === 'realtime'){
+      var eventsURL = '/' + $.param({action: 'get-realtime-number-events'});
+    }else{
+      var eventsURL = '/' + $.param({action: 'get-number-events'});
+    }
+		
+
 		// Make a request
 		apiCall(eventsURL, 'POST').then(
 			function (response) {
@@ -28,7 +36,7 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
           $("#"+res[i].name_0).text(res[i].total);
           totalEventLand += parseInt(res[i].total);
         }
-        	$scope.fetchEvents();
+        	$scope.fetchEvents(type);
 			},
 			function (error) {
 				// Error Callback
@@ -38,11 +46,17 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
 		);
 	};
 
-	$scope.getNumberofStorms();
+  
+	$scope.getNumberofStorms('realtime');
 
 
-  $scope.fetchEvents = function () {
-		var eventsURL = '/' + $.param({action: 'get-operational-events'});
+  $scope.fetchEvents = function (type) {
+    if(type === 'realtime'){
+      var eventsURL = '/' + $.param({action: 'get-realtime-events'});
+    }else{
+      var eventsURL = '/' + $.param({action: 'get-operational-events'});
+    }
+
 		// Make a request
 		apiCall(eventsURL, 'POST').then(
 			function (response) {
@@ -192,7 +206,24 @@ angular.module('home').controller('inputCtl', function ($scope, $http) {
 
 
 
-
+  $("#nearrealtime_data").click(function(){
+    totalEvents = 0;
+    totalEventLand = 0;
+    totalEventOcean = 0;
+    $("#realtime_data").removeClass("active");
+    $(this).addClass("active");
+    var type = 'nearrealtime';
+    $scope.getNumberofStorms(type);
+  });
+  $("#realtime_data").click(function(){
+    totalEvents = 0;
+    totalEventLand = 0;
+    totalEventOcean = 0;
+    $("#nearrealtime_data").removeClass("active");
+    $(this).addClass("active");
+    var type = 'realtime';
+    $scope.getNumberofStorms(type);
+  });
 
 
 });

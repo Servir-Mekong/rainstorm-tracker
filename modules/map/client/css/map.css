@@ -834,3 +834,7 @@ input:checked + .slider_toggle:before {
         background: gray;
         border: 1px solid #fff;
       }
+
+      .datepicker {
+        background: #3a3a3a;
+    }

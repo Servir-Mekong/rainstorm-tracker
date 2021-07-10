@@ -6,6 +6,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 	$scope.rssFeeds = [];
 	var filterArea = 'none';
+	var affected_district ;
 
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
@@ -606,6 +607,9 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		if(map.hasLayer(routePolyline)){
 			map.removeLayer(routePolyline);
 		}
+		if(map.hasLayer(affected_district)){
+			map.removeLayer(affected_district);
+		}
 
 		if (currentMarkers!==null) {
 	    for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -776,54 +780,231 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 			function (response) {
 				var data = response.data;
 				var no_country = 0;
-				$(".table-detail").append('<hr><h4> <span id="no_country"></span> country, '+data.length+' provinces affected by the storm event </h4>');
-					var country = '';
+				var no_province = 0;
+
+				var district_features=[]
+        		district_features.push({
+                        "type": "FeatureCollection",
+                        "features": []
+                    })
+				$(".table-detail").append('<hr><h4> <span id="no_country"></span> country, <span id="no_province"> </span> provinces affected by the storm event </h4>');
+					var country = 0;
+					var province = 0;
 				for(var i=0; i<data.length; i++){
-					if(data[i].name_0 !== country){
-						no_country += 1;
-						country = data[i].name_0;
+					var feature_prop = {
+						"id_0": data[i].id_0,
+						"id_1": data[i].id_1,
+						"id_2": data[i].id_2,
+						"name_0": data[i].name_0,
+						"name_1": data[i].name_1,
+						"name_2": data[i].name_2,
+						"trunks": data[i].trunks,
+						"primary": data[i].primary,
+						"secondary": data[i].secondary,
+						"total_pop": data[i].total_pop,
+						"female": data[i].female,
+						"male": data[i].male,
+						"f_0_15": data[i].f_0_15,
+						"f_15_65": data[i].f_15_65,
+						"f_65": data[i].f_65,
+						"m_0_15": data[i].m_0_15,
+						"m_15_65": data[i].m_15_65,
+						"m_65": data[i].m_65,
+						"hospitals": data[i].hospitals
 					}
-					var content = '<div class="panel-group" id="'+data[i].id_0+'-'+data[i].id_1+'">'+
+					var feature = {
+						"type": "Feature",
+						"properties": feature_prop,
+						"geometry": JSON.parse(data[i].st_asgeojson)
+						}
+					district_features[0]["features"].push(feature)
+
+					if(data[i].id_0 !== country){
+						no_country += 1;
+						country = data[i].id_0;
+						var total_pop = 0;
+						var total_hospital = 0;
+						total_pop += data[i].total_pop;
+						total_hospital += data[i].hospitals;
+						var content = '<div class="panel-group" id="'+data[i].id_0+'">'+
 						  '<div class="panel panel-default">'+
 						    '<div class="panel-heading">'+
 						      '<h4 class="panel-title">'+
-						        '<a data-toggle="collapse" data-parent="#'+data[i].id_0+'-'+data[i].id_1+'" href="#collapse'+data[i].id_0+'-'+data[i].id_1+'">'+
-						        data[i].name_1+'<span style="float: right;">'+data[i].name_0+'</span></a>'+
+						        '<a data-toggle="collapse" data-parent="#'+data[i].id_0+'" href="#collapse'+data[i].id_0+'">'+
+						        data[i].name_0+'<span style="float: right;"></span></a>'+
 						      '</h4>'+
 						    '</div>'+
-						    '<div id="collapse'+data[i].id_0+'-'+data[i].id_1+'" class="panel-collapse collapse">'+
+						    '<div id="collapse'+data[i].id_0+'" class="panel-collapse collapse">'+
 						      '<div class="panel-body">'+
 									'<table style="width:100%; font-size:14px;">'+
 									'<tr>'+
 									'<td>No. population</td>'+
-									'<td style="text-align: right;">Not available</td>'+
+									'<td style="text-align: right;"><span id="total_pop'+data[i].id_0+'"></span></td>'+
 									'</tr>'+
 									'<tr>'+
-									'<td>Road</td>'+
-									'<td style="text-align: right;">Not available</td>'+
+									'<td>No. Hospitals</td>'+
+									'<td style="text-align: right;"><span id="total_hospital'+data[i].id_0+'"></span></td>'+
 									'</tr>'+
 									'<tr>'+
-									'<td>Building</td>'+
-									'<td style="text-align: right;">Not available</td>'+
-									'</tr>'+
-
 									'</table>'+
 									'</div>'+
 						    '</div>'+
 						  '</div>';
 					$(".table-detail").append(content);
+						
+
+					}else{
+						total_pop += data[i].total_pop;
+						total_hospital += data[i].hospitals;
+						$("#total_hospital"+data[i].id_0).text(total_hospital);
+						$("#total_pop"+data[i].id_0).text(total_pop);
+					}
+
+					if(data[i].id_1 !== province){
+						no_province += 1;
+						province = data[i].id_1;
+					}
 
 				}
 				$("#no_country").text(no_country);
+				$("#no_province").text(no_province);
+				if(map.hasLayer(affected_district)){
+					map.removeLayer(affected_district);
+				}
+				affected_district = L.geoJSON(district_features, {
+					style: {
+				     fillColor: 'red',
+				     weight: 1,
+				     opacity: 1,
+				     color: 'red',
+				     dashArray: '3',
+				     fillOpacity: 0.1
+				   }
+				}).addTo(map);
+				affected_district.on('mouseover', function(e) {
+					//open popup;
+					var female_content = '<table style="width:100%; font-size:14px;">'+
+					'<tr>'+
+					'<td>Female</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.f_0_15+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.f_15_65+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.f_65+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.female+'</td>'+
+					'</tr>'+
+					'</table>';
 
+					var male_content = '<table style="width:100%; font-size:14px;">'+
+					'<tr>'+
+					'<td>Male</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.m_0_15+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.m_15_65+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.m_65+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.male+'</td>'+
+					'</tr>'+
+					'</table>';
+
+					var age_content = '<table style="width:100%; font-size:14px;">'+
+					'<tr>'+
+					'<td>Population</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Age 0-15</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Age 15-65</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Age > 65</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Total</td>'+
+					'</tr>'+
+					'</table>';
+
+					var road_type = '<table style="width:100%; font-size:14px;">'+
+					'<tr>'+
+					'<td>Road</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Trunks</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Primary</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>Secondary</td>'+
+					'</tr>'+
+					'</table>';
+
+					var road_cont = '<table style="width:100%; font-size:14px;">'+
+					'<tr>'+
+					'<td> count</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.trunks+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.primary+'</td>'+
+					'</tr>'+
+					'<tr>'+
+					'<td>'+e.layer.feature.properties.secondary+'</td>'+
+					'</tr>'+
+					'</table>';
+
+					var content = '<h4>' + e.layer.feature.properties.name_1 +': ' +e.layer.feature.properties.name_2 + '</h4>'+
+					'<table class="table">'+
+						'<tbody>'+
+							'<tr>'+
+								'<th scope="row"> '+age_content+'</th>'+
+								'<td>'+female_content +' </td>'+
+								'<td>'+male_content +' </td>'+
+							'</tr>'+
+							'<tr>'+
+								'<th scope="row">Hospitals</th>'+
+								'<td>'+ e.layer.feature.properties.hospitals +' </td>'+
+								'<td></td>'+
+							'</tr>'+
+							'<tr>'+
+								'<th scope="row">'+ road_type +'</th>'+
+								'<td>'+ road_cont +' </td>'+
+								'<td></td>'+
+							'</tr>'+
+						'</tbody>'+
+					'</table>';
+
+					var popup = L.popup()
+					 .setLatLng(e.latlng) 
+					 .setContent(content)
+					 .openOn(map);
+				  });
+
+					affected_district.on('mouseout', function () {
+						map.closePopup();
+					});
+				  
 				},
 				function (error) {
 					// Error Callback
 					console.log('ERROR: ' + error);
 				}
-			);
-		};
-
+		);
+	};
 
 	function getDetail(sid) {
 
@@ -840,7 +1021,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 				var date = date_split[0];
 				var time = date_split[1].split(":");
 				var _time = time[0]
-				var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
+				var storm_figures = items["folder"]+"png";
 				var storm_raster = "MCS_"+date+"_"+_time+"0000";
 				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/operational/"+items["folder"]+"nc"
 				flyToStore(items["center_lat"], items["center_lng"]);

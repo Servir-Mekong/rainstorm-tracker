@@ -10,12 +10,21 @@
                   <div class="col-lg-12">
                     <div class="col-lg-5" style="text-align: left;">
                       Rain Storm Tracking System
-                      <p style="color: #a8c9cf;">
+                      <!-- <p style="color: #a8c9cf;">
                         Rainstorm Tracker tool is an operational storm analyser developed to monitor and alert the severity of storm events over the Lower Mekong basin in near-real time. This system employs a 4D object-based recognition approach to track and evaluate the severity of storms detected by satellites. With the rainstorm tracker, regional organizations can improve the flash flood early warnings capabilities thereby reducing risk.
+                      </p> -->
+                      <p style="color: #a8c9cf;">
+                        <b>Historical</b>: historical information of rainstorms during monsoon season from 2014 to 2019 using the <a href="https://gpm.nasa.gov/data/imerg">Integrated Multi-satellitE Retrievals for GPM (IMERG) final version</a>
                       </p>
-
+                      <p style="color: #a8c9cf;">
+                        <b>NEAR REAL TIME</b>:  Near real time (6 hour latency) Storm monitoring  of the past 48 hours storm events using the <a href="https://gpm.nasa.gov/data/imerg">Integrated Multi-satellitE Retrievals for GPM (IMERG) early version</a>
+                      </p>
+                      <p style="color: #a8c9cf;">
+                        <b>REAL TIME</b>: real time (1 hour latency) Storm monitoring  of the past 48 hours storm events using the <a href="https://sharaku.eorc.jaxa.jp/GSMaP/guide.html">Global Satellite Mapping of Precipitation (GSMaPNOW) </a>
+                      </p>
                       <a href="/map" class="btn-home">HISTORICAL</a>
                       <a href="/operational-map" class="btn-home btn-transparent">NEAR REAL TIME</a>
+                      <a href="/realtime-map" class="btn-home btn-transparent">REAL TIME</a>
                     </div>
                     <div class="col-lg-7" style="text-align: right;">
                       <img src="/modules/home/client/img/rainstorms-play-animation2.gif" loop="infinite" alt="" width="100%">
@@ -29,8 +38,26 @@
       </div>
       <br>
       <br>
+
+      <div>
+        <div class="container">
+          <div class="col-lg-12 col-md-6">
+            
+
+          </div>
+        </div>
+
+      </div>
+
+
       <div class="container" style="padding-top:50px;">
         <div class="row justify-content-md-center">
+            <div class="col-lg-12 align-items-center">
+                <ul  class="switchbutton" style="list-style: none;padding-inline-start: 0px; cursor: pointer;float: left;">
+                  <li class="active" id="realtime_data">REAL TIME</li>
+                  <li id="nearrealtime_data">NEAR REAL TIME</li>
+                </ul> 
+            </div>
           <div class="col-lg-6 col-md-6">
             <div id="container" style="height: 400px; width: 500px"></div>
           </div>
@@ -93,7 +120,7 @@
             <p>
               The rainstorm tracker relies on a  peer-reviewed spatiotemporal storm recognition method called Spatiotemporal Object-based Rainfall Analysis method (ST-CORA).
               This method is developed by <a href="https://www.sciencedirect.com/science/article/pii/B9780128116890000057">Laverde-Barajas et al.(2019)</a> to analyse the main characteristics of the storm events at the catchment scale.
-              With ST-CORA with Multivariate kernel density estimation (KED) proposed <a href="https://www.mdpi.com/2072-4292/12/21/3538">Laverde-Barajas et al. (2020a)</a> storm can be segmented using the four-dimensions of the storm.  The 4D object-based storm recognition is composed into the following steps.
+              With ST-CORA with Multivariate kernel density estimation (KDE) proposed <a href="https://www.mdpi.com/2072-4292/12/21/3538">Laverde-Barajas et al. (2020a)</a> storm can be segmented using the four-dimensions of the storm.  The 4D object-based storm recognition is composed into the following steps.
             </p>
 
             <div class="row">
@@ -101,13 +128,13 @@
               <div class="col-lg-3 col-md-6">
                 <img src="/modules/home/client/img/1_CRA.png" alt="" width="100%">
                 <p>
-                  Spatiotemporal Continuous rainfall Analysis (ST-CRA): A multidimensional connected-labelling component is implemented to identify convective rainfall systems in space and time.
+                  Spatiotemporal Continuous rainfall Analysis: A multidimensional connected-labelling component is implemented to identify convective rainfall systems in space and time.
                 </p>
               </div>
               <div class="col-lg-3 col-md-6">
                 <img src="/modules/home/client/img/2_KED.png" alt="" width="100%">
                 <p>
-                  Probabilistic storm segmentation (KED): Storm events are segmentation using a multivariate edge detection based on Kernel Density Estimation
+                  Probabilistic storm segmentation (KDE): Storm events are segmentation using a multivariate edge detection based on Kernel Density Estimation
                 </p>
               </div>
               <div class="col-lg-3 col-md-6">
@@ -142,7 +169,7 @@
               <p>The National Aeronautics and Space Administration</p>
             </div>
             <div class="col-lg-4 col-md-6 logo-box">
-              <img src="modules/home/client/img/partners/adpc.png" alt="" style="width:auto; height:60px;">
+              <img src="modules/home/client/img/partners/adpc.png" alt="" style="width:auto; height:60px; margin-top:9px;">
               <p>Asian Disaster Preparedness Cente</p>
             </div>
           </div>

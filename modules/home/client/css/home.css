@@ -152,3 +152,18 @@ p {
   font-weight: 800;
   text-align: center;
 }
+
+.switchbutton li {
+  float: left;
+  list-style: none;
+  text-align: center;
+  background-color: #dee2e6;
+  width: auto;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+.switchbutton li.active {
+  background-color: #0b1824;
+  color: #FFF;
+}

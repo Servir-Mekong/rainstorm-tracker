@@ -917,9 +917,9 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 						var time = date_split[1].split(":");
 						var _time = time[0]
 
-						var storm_figures = "MCS_"+date+"_"+_time+"0000.png";
+						var storm_figures = items["folder"]+"png";
 						var storm_raster = "MCS_"+date+"_"+_time+"0000";
-						var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/historical/"+storm_raster+".nc"
+						var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/historical/"+items["folder"]+"nc"
 						flyToStore(items["center_lat"], items["center_lng"]);
 						hideStromPoints();
 
@@ -1016,7 +1016,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 							// map.setLayoutProperty('state-fills', 'visibility', 'none');
 							// map.setLayoutProperty('state-borders', 'visibility', 'none');
 
-							$.ajax("/tracks_csv/"+storm_raster+".csv", {
+							$.ajax("/tracks_csv/"+items["folder"]+"csv", {
 								success: function(data) {
 									var trackJson =  JSON.parse(CSV2JSON(data));
 									//length - 1 because there is last blank line
