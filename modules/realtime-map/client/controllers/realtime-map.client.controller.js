@@ -11,7 +11,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
 		$(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
-		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;'> (GPM IMERG early) </span>");
+		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;'> (GPMMAP NOW) </span>");
 		$("#storm_cat_selector").change(function() {
 			var checkedVal = $("#storm_cat_selector option:selected").val();
 			var instance = $("#slider-max").data("ionRangeSlider");
@@ -612,7 +612,9 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	      currentMarkers[i].remove();
 	    }
 		}
-		// $("#toggle_storm_image").css('display', 'block');
+		// $("#toggle_storm_image").css('display', 'none');
+		$("#toggle_storm_affected_area").css('display', 'none');
+		
 		showStromPoints();
 	});
 
@@ -1100,6 +1102,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 
 					// $("#toggle_storm_image").css('display', 'block');
 
+					$("#toggle_storm_affected_area").css('display', 'block');
 
 					// remove markers
 					if (currentMarkers!==null) {
@@ -1273,13 +1276,21 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	            zIndex: 100,
 	        });
 	        tdWmsLayer.addTo(map);
-					//$('.btn-play').click();
-
+					
+					var firstLoad = 0;
 					map.timeDimension.on('timeload', function(data) {
 								var date = new Date(map.timeDimension.getCurrentTime());
 								var zone = "Europe/London" //UTC
 								$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
 								$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
+
+								firstLoad += 1;
+								setTimeout(function(){
+									if(firstLoad === 1){
+									$('.btn-prev').click();
+									}
+								}, 5);
+
 								if (data.time == map.timeDimension.getCurrentTime()) {
 										$('.map-loading').css('display', 'none');
 								}
@@ -1353,6 +1364,16 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		// 		map.setLayoutProperty('wms-test-layer', 'visibility', 'none');
 		// 	}
 		// });
+
+		$('input[type=checkbox][name=affected_area]').click(function(){
+			if(this.checked) {
+				map.addLayer(affected_district);
+			}else{
+				if (map.hasLayer(affected_district)) {
+					map.removeLayer(affected_district);
+				}
+			}
+		});
 
 
 		/**

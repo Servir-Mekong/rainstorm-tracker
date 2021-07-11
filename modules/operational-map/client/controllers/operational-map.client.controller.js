@@ -11,7 +11,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
 		$(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
-		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;'> (GPM IMERG early) </span>");
+		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;'> (GPM IMERG EARLY) </span>");
 		$("#storm_cat_selector").change(function() {
 			var checkedVal = $("#storm_cat_selector option:selected").val();
 			var instance = $("#slider-max").data("ionRangeSlider");
@@ -616,7 +616,8 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	      currentMarkers[i].remove();
 	    }
 		}
-		// $("#toggle_storm_image").css('display', 'block');
+		// $("#toggle_storm_image").css('display', 'none');
+		$("#toggle_storm_affected_area").css('display', 'none');
 		showStromPoints();
 	});
 
@@ -677,18 +678,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	$(".slide-tab-search").click();
 
 	$('#search-filter-btn').click(function() {
-		//loadCount = 0;
-		// if (map.getLayer("wms-test-layer")) {
-		// 	map.removeLayer("wms-test-layer");
-		// }
-		//
-		// if (map.getSource("wms-test-source")) {
-		// 	map.removeSource("wms-test-source");
-		// }
-		// if (map.getLayer("route")) {
-		// 	map.removeLayer("route");
-		// 	map.removeSource("route");
-		// }
+
 		// remove markers
 		if (currentMarkers!==null) {
 			for (var i = currentMarkers.length - 1; i >= 0; i--) {
@@ -1105,6 +1095,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 
 
 					// $("#toggle_storm_image").css('display', 'block');
+					$("#toggle_storm_affected_area").css('display', 'block');
 
 
 					// remove markers
@@ -1277,10 +1268,7 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 	            zIndex: 100,
 	        });
 	        tdWmsLayer.addTo(map);
-					//map.timeDimension.previousTime(1);
-					//$('.btn-prev').click();
-
-					var test = [];
+		
 					var firstLoad = 0;
 					map.timeDimension.on('timeload', function(data) {
 								var date = new Date(map.timeDimension.getCurrentTime());
@@ -1371,6 +1359,15 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 		// 	}
 		// });
 
+		$('input[type=checkbox][name=affected_area]').click(function(){
+			if(this.checked) {
+				map.addLayer(affected_district);
+			}else{
+				if (map.hasLayer(affected_district)) {
+					map.removeLayer(affected_district);
+				}
+			}
+		});
 
 		/**
 		* Change basemap layer(satellite, terrain, street)
