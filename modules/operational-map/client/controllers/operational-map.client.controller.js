@@ -1162,6 +1162,10 @@ angular.module('core').controller('mapOperationalCtrl', function ($scope, $http)
 												'<th scope="row">Intensity</th>'+
 												'<td>'+ parseInt(trackJson[i].Intensity).toFixed(2) +' mm/h</td>'+
 											'</tr>'+
+											'<tr>'+
+												'<th scope="row">Speed</th>'+
+												'<td>'+ parseInt(trackJson[i].Speed).toFixed(2) +' </td>'+
+											'</tr>'+
 										'</tbody>'+
 									'</table>'
 								);
