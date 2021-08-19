@@ -305,68 +305,106 @@ exports.filterRealTimeEvents = function (req, res) {
 exports.intersectArea = function(req, res) {
   var params = req.params;
   var storm_id = params.id;
+  var subprovince_id = params.id;
 
-  var sql="SELECT f.id_0, f.id_1, f.id_2,  f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals \
-  FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom) ,ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[ \
-      ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-  ])))\
-  FROM adm2, tbl_operational_events e WHERE e.id= "+storm_id+"\
-  AND ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
-      ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-  ])))) AS f\
-  INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
-  INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
-  INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
-  ORDER BY id_0, id_1, id_2 ASC"
+  // var sql="SELECT f.id_0, f.id_1, f.id_2,  f.proportion, f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals \
+  // FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom), (ST_Area(ST_Intersection(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ]))))/ST_Area(ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))) as proportion ,ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[ \
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))\
+  // FROM adm2, tbl_realtime_events e WHERE e.id= "+storm_id+"\
+  // AND ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))) AS f\
+  // INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
+  // INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
+  // INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
+  // ORDER BY id_0, id_1, id_2 ASC"
 
-  //var sql = "SELECT adm1.*,ST_Intersects(adm1.geom, ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326)) FROM adm1, tbl_operational_events e WHERE id= "+storm_id+" AND ST_Intersects(adm1.geom,  ST_MakeEnvelope(e.ext_min_x, e.ext_min_y, e.ext_max_x, e.ext_max_x, 4326))";
+
+  var sql=  "SELECT f.id_0, f.id_1, f.id_2,  f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals\
+    FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom) FROM adm2 WHERE id_2 in ("+subprovince_id+")) AS f\
+    INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
+    INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
+    INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
+    ORDER BY id_0, id_1, id_2 ASC"
+
   db.any(sql)
-	.then(data => {
-		// success
-		res.setHeader("Content-Type", "application/json");
-		res.send(JSON.stringify(data));
-	})
-	.catch(error => {
-		console.log('ERROR:', error); // print the error;
-		console.log('ERROR');
-	});
+    .then(data => {
+      // success
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(data));
+    })
+    .catch(error => {
+      console.log('ERROR:', error); // print the error;
+      console.log('ERROR');
+    });
 }
 
 exports.realtimeintersectArea = function(req, res) {
   var params = req.params;
   var storm_id = params.id;
+  var subprovince_id = params.id;
 
-  var sql="SELECT f.id_0, f.id_1, f.id_2, f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals \
-  FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom) ,ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[ \
-      ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-  ])))\
-  FROM adm2, tbl_realtime_events e WHERE e.id= "+storm_id+"\
-  AND ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
-      ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
-     ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
-  ])))) AS f\
-  INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
-  INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
-  INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
-  ORDER BY id_0, id_1, id_2 ASC"
+  // var sql="SELECT f.id_0, f.id_1, f.id_2,  f.proportion, f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals \
+  // FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom), (ST_Area(ST_Intersection(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ]))))/ST_Area(ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))) as proportion ,ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[ \
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))\
+  // FROM adm2, tbl_realtime_events e WHERE e.id= "+storm_id+"\
+  // AND ST_Intersects(adm2.geom, ST_MakePolygon(ST_MakeLine(array[\
+  //     ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_min_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_max_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_max_y),4326)\
+  //    ,ST_SetSRID(ST_MakePoint(e.ext_min_x,e.ext_min_y),4326)\
+  // ])))) AS f\
+  // INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
+  // INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
+  // INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
+  // ORDER BY id_0, id_1, id_2 ASC"
 
 
-
+  var sql=  "SELECT f.id_0, f.id_1, f.id_2,  f.name_0, f.name_1, f.name_2, f.st_asgeojson, t1.trunks, t1.primary, t1.secondary, t2.total_pop, t2.female, t2.male, t2.f_0_15, t2.f_15_65, t2.f_65, t2.m_0_15, t2.m_15_65, t2.m_65, t3.hospitals\
+    FROM (SELECT adm2.* ,ST_AsGeoJSON(adm2.geom) FROM adm2 WHERE id_2 in ("+subprovince_id+")) AS f\
+    INNER JOIN road_table as t1 on f.id_0 = t1.id_0 AND f.id_1 = t1.id_1 AND f.id_2 = t1.id_2\
+    INNER JOIN population_table as t2 on f.id_0 = t2.id_0 AND f.id_1 = t2.id_1 AND f.id_2 = t2.id_2\
+    INNER JOIN hospital_table as t3 on f.id_0 = t3.id_0 AND f.id_1 = t3.id_1 AND f.id_2 = t3.id_2\
+    ORDER BY id_0, id_1, id_2 ASC"
 
   db.any(sql)
     .then(data => {

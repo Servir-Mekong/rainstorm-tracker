@@ -20,8 +20,11 @@ coverage/
 # MEAN.js app and assets
 # ======================
 public/dist/
+public/op-xray/
+public/real-time-xray/
 public/op-tracks_csv/
 public/realtime-tracks_csv/
+public/real-time-tracks/
 public/tracks_csv/
 public/img/storm-figures/
 public/img/op-storm-figures/

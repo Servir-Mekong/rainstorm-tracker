@@ -455,7 +455,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		stormMarkers.on("click", function (event) {
 				var clickedMarker = event.layer;
 				getDetail(clickedMarker.feature.properties.id);
-				getIntersectArea(clickedMarker.feature.properties.id);
+	
 		});
 	}
 
@@ -770,8 +770,8 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	// var tdWmsRainLayer;
 	var routePolyline;
 
-	function getIntersectArea(sid) {
-		var typeOptionsURL = '/' + $.param({action: 'get-realtime-intersect-area', id:sid});
+	function getIntersectArea(pid) {
+		var typeOptionsURL = '/' + $.param({action: 'get-intersect-area', id:pid});
 		// Make a request
 		apiCall(typeOptionsURL, 'POST').then(
 			function (response) {
@@ -1196,6 +1196,21 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 				    }
 					});
 
+					
+					$.ajax("/real-time-xray/"+items["folder"]+"csv", {
+						success: function(data) {
+							var province_id = [];
+							var province_csv =  JSON.parse(CSV2JSON(data));
+								//length - 1 because there is last blank line
+							for(var i=0; i<province_csv.length-1; i++){
+								province_id.push(province_csv[i].ID_subprovinces);
+							}
+							getIntersectArea(province_id.join());
+						},
+						error: function() {
+							alert("error")
+						}
+					});
 					//SHOW MAP LEGEND
 					$('.legend-map').removeClass('hide');
 					
@@ -1408,7 +1423,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 			event.preventDefault();
 			/* Act on the event */
 			getDetail($(this).attr('data-id'));
-			getIntersectArea($(this).attr('data-id'));
+			
 		});
 
 		$(document).on('click', '#loadmore-op-btn', function() {
