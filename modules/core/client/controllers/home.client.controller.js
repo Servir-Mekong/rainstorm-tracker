@@ -22,7 +22,7 @@
 		},
 		{
 			'alt': 'SERVIR',
-			'url': 'https://www.servirglobal.net/',
+			'url': 'https://servir.adpc.net/',
 			'src': 'https://servir.adpc.net/themes/svmk/images/optimized/Servir_Logo_Color.png',
 			'className': 'servir'
 		}
