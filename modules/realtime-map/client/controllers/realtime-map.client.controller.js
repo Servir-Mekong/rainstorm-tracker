@@ -1074,6 +1074,10 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 					'<td>End storm location</td>'+
 					'<td style="text-align: right;">'+ items["lat_end"].toFixed(2)+', '+items["lng_end"].toFixed(2)+'</td>'+
 					'</tr>'+
+					'<tr>'+
+					'<td>Average Speed</td>'+
+					'<td style="text-align: right;">'+ items["speed"].toFixed(2)+ ' km/h</td>'+
+					'</tr>'+
 					'</table>'+
 					'</div>'+
 					'</div>');
