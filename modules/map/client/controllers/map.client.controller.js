@@ -11,7 +11,7 @@ angular.module('core').controller('mapCtrl', function ($scope, $http) {
 		$(".navbar-brand.navmenu").html("");
 		$(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
 		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;'> (GPM IMERG FINAL) </span>");
-		
+
 		$("#storm_cat_selector").change(function() {
 			var checkedVal = $("#storm_cat_selector option:selected").val();
 			var instance = $("#slider-max").data("ionRangeSlider");

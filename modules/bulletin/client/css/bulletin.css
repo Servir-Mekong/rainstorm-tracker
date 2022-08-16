@@ -1,0 +1,185 @@
+.cover-photo{
+    background-image: url("/modules/home/client/img/cloud2.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 550px;
+}
+
+section {
+    padding: 60px 0;
+}
+
+p {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    letter-spacing: .5px;
+}
+ ul, ol {
+   list-style-type: decimal;
+    padding-left: 40px;
+    color: #666;
+ }
+
+ .home h2{
+   margin: 10px 0;
+    color: #243549;
+    font-weight: 600;
+    letter-spacing: 1px;
+ }
+
+ .contact-list p{
+   font-size: 14px;
+ }
+ .overlay-layer{
+    height: 100%;
+    background: rgb(0 0 0 / 0%);
+    padding: 50px 0px;
+ }
+ .overlay-text{
+   color: #FFF;
+  font-size: 40px;
+  text-align: center;
+  padding-left: 80px;
+ }
+
+ .home-usaid {
+     background-size: auto 50px;
+     width: 190px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-nasa {
+     background-size: auto 50px;
+     width: 90px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-adpc {
+     background-size: auto 50px;
+     width: 110px !important;
+     float: left;
+     margin-right: 10px;
+     margin-bottom: 20px;
+ }
+
+ .home-sig {
+     background-size: auto 50px;
+     width: 210px !important;
+     float: left;
+     margin-right: 10px;
+     margin-bottom: 20px;
+ }
+
+
+ .home-delft {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-delft-u {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-wageningen {
+     background-size: auto 50px;
+     width: 150px !important;
+     float: left;
+     margin-right: 5px;
+     margin-bottom: 20px;
+ }
+
+ .home-servir {
+     float: left;
+     background-size: auto 35px;
+     width: 220px !important;
+     padding-top: 10px;
+     margin-bottom: 20px;
+ }
+ .btn-home {
+   color: #0b1824;
+  border-radius: 15px;
+  border: 0px solid #FFF;
+  background: #a8c9cf;
+  font-size: 14px;
+    padding: 5px 10px;
+ }
+
+ .btn-transparent{
+   background: no-repeat;
+    color: #FFF;
+    border: 1px solid #FFF;
+ }
+
+.logo-box {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#footer .copyright {
+    text-align: center;
+    padding-top: 15px;
+    color: #0b1824;
+}
+.footer-info, .footer-info p, .footer-links a, .footer-links ul li {
+  color: #FFF;
+
+}
+
+.dashboard-1{
+  height: 100px;
+  background: #dae3f3;
+  font-size: 20px;
+  font-weight: 500;
+  color: #555;
+}
+
+.no-storms {
+  font-size: 50px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.switchbutton li {
+  float: left;
+  list-style: none;
+  text-align: center;
+  background-color: #dee2e6;
+  width: auto;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+.switchbutton li.active {
+  background-color: #0b1824;
+  color: #FFF;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
