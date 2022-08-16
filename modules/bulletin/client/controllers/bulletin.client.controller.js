@@ -284,14 +284,23 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $.ajax("/FFGS/ffgs-outputs.txt", {
     success: function(data) {
       var nowDate = new Date();
+      var previous = new Date(nowDate.getTime());
+      previous = previous.setDate(nowDate.getDate() - 1);
+      previous = new Date(previous);
+
       var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var month_str= '';
-      if((nowDate.getMonth()+1) <= 9){
-        month_str ='0'+(nowDate.getMonth()+1)
-      }else{
-        month_str = (nowDate.getMonth()+1)
-      }
+      var prev_month_str= '';
+
+      if((nowDate.getMonth()+1) <= 9) month_str ='0'+(nowDate.getMonth()+1)
+      else month_str = (nowDate.getMonth()+1)
+
+      if((previous.getMonth()+1) <= 9) prev_month_str ='0'+(previous.getMonth()+1)
+      else month_str = (previous.getMonth()+1)
+
       var date = nowDate.getFullYear()+''+month_str+''+nowDate.getDate();
+      var previous_date = previous.getFullYear()+''+prev_month_str+''+previous.getDate();
+
       $("#_date").text(nowDate.getDate());
       $("#_month").text(monthNames[nowDate.getMonth()]);
       $("#_year").text(nowDate.getFullYear());
@@ -300,6 +309,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       $('#timehour').text(hour+":"+current_minute);
       var timecode= '';
       if(hour <= 8){
+        //MRC outputs are updated at 08:00 local time
+        date = previous_date;
         timecode = '0600';
       }else if(hour <= 16){
         timecode = '0000';
