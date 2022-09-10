@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
+angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 	$scope.rssFeeds = [];
 	var filterArea = 'none';
@@ -11,157 +11,9 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
 		$(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
-		$(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;text-transform: none;'> (GSMaP NOW) </span>");
-		$("#storm_cat_selector").change(function() {
-			var checkedVal = $("#storm_cat_selector option:selected").val();
-			var instance = $("#slider-max").data("ionRangeSlider");
+		// $(".navbar-brand.navmenu").append("<span style='font-size:14px;margin-left:5px;text-transform: none;'> (GSMaP NOW) </span>");
+		//
 
-			if(checkedVal === "lev1"){
-				$("#start_vol").attr({
-		       "max" : 9.47,
-		       "min" : 4.69
-		    });
-				$("#end_vol").attr({
-					"max" : 9.47,
-					"min" : 4.69
-		    });
-				$("#start_vol").val(4.69);
-				$("#end_vol").val(9.47);
-				instance.update({
-            from: 45.44,
-						to: 61.84
-        });
-
-			}else if(checkedVal === "lev2"){
-				$("#start_vol").attr({
-		       "max" : 12.64,
-		       "min" : 9.47
-		    });
-				$("#end_vol").attr({
-		       "max" : 12.64,
-		       "min" : 9.47
-		    });
-				$("#start_vol").val(9.47);
-				$("#end_vol").val(12.64);
-				instance.update({
-            from: 61.84,
-						to: 72.69
-        });
-
-			}else if(checkedVal === "lev3"){
-				$("#start_vol").attr({
-		       "max" : 15.68,
-		       "min" : 12.64
-		    });
-				$("#end_vol").attr({
-		       "max" : 15.68,
-		       "min" : 12.64
-		    });
-				$("#start_vol").val(12.64);
-				$("#end_vol").val(15.68);
-				instance.update({
-            from: 72.69,
-						to: 83.11
-        });
-
-			}else if(checkedVal === "lev4"){
-				$("#start_vol").attr({
-		       "max" : 19.61,
-		       "min" : 15.68
-		    });
-				$("#end_vol").attr({
-		       "max" : 19.61,
-		       "min" : 15.68
-		    });
-				$("#start_vol").val(15.68);
-				$("#end_vol").val(19.61);
-				instance.update({
-            from: 83.11,
-						to: 96.59
-        });
-
-
-			}else if(checkedVal === "lev5"){
-				$("#start_vol").attr({
-		       "max" : 22.56,
-		       "min" : 19.61
-		    });
-				$("#end_vol").attr({
-		       "max" : 22.56,
-		       "min" : 19.61
-		    });
-				$("#start_vol").val(19.61);
-				$("#end_vol").val(22.56);
-				instance.update({
-            from: 96.59,
-						to: 106.69
-        });
-
-			}else if(checkedVal === "lev6"){
-				$("#start_vol").attr({
-		       "max" : 25.50,
-		       "min" : 22.56
-		    });
-				$("#end_vol").attr({
-		       "max" : 25.50,
-		       "min" : 22.56
-		    });
-				$("#start_vol").val(22.56);
-				$("#end_vol").val(25.50);
-				instance.update({
-            from: 106.69,
-						to: 116.76
-        });
-
-			}else if(checkedVal === "lev7"){
-				$("#start_vol").attr({
-		       "max" : 29.37,
-		       "min" : 25.50
-		    });
-				$("#end_vol").attr({
-		       "max" : 29.37,
-		       "min" : 25.50
-		    });
-				$("#start_vol").val(25.50);
-				$("#end_vol").val(29.37);
-				instance.update({
-            from: 116.76,
-						to: 130.04
-        });
-
-			}else if (checkedVal === "lev8"){
-				$("#start_vol").attr({
-					 "max" : 32.30,
-					 "min" : 29.37
-				});
-				$("#end_vol").attr({
-					 "max" : 32.30,
-					 "min" : 29.37
-				});
-				$("#start_vol").val(29.37);
-				$("#end_vol").val(32.30);
-				instance.update({
-            from: 130.04,
-						to: 140.07
-        });
-
-			}else if (checkedVal === "undefined"){
-				$("#start_vol").attr({
-					 "max" : 1000,
-					 "min" : 0
-				});
-				$("#end_vol").attr({
-					 "max" : 1000,
-					 "min" : 0
-				});
-				$("#start_vol").val("");
-				$("#end_vol").val("");
-				instance.update({
-            from: 0,
-						to: 300
-        });
-			}
-		});
 
 		$('[data-toggle="tooltip"]').tooltip();
 		$("#start_date").datepicker({
@@ -174,18 +26,6 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 
 	});
 
-	$('#month_range').ionRangeSlider({
-		skin: "round",
-		type: "double",
-		grid: true,
-		from: 0,
-		to: 11,
-		values: [
-			"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-		]
-	});
-
 
 	var apiCall = function (url, method) {
 		return $http({
@@ -194,7 +34,6 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 		});
 	};
-
 
 
 	/**
@@ -217,41 +56,21 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		basemap_layer.addTo(map);
 
 
+		// Load mrc ffg basins
+		// var mrcbasins;
+		// var basin_style = {
+		// 	 fillColor: '#9999ff',
+		// 	 weight: 0.2,
+		// 	 opacity: 1,
+		// 	 color: 'white',
+		// 	 fillOpacity: 0.1
+		//  };
+		//  $.getJSON('data/mrcffg_basins.geojson')
+		// 	.done(function (data, status) {
+		//     // mrcbasins = data;
+		// 		mrcbasins = L.geoJSON(data, {style: basin_style}).addTo(map);
+		// 	});
 
-		// Load geographic coverage area Geojson
-		var storm_boundingbox;
-		 $.getJSON('data/storm_boundingbox.geojson')
-			.done(function (data, status) {
-				storm_boundingbox = L.geoJSON(data, {
-					style: {
-				     fillColor: '#9999ff',
-				     weight: 2,
-				     opacity: 1,
-				     color: 'white',
-				     dashArray: '3',
-				     fillOpacity: 0.1
-				   }
-				});
-				//storm_boundingbox.addTo(map);
-			});
-
-		// Load mekong BBox area Geojson
-		var mekong_bb;
-		 $.getJSON('data/mekong_bb.geojson')
-			.done(function (data, status) {
-				mekong_bb = L.geoJSON(data, {
-					style: {
-				     fillColor: '#9999ff',
-				     weight: 1,
-				     opacity: 1,
-				     color: 'white',
-				     dashArray: '3',
-				     fillOpacity: 0.1
-				   }
-				});
-				//mekong_bb.addTo(map);
-
-			});
 
 		// lond country boundary
 		var adm0;
@@ -269,6 +88,105 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 			 });
 			 adm0.addTo(map);
 		 });
+
+		 	var fetchFFG_data;
+			var mrc_ffgmap;
+			var country_data;
+		   $scope.fetchFFG = function () {
+				 $.ajax("/FFGS/mrcffg.csv", {
+					 success: function(data) {
+						 var data = JSON.parse(CSV2JSON(data));
+						fetchFFG_data=  data
+						loadCount = 0;
+					 $scope.events=[];
+					 console.log(fetchFFG_data)
+
+						country_data = mrcbasins;
+						for(var i=0; i< mrcbasins.length; i++){
+							for(var j=0; j< fetchFFG_data.length; j++){
+								if(mrcbasins[i]["properties"]["value"] === parseInt(fetchFFG_data[j]["BASIN"])){
+									country_data[i]["properties"] = fetchFFG_data[j]
+									$scope.events.push(fetchFFG_data[j])
+								}
+							}
+						}
+						console.log($scope.events)
+
+						$("#tableOperationalList").empty();
+						 $("#sidenav-table").css("width", "280px");
+						 createLiEvents($scope.events)
+						 $(".detail-right").css("right", "285px");
+						 $(".detail-right").css("height", "auto");
+						 $(".detail-right").css("top", "90px");
+						 $(".detail-right").css("padding-top", "10px");
+						 $(".slide-tab-right").css("display", "none");
+
+						var ffg_basins_style = {
+							 fillColor: '#FFF',
+							 weight: 0.5,
+							 opacity: 0,
+							 color: 'white',
+							 fillOpacity: 0.2
+						 };
+						 if(map.hasLayer(mrc_ffgmap)){
+							 map.removeLayer(mrc_ffgmap);
+						 }
+						 var param = $('input[type=radio][name=ffg_param]:checked').val();
+						 var mapVals =  {
+ 		 				 "ASMT" : [0, 0.30, 0.65, 0.85, 0.90, 0.95, 1, 1000],
+ 		 				 "FFG01" : [0, 15, 30, 60, 100, 160, 220, 1000],
+ 		 				 "FFG03" : [0, 15, 30, 60, 100, 160, 220, 1000],
+ 		 				 "FFG06" : [0, 15, 30, 60, 100, 160, 220, 1000],
+ 		 				 "FMAP101" : [0, 30, 70, 120, 180, 240, 300, 1000],
+ 		 				 "FMAP103" : [0, 30, 70, 120, 180, 240, 300, 1000],
+ 		 				 "FMAP106" : [0, 30, 70, 120, 180, 240, 300, 1000],
+ 		 				 "FMAP124" : [0, 30, 70, 120, 180, 240, 300, 1000],
+ 		 			 }
+
+ 		 			 var mapColors =  {
+ 		 				 "ASMT" : ['#FFF', '#DEDC28', '#B59700', '#3EDC3A', '#006200', '#304AFC', '#170078', '#170078'],
+ 		 				 "FFG01" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+ 		 				 "FFG03" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+ 		 				 "FFG06" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+ 		 				 "FMAP101" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+ 		 				 "FMAP103" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+ 		 				 "FMAP106" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+ 		 				 "FMAP124" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+ 		 			 }
+
+ 		 			mrc_ffgmap = L.geoJSON(country_data, {
+ 		 				style: ffg_basins_style,
+ 		 				onEachFeature: function (feature, layer) {
+ 		 					if (feature.properties[param] <= mapVals[param][0]) {
+ 		 							layer.setStyle({fillColor : mapColors[param][0],fillOpacity: 0,color: mapColors[param][0]});
+ 		 					}else if (feature.properties[param] <= mapVals[param][1]) {
+ 		 							layer.setStyle({fillColor :mapColors[param][1],fillOpacity: 0.7,opacity: 1,color: mapColors[param][1]});
+ 		 					}else if (feature.properties[param] <= mapVals[param][2]){
+ 		 							layer.setStyle({fillColor :mapColors[param][2],fillOpacity: 0.7,opacity: 1,color: mapColors[param][2]});
+ 		 					}else if (feature.properties[param] <= mapVals[param][3]){
+ 		 							layer.setStyle({fillColor :mapColors[param][3],fillOpacity: 0.7,opacity: 1,color: mapColors[param][3]});
+ 		 					}else if (feature.properties[param] <= mapVals[param][4]){
+ 		 							layer.setStyle({fillColor :mapColors[param][4],fillOpacity: 0.7,opacity: 1,color: mapColors[param][4]});
+ 		 					}else if (feature.properties[param] <= mapVals[param][5]){
+ 		 							layer.setStyle({fillColor :mapColors[param][5],fillOpacity: 0.7,opacity: 1,color: mapColors[param][5]});
+ 		 					} else if (feature.properties[param] <= mapVals[param][6]){
+ 		 							layer.setStyle({fillColor :mapColors[param][6],fillOpacity: 0.7,opacity: 1,color: mapColors[param][6]});
+ 		 					} else  if (feature.properties[param] <= mapVals[param][7]){
+ 		 							layer.setStyle({fillColor :mapColors[param][7],fillOpacity: 0.7,opacity: 1,color: mapColors[param][7]});
+ 		 					}
+ 		 				}
+ 		 			}).addTo(map);
+
+					 },
+					 error: function() {
+							 alert("error")
+					 }
+				 });
+
+		 	};
+
+		   //$scope.fetchFFG();
+
 
 
 	// colors to use for the categories
@@ -354,109 +272,16 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	var createLiEvents = function(data){
 		loadCount = 0;
 		excelDate = '';
-		var geojson = {
-			"type":"FeatureCollection",
-			"features":[]
-		};
+
 		excelDate = data;
 
 		$("#found-no").text("Found "+data.length);
-
-		for(var i = 0; i< data.length; i++){
-				var sid =  data[i]["id"];
-				var sdate = data[i]["date2"] + ' ' +  data[i]["date"].split(" ")[1];
-				var lng = data[i]["center_lng"];
-				var lat = data[i]["center_lat"];
-				var mctime = data[i]["mctime"];
-				var mcspace = data[i]["mcspace"];
-				var mcmax = data[i]["mcmax"];
-				var mcvol = data[i]["mcvol"];
-				var total_mag = data[i]["total_mag"];
-
-				if(mcmax <= 45.44 && mcvol < 4.69){
-					var megClass = 1;
-				}else if ( mcmax <= 61.84 && mcvol < 9.47) {
-					var megClass = 2;
-				}
-				else if ( mcmax <= 72.69 && mcvol < 12.64) {
-					var megClass = 3;
-				}
-				else if ( mcmax <= 83.11 && mcvol < 15.68) {
-					var megClass = 4;
-				}
-				else if ( mcmax <= 96.59 && mcvol < 19.61) {
-					var megClass = 5;
-				}
-				else if ( mcmax <= 106.76 && mcvol < 22.56) {
-					var megClass = 6;
-				}
-				else if ( mcmax <= 116.76 && mcvol < 25.50) {
-					var megClass = 7;
-				}
-				else if ( mcmax <= 130.04 && mcvol < 29.37) {
-					var megClass = 8;
-				}
-				else if (mcmax >= 130.05) {
-					var megClass = 9;
-				}
-
-				geojson.features.push({ "type": "Feature","properties": { "id": sid, "date": sdate, "mctime": mctime, "mcspace": mcspace, "mcmax": mcmax , "mcvol": mcvol, "total_mag": total_mag, "storm_class": megClass}, "geometry": {"type": "Point","coordinates": [lng, lat]} });
-		}
 
 		$("#tableOperationalList").append('<li id="loadmore-op-btn" style="text-align:center;cursor: pointer;">'+
 		'Load More'+
 		'</li>');
 		$("#loadmore-op-btn").click();
 
-
-		stormMarkers = L.geoJSON(geojson, {
-		    style: function(feature) {
-		        return {color: colors[feature.properties.storm_class - 1]};
-		    },
-		    pointToLayer: function(feature, latlng) {
-					var marker = new L.marker(latlng, {
-						title: feature.properties.storm_class,
-						icon: L.divIcon({
-							html: feature.properties.mcvol.toFixed(2).toString(),
-							className: 'marker-icon-'+ (feature.properties.storm_class - 1),
-							iconSize: L.point(25, 25)
-						})
-				});
-					return marker;
-		    },
-		    onEachFeature: function (feature, layer) {
-
-					var content = '<h4>' + feature.properties.date + '</h4>'+
-						'<table class="table table-striped">'+
-							'<tbody>'+
-								'<tr>'+
-									'<th scope="row"> Storm Volume</th>'+
-									'<td>'+ feature.properties.mcvol.toFixed(2) +' km<sup>3</sup></td>'+
-								'</tr>'+
-								'<tr>'+
-									'<th scope="row">Storm Duration</th>'+
-									'<td>'+ feature.properties.mctime.toFixed(2) +' hrs</td>'+
-								'</tr>'+
-							'</tbody>'+
-						'</table>';
-
-					var text2 = L.tooltip({
-						direction: 'top',
-						className: 'leaflet-tooltip-custom'
-					})
-					.setContent(content)
-					.setLatLng(layer.getLatLng());
-					layer.bindTooltip(content);
-		    }
-		});
-
-		stormMarkers.addTo(map);
-
-		stormMarkers.on("click", function (event) {
-				var clickedMarker = event.layer;
-				getDetail(clickedMarker.feature.properties.id);
-
-		});
 	}
 
 	$scope.fetchEvents = function () {
@@ -484,7 +309,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		);
 	};
 
-	$scope.fetchEvents();
+	//$scope.fetchEvents();
 
 	/**
 	 * Use Mapbox GL JS's `flyTo` to move the camera smoothly
@@ -675,62 +500,9 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 	$(".slide-tab-search").click();
 
 	$('#search-filter-btn').click(function() {
-		//loadCount = 0;
-		// if (map.getLayer("wms-test-layer")) {
-		// 	map.removeLayer("wms-test-layer");
-		// }
-		//
-		// if (map.getSource("wms-test-source")) {
-		// 	map.removeSource("wms-test-source");
-		// }
-		// if (map.getLayer("route")) {
-		// 	map.removeLayer("route");
-		// 	map.removeSource("route");
-		// }
-		// remove markers
-		if (currentMarkers!==null) {
-			for (var i = currentMarkers.length - 1; i >= 0; i--) {
-				currentMarkers[i].remove();
-			}
-		}
-
-		var start_vol = $("#start_vol").val();
-		var end_vol = $("#end_vol").val();
-		var start_duration = $("#start_duration").val();
-		var end_duration = $("#end_duration").val();
-		var intensity = $("#slider-max").val().split(";");
-		var min_intensity = intensity[0];
-		var max_intensity = intensity[1];
-
-		var filter_area = filterArea;
-
-		if(!start_vol) start_vol = 9999;
-		if(!end_vol) end_vol = 9999;
-		if(!start_duration) start_duration = 9999;
-		if(!end_duration) end_duration = 9999;
-
-		var typeOptionsURL = '/' + $.param({action: 'filter-realtime-events', start_vol:start_vol, end_vol:end_vol, start_duration:start_duration, end_duration:end_duration, min_intensity:min_intensity, max_intensity:max_intensity, filter_area: filter_area});
-		// Make a request
-		apiCall(typeOptionsURL, 'POST').then(
-			function (response) {
-				// Success Callback
-				loadCount = 0;
-				$scope.events = response.data;
-				var items = response.data;
-				$("#tableOperationalList").empty();
-
-				map.removeLayer(stormMarkers);
-
-				createLiEvents(response.data);
-				$('#menu-close').click();
-				$('.slide-tab-right').click();
-
-			},
-			function (error) {
-				// Error Callback
-				console.log('ERROR: ' + error);
-			}
-		);
+		var date_val = $("#date_input").val();
+		console.log(date_val)
+		$scope.fetchFFG();
 	});
 
 	$('#search-all-btn').click(function() {
@@ -1007,80 +779,54 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		$("#legend-img").css("display", "none");
 		$("#legend-marker").css("display", "block");
 
-		var typeOptionsURL = '/' + $.param({action: 'get-realtime-detail', id:sid});
-		// Make a request
-		apiCall(typeOptionsURL, 'POST').then(
-			function (response) {
-				// Success Callback
-				var items = response.data[0];
-				var date_split = items["date"].split(" ");
-				var date = date_split[0];
-				var time = date_split[1].split(":");
-				var _time = time[0]
-				var storm_figures = items["folder"]+"png";
-				var storm_raster = "MCS_"+date+"_"+_time+"0000";
-				var downloadRasterurl = "https://thredds-servir.adpc.net/thredds/fileServer/RAINSTORM/realtime/"+items["folder"]+"nc"
-				flyToStore(items["center_lat"], items["center_lng"]);
-				hideStromPoints();
+				for(var i = 0; i< $scope.events.length; i++){
+					if($scope.events[i].BASIN === sid){
+						// Success Callback
+						var items = $scope.events[i];
 
-				var dateText = items["date2"] + ' '+ items["date"].split(" ")[1];
-				$(".table-detail").html(
-					'<div class="row">'+
-					// '<div class="col-sm-12"><p class="place-name">'+ dateText +'</p></div>'+
-					'<div class="col-sm-12"><ul><li style="float:left; margin:0;"><a href="/img/realtime-figures/'+storm_figures+'" style="color:#FFF;font-size:20px;" target="_blank" title="Dowload a figure" download>'+
-					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
-					'<path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-12-1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12z"/>'+
-					'<path d="M10.648 7.646a.5.5 0 0 1 .577-.093L15.002 9.5V14h-14v-2l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z"/>'+
-					'<path fill-rule="evenodd" d="M4.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>'+
-					'</svg></a></li>'+
-					'<li style="float:left; margin:0;"><a href="'+downloadRasterurl+'" style="color:#FFF;font-size:20px;" target="_blank" title="Dowload a raster file" download>'+
-					'<svg width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
-					'<path fill-rule="evenodd" d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8z"/>'+
-					'<path fill-rule="evenodd" d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z"/>'+
-					'<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 1z"/>'+
-					'</svg></a></li></ul></div>'+
-					'<div class="col-sm-12"><img src="/img/realtime-figures/'+storm_figures+'" alt="" style="width:100%;margin-bottom: 20px;"></div>'+
-					'<div class="col-sm-12">'+
-					'<table style="width:100%; font-size:14px;">'+
-					'<tr>'+
-					'<td>Centroid</td>'+
-					'<td style="text-align: right;">'+ items["center_lat"].toFixed(2)+', '+items["center_lng"].toFixed(2)+ '</td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Weighted Centroid</td>'+
-					'<td style="text-align: right;">'+ items["w_center_lat"].toFixed(2)+', '+items["w_center_lng"].toFixed(2)+ '</td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Total volume</td>'+
-					'<td style="text-align: right;">'+ items["mcvol"].toFixed(2)+ ' km<sup>3</sup> </td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Duration</td>'+
-					'<td style="text-align: right;">'+ items["mctime"]+ ' hrs </td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Maximum spatial extension</td>'+
-					'<td style="text-align: right;">'+ items["mcspace"].toFixed(2)+' km<sup>3</sup></td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Max intensity</td>'+
-					'<td style="text-align: right;">'+ items["mcmax"].toFixed(2)+' mm/h </td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Start storm location</td>'+
-					'<td style="text-align: right;">'+ items["lat_start"].toFixed(2)+', '+items["lng_start"].toFixed(2)+' </td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>End storm location</td>'+
-					'<td style="text-align: right;">'+ items["lat_end"].toFixed(2)+', '+items["lng_end"].toFixed(2)+'</td>'+
-					'</tr>'+
-					'<tr>'+
-					'<td>Average Speed</td>'+
-					'<td style="text-align: right;">'+ items["speed"].toFixed(2)+ ' km/h</td>'+
-					'</tr>'+
-					'</table>'+
-					'</div>'+
-					'</div>');
+						$(".table-detail").html(
+							'<div class="row">'+
+							'<div class="col-sm-12"><p class="place-name">Basin ID: '+ sid +'</p></div>'+
+							'<div class="col-sm-12">'+
+							'<table style="width:100%; font-size:14px;">'+
+							'<tr>'+
+							'<td>Average soil water</td>'+
+							'<td style="text-align: right;">'+ items["ASMT"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Fash flood guidance 1 hour</td>'+
+							'<td style="text-align: right;">'+ items["FFG01"]+ ' hrs </td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Fash flood guidance 3 hour</td>'+
+							'<td style="text-align: right;">'+ items["FFG03"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Fash flood guidance 6 hour</td>'+
+							'<td style="text-align: right;">'+ items["FFG06"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Area forecasted 1 hour</td>'+
+							'<td style="text-align: right;">'+ items["FMAP101"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Area forecasted 3 hour</td>'+
+							'<td style="text-align: right;">'+ items["FMAP103"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Area forecasted 3 hour</td>'+
+							'<td style="text-align: right;">'+ items["FMAP106"]+ '</td>'+
+							'</tr>'+
+							'<tr>'+
+							'<td>Area forecasted 24 hour</td>'+
+							'<td style="text-align: right;">'+ items["FMAP124"]+ '</td>'+
+							'</tr>'+
+							'</table>'+
+							'</div>'+
+							'</div>');
+					}
+				}
+
 
 					$('#detail-panel').css("width", "300px");
 					if($('#sidenav-table').css("width") == "280px"){
@@ -1103,229 +849,6 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 						$("#minimize-detail-panel").css("right", "10px");
 					}
 
-
-					// $("#toggle_storm_image").css('display', 'block');
-
-					$("#toggle_storm_affected_area").css('display', 'block');
-
-					// remove markers
-					if (currentMarkers!==null) {
-						for (var i = currentMarkers.length - 1; i >= 0; i--) {
-							currentMarkers[i].remove();
-						}
-					}
-
-					var trackRoute = []
-					//Uncheck
-					document.getElementById("mekong_country").checked = false;
-					$.ajax("/realtime-tracks_csv/"+items["folder"]+"csv", {
-				    success: function(data) {
-				        var trackJson =  JSON.parse(CSV2JSON(data));
-								//length - 1 because there is last blank line
-							for(var i=0; i<trackJson.length-1; i++){
-
-								trackRoute.push([trackJson[i].lat, trackJson[i].Lon]);
-								var date = trackJson[i].Dates.split(" ");
-								var _date = date[0].split("-");
-								var _time = date[1];
-								var _date_1 = _date[2];
-								var _month =  _date[1];
-								var _year =  _date[0];
-								var dateNewFormat = _date_1+"/"+_month+"/"+_year+" "+ _time;
-								if(i === 0){
-
-									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
-										icon: L.divIcon({
-											html: 'START',
-											className: 'track-route-start',
-											iconSize: L.point(10, 10)
-										})
-								}).addTo(map);
-
-								}else if (i === trackJson.length-2){
-									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
-										icon: L.divIcon({
-											html: 'END',
-											className: 'track-route-end',
-											iconSize: L.point(10, 10)
-										})
-								}).addTo(map);
-
-								}else{
-									var trackPoint = new L.marker([trackJson[i].lat, trackJson[i].Lon], {
-										icon: L.divIcon({
-											html: '',
-											className: 'track-route',
-											iconSize: L.point(10, 10)
-										})
-								}).addTo(map);
-
-								}
-								trackPoint.bindPopup(
-									'<h4>' + dateNewFormat + '</h4>'+
-									'<table class="table">'+
-										'<tbody>'+
-											'<tr>'+
-												'<th scope="row"> Magnitude</th>'+
-												'<td>'+ parseInt(trackJson[i].Magnitude).toFixed(2) +' mm</td>'+
-											'</tr>'+
-											'<tr>'+
-												'<th scope="row">Intensity</th>'+
-												'<td>'+ parseInt(trackJson[i].Intensity).toFixed(2) +' mm/h</td>'+
-											'</tr>'+
-											'<tr>'+
-												'<th scope="row">Speed</th>'+
-												'<td>'+ parseInt(trackJson[i].Speed).toFixed(2) +' </td>'+
-											'</tr>'+
-										'</tbody>'+
-									'</table>'
-								);
-								currentMarkers.push(trackPoint);
-
-							}
-							//var pathLine = L.polyline(trackRoute).addTo(map)
-
-							routePolyline = new L.polyline(trackRoute, {
-							color: 'white',
-							weight: 1.5,
-							opacity: 0.5,
-							smoothFactor: 1,
-							dashArray: '5, 5',
-							dashOffset: '0'
-						}).addTo(map);
-
-				    },
-				    error: function() {
-				        alert("error")
-				    }
-					});
-
-
-					$.ajax("/real-time-xray/"+items["folder"]+"csv", {
-						success: function(data) {
-							var province_id = [];
-							var province_csv =  JSON.parse(CSV2JSON(data));
-								//length - 1 because there is last blank line
-							for(var i=0; i<province_csv.length-1; i++){
-								province_id.push(province_csv[i].ID_subprovinces);
-							}
-							getIntersectArea(province_id.join());
-						},
-						error: function() {
-							alert("error")
-						}
-					});
-					//SHOW MAP LEGEND
-					$('.legend-map').removeClass('hide');
-
-					var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/realtime/"+items["folder"]+"nc", {
-						layers: 'rain',
-						format: 'image/png',
-						time: date+'T'+_time+':00:00.000Z',
-						transparent: true,
-						styles: 'boxfill/rainbow',
-						opacity:1,
-						version:'1.3.0',
-						zIndex:100,
-						colorscalerange:'0,150',
-						bounds: [[0, 90], [22, 120]],
-						logscale: false,
-						abovemaxcolor:'extend',
-						belowmincolor:'extend',
-						numcolorbands: 150,
-					});
-
-					if(map.hasLayer(tdWmsLayer)){
-						map.removeLayer(tdWmsLayer);
-					}
-					if(map.hasLayer(routePolyline)){
-						map.removeLayer(routePolyline);
-					}
-
-					var timeDimension = new L.TimeDimension();
-						map.timeDimension = timeDimension;
-
-						var player = new L.TimeDimension.Player({
-								loop: true,
-								startOver: true
-						}, timeDimension);
-
-							$('.btn-prev').click(function() {
-									map.timeDimension.previousTime(1);
-							});
-							$('.btn-next').click(function() {
-									map.timeDimension.nextTime();
-							});
-
-							$('.btn-play').click(function() {
-									var btn = $(this);
-									if (player.isPlaying()) {
-											btn.removeClass("btn-pause");
-											btn.addClass("btn-play");
-											btn.html("Play");
-											player.stop();
-									} else {
-											btn.removeClass("btn-play");
-											btn.addClass("btn-pause");
-											btn.html("Pause");
-											player.start();
-									}
-							});
-
-							$('.btn-pause').click(function() {
-									var btn = $(this);
-									if (player.isPlaying()) {
-											btn.removeClass("btn-pause");
-											btn.addClass("btn-play");
-											btn.html("Play");
-											player.stop();
-									} else {
-											btn.removeClass("btn-play");
-											btn.addClass("btn-pause");
-											btn.html("Pause");
-											player.start();
-									}
-							});
-
-
-					tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
-	            updateTimeDimension: true,
-	            setDefaultTime: true,
-	            cache: 365,
-	            zIndex: 100,
-	        });
-	        tdWmsLayer.addTo(map);
-
-					var firstLoad = 0;
-					map.timeDimension.on('timeload', function(data) {
-								var date = new Date(map.timeDimension.getCurrentTime());
-								var zone = "Europe/London" //UTC
-								$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
-								$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
-
-								firstLoad += 1;
-								setTimeout(function(){
-									if(firstLoad === 1){
-									$('.btn-prev').click();
-									}
-								}, 5);
-
-								if (data.time == map.timeDimension.getCurrentTime()) {
-										$('.map-loading').css('display', 'none');
-								}
-						});
-					map.timeDimension.on('timeloading', function(data) {
-							if (data.time == map.timeDimension.getCurrentTime()) {
-									$('.map-loading').css('display', 'block');
-							}
-					});
-
-				},
-				function (error) {
-					// Error Callback
-					console.log('ERROR: ' + error);
-				}
-			);
 		}
 
 
@@ -1384,15 +907,68 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 		// 	}
 		// });
 
-		$('input[type=checkbox][name=affected_area]').click(function(){
-			if(this.checked) {
-				map.addLayer(affected_district);
-			}else{
-				if (map.hasLayer(affected_district)) {
-					map.removeLayer(affected_district);
+
+		$('input[type=radio][name=ffg_param]').click(function(){
+			var param = $(this).val();
+			var ffg_basins_style = {
+				 fillColor: '#FFF',
+				 weight: 0.5,
+				 opacity: 0,
+				 color: 'white',
+				 fillOpacity: 0.2
+			 };
+			 if(map.hasLayer(mrc_ffgmap)){
+				 map.removeLayer(mrc_ffgmap);
+			 }
+			 var mapVals =  {
+				 "ASMT" : [0, 0.30, 0.65, 0.85, 0.90, 0.95, 1, 1000],
+				 "FFG01" : [0, 15, 30, 60, 100, 160, 220, 1000],
+				 "FFG03" : [0, 15, 30, 60, 100, 160, 220, 1000],
+				 "FFG06" : [0, 15, 30, 60, 100, 160, 220, 1000],
+				 "FMAP101" : [0, 30, 70, 120, 180, 240, 300, 1000],
+				 "FMAP103" : [0, 30, 70, 120, 180, 240, 300, 1000],
+				 "FMAP106" : [0, 30, 70, 120, 180, 240, 300, 1000],
+				 "FMAP124" : [0, 30, 70, 120, 180, 240, 300, 1000],
+			 }
+
+			 var mapColors =  {
+				 "ASMT" : ['#FFF', '#DEDC28', '#B59700', '#3EDC3A', '#006200', '#304AFC', '#170078', '#170078'],
+				 "FFG01" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+				 "FFG03" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+				 "FFG06" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+				 "FMAP101" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+				 "FMAP103" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+				 "FMAP106" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+				 "FMAP124" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+			 }
+
+			mrc_ffgmap = L.geoJSON(country_data, {
+				style: ffg_basins_style,
+				onEachFeature: function (feature, layer) {
+					if (feature.properties[param] <= mapVals[param][0]) {
+							layer.setStyle({fillColor : mapColors[param][0],fillOpacity: 0,color: mapColors[param][0]});
+					}else if (feature.properties[param] <= mapVals[param][1]) {
+							layer.setStyle({fillColor :mapColors[param][1],fillOpacity: 0.7,opacity: 1,color: mapColors[param][1]});
+					}else if (feature.properties[param] <= mapVals[param][2]){
+							layer.setStyle({fillColor :mapColors[param][2],fillOpacity: 0.7,opacity: 1,color: mapColors[param][2]});
+					}else if (feature.properties[param] <= mapVals[param][3]){
+							layer.setStyle({fillColor :mapColors[param][3],fillOpacity: 0.7,opacity: 1,color: mapColors[param][3]});
+					}else if (feature.properties[param] <= mapVals[param][4]){
+							layer.setStyle({fillColor :mapColors[param][4],fillOpacity: 0.7,opacity: 1,color: mapColors[param][4]});
+					}else if (feature.properties[param] <= mapVals[param][5]){
+							layer.setStyle({fillColor :mapColors[param][5],fillOpacity: 0.7,opacity: 1,color: mapColors[param][5]});
+					} else if (feature.properties[param] <= mapVals[param][6]){
+							layer.setStyle({fillColor :mapColors[param][6],fillOpacity: 0.7,opacity: 1,color: mapColors[param][6]});
+					} else  if (feature.properties[param] <= mapVals[param][7]){
+							layer.setStyle({fillColor :mapColors[param][7],fillOpacity: 0.7,opacity: 1,color: mapColors[param][7]});
+					}
 				}
-			}
+			}).addTo(map);
+			$("#tableOperationalList").empty();
+			createEventList();
+
 		});
+
 
 
 		/**
@@ -1422,6 +998,38 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 			$('.layer-control').toggleClass( "hide" )
 		})
 
+		var mrcbasins_geojson;
+		var mrcbasins;
+		// $.getJSON('data/mekong_mrcffg_basins.geojson')
+		//  .done(function (data, status) {
+		// 	 mrcbasins = data.features;
+		// 	 if(map.hasLayer(mrcbasins_geojson)){
+		// 		 map.removeLayer(mrcbasins_geojson);
+		// 	 }
+		// 	 mrcbasins_geojson = L.geoJSON(data, {style: basin_style}).addTo(map);
+		//  });
+		//
+		$("#country_select").change(function() {
+			var selected_country = $(this).val();
+			console.log(selected_country);
+			var basin_style = {
+				 fillColor: '#9999ff',
+				 weight: 0.2,
+				 opacity: 1,
+				 color: 'white',
+				 fillOpacity: 0.1
+			 };
+			 $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
+				.done(function (data, status) {
+			    mrcbasins = data.features;
+					if(map.hasLayer(mrcbasins_geojson)){
+						map.removeLayer(mrcbasins_geojson);
+					}
+					mrcbasins_geojson = L.geoJSON(data, {style: basin_style}).addTo(map);
+
+				});
+		});
+
 		$(document).on('click', '.liPlaceName', function(event) {
 			$('#menu-close-btn').click();
 			event.preventDefault();
@@ -1430,8 +1038,7 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 
 		});
 
-		$(document).on('click', '#loadmore-op-btn', function() {
-			this.remove();
+		function createEventList() {
 			var endNumber = loadCount + 10;
 			if($scope.events.length < endNumber){
 				endNumber = $scope.events.length;
@@ -1440,52 +1047,69 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 			}
 			for(var i = loadCount; i< endNumber; i++){
 				loadCount += 1;
-				var sid =  $scope.events[i]["id"];
-				var sdate = $scope.events[i]["date2"] + ' '+ $scope.events[i]["date"].split(" ")[1];
-				var lng = $scope.events[i]["center_lng"];
-				var lat = $scope.events[i]["center_lat"];
-				var mctime = $scope.events[i]["mctime"];
-				var mcspace = $scope.events[i]["mcspace"];
-				var mcmax = $scope.events[i]["mcmax"];
-				var mcvol = $scope.events[i]["mcvol"];
-				var total_mag = $scope.events[i]["total_mag"];
+				var basin_id =  $scope.events[i]["BASIN"];
+				var ASMT = $scope.events[i]["ASMT"];
+				var FFG01 = $scope.events[i]["FFG01"];
+				var FFG03 = $scope.events[i]["FFG03"];
+				var FFG06 = $scope.events[i]["FFG06"];
+				var FMAP101 = $scope.events[i]["FMAP101"];
+				var FMAP103 = $scope.events[i]["FMAP103"];
+				var FMAP106 = $scope.events[i]["FMAP106"];
+				var FMAP124 = $scope.events[i]["FMAP124"];
+				var class_color = '';
 
-				if(mcmax <= 45.44 && mcvol < 4.69){
-					var megClass = colors[0];
-				}else if ( mcmax <= 61.84 && mcvol < 9.47) {
-					var megClass = colors[1];
+				var mapVals =  {
+					"ASMT" : [0, 0.30, 0.65, 0.85, 0.90, 0.95, 1, 1000],
+					"FFG01" : [0, 15, 30, 60, 100, 160, 220, 1000],
+					"FFG03" : [0, 15, 30, 60, 100, 160, 220, 1000],
+					"FFG06" : [0, 15, 30, 60, 100, 160, 220, 1000],
+					"FMAP101" : [0, 30, 70, 120, 180, 240, 300, 1000],
+					"FMAP103" : [0, 30, 70, 120, 180, 240, 300, 1000],
+					"FMAP106" : [0, 30, 70, 120, 180, 240, 300, 1000],
+					"FMAP124" : [0, 30, 70, 120, 180, 240, 300, 1000],
 				}
-				else if ( mcmax <= 72.69 && mcvol < 12.64) {
-					var megClass = colors[2];
+
+				var mapColors =  {
+					"ASMT" : ['#FFF', '#DEDC28', '#B59700', '#3EDC3A', '#006200', '#304AFC', '#170078', '#170078'],
+					"FFG01" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+					"FFG03" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+					"FFG06" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
+					"FMAP101" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+					"FMAP103" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+					"FMAP106" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
+					"FMAP124" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
 				}
-				else if ( mcmax <= 83.11 && mcvol < 15.68) {
-					var megClass = colors[3];
-				}
-				else if ( mcmax <= 96.59 && mcvol < 19.61) {
-					var megClass = colors[4];
-				}
-				else if ( mcmax <= 106.76 && mcvol < 22.56) {
-					var megClass = colors[5];
-				}
-				else if ( mcmax <= 116.76 && mcvol < 25.50) {
-					var megClass = colors[6];
-				}
-				else if ( mcmax <= 130.04 && mcvol < 29.37) {
-					var megClass = colors[7];
-				}
-				else if (mcmax >= 130.05) {
-					var megClass = colors[8];
+
+				var param = $('input[type=radio][name=ffg_param]:checked').val();
+				var selected_param = $scope.events[i][param];
+				console.log(param)
+				if (selected_param <= mapVals[param][0]) {
+						class_color = mapColors[param][0];
+				}else if (selected_param <= mapVals[param][1]) {
+						class_color = mapColors[param][1];
+				}else if (selected_param <= mapVals[param][2]){
+						class_color = mapColors[param][2];
+				}else if (selected_param <= mapVals[param][3]){
+						class_color = mapColors[param][3];
+				}else if (selected_param <= mapVals[param][4]){
+						class_color = mapColors[param][4];
+				}else if (selected_param <= mapVals[param][5]){
+						class_color = mapColors[param][5];
+				} else if (selected_param <= mapVals[param][6]){
+					class_color = mapColors[param][6];
+				} else  if (selected_param <= mapVals[param][7]){
+						class_color = mapColors[param][7];
 				}
 
 				$("#tableOperationalList").append('<li>'+
-				'<a href="#" class="liPlaceName" data-id="'+sid+'">'+
+				'<a href="#" class="liPlaceName" data-id="'+basin_id+'">'+
 				'<div class="row">'+
-				'<div class="col-sm-3"><div class="meg-number" style="background-color:'+megClass+'"><p>'+mcvol.toFixed(2)+'</p></div></div>'+
+				'<div class="col-sm-3"><div class="meg-number" style="background-color:'+class_color+'"><p>'+selected_param+'</p></div></div>'+
 				'<div class="col-sm-9">'+
-				'<p class="place-name-list">'+ sdate + '</p>'+
-				'<p class="place-location-list"><b>Total volume:</b> '+ mcvol.toFixed(2)+ ' km<sup>3</sup></p>'+
-				'<p class="place-location-list"><b>Duration:</b> '+ mctime+' hrs</p>'+
-				'<p class="place-location-list"><b>Max intensity:</b> '+ mcmax.toFixed(2)+' mm/h</p>'+
+				'<p class="place-name-list">'+ basin_id + '</p>'+
+				'<p class="place-location-list"><b>Fash flood guidance 1 hour:</b> '+ FFG01+ ' </p>'+
+				'<p class="place-location-list"><b>Area forecasted 1 hour:</b> '+ FMAP101+' </p>'+
+				'<p class="place-location-list"><b>Average soil water:</b> '+ ASMT+'</p>'+
 				'</div>'+
 				'</div>'+
 				'</a>'+
@@ -1496,7 +1120,10 @@ angular.module('core').controller('mapRealtimeCtrl', function ($scope, $http) {
 				'Load More'+
 				'</li>');
 			}
+		}
 
-
+		$(document).on('click', '#loadmore-op-btn', function() {
+			this.remove();
+			createEventList();
 		});
 	});

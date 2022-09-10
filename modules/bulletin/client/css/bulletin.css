@@ -1,3 +1,6 @@
+input{
+  border: none;
+}
 .cover-photo{
     background-image: url("/modules/home/client/img/cloud2.png");
     background-size: cover;
@@ -170,7 +173,7 @@ p {
 
 table {
   font-family: arial, sans-serif;
-  border-collapse: collapse;
+  /* border-collapse: collapse; */
   width: 100%;
 }
 
@@ -178,8 +181,4 @@ td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
 }

@@ -11,7 +11,7 @@ module.exports = {
 				'public/lib/nouislider/distribute/nouislider.css',
 				'public/lib/ion-rangeslider/css/ion.rangeSlider.min.css',
 				'public/lib/leaflet/dist/leaflet.css',
-				'https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css'
+				'public/lib/leaflet-timedimension/dist/leaflet.timedimension.control.min.css',
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.min.js',

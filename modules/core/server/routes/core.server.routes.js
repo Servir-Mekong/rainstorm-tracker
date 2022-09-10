@@ -25,6 +25,7 @@ module.exports = function (app) {
   app.route('/action=filter-events&yearRange=:yearRange&monthRange=:monthRange&start_vol=:start_vol&end_vol=:end_vol&start_duration=:start_duration&end_duration=:end_duration&min_intensity=:min_intensity&max_intensity=:max_intensity&filter_area=:filter_area').post(core.filterEvents);
   app.route('/action=filter-operational-events&start_vol=:start_vol&end_vol=:end_vol&start_duration=:start_duration&end_duration=:end_duration&min_intensity=:min_intensity&max_intensity=:max_intensity&filter_area=:filter_area').post(core.filterOperationalEvents);
   app.route('/action=get-realtime-events').post(core.getRealTimeEvents);
+  app.route('/action=get-ffg').post(core.getFFG);
   app.route('/action=get-realtime-detail&id=:id?').post(core.getRealTimeDetail);
   app.route('/action=filter-realtime-events&start_vol=:start_vol&end_vol=:end_vol&start_duration=:start_duration&end_duration=:end_duration&min_intensity=:min_intensity&max_intensity=:max_intensity&filter_area=:filter_area').post(core.filterRealTimeEvents);
   app.route('/action=get-number-events').post(core.getNumberofStorms);

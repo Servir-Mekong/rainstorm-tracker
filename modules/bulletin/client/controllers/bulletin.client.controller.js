@@ -3,7 +3,9 @@
 angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $(".navbar-brand.navmenu").html("");
   $(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
-
+  $("#start_date").datepicker({
+    format: 'dd/mm/yyyy'
+  });
   $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
   // Send this header only in post requests. Specifies you are sending a JSON object
   $http.defaults.headers.post['dataType'] = 'json'
@@ -11,6 +13,68 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   var totalEvents = 0;
   var totalEventLand = 0;
   var totalEventOcean = 0;
+
+  	/**
+  		* initialize leaflet map
+  		*/
+      var map_options = {
+  			zoomControl: false,
+  			minZoom: 0,
+  			maxZoom: 20,
+  			maxBounds: [ [-10, 160],[50, 20]],
+  			timeDimension: true,
+        scrollWheelZoom: false,
+  		};
+  		var map_ffg01 = L.map('map_FFG01',map_options).setView([15.8700, 100.9925], 5);
+      var map_ffg03 = L.map('map_FFG03',map_options).setView([15.8700, 100.9925], 5);
+      var map_ffg06 = L.map('map_FFG06',map_options).setView([15.8700, 100.9925], 5);
+      var map_fmap101 = L.map('map_FMAP101',map_options).setView([15.8700, 100.9925], 5);
+      var map_fmap103 = L.map('map_FMAP103',map_options).setView([15.8700, 100.9925], 5);
+      var map_fmap106 = L.map('map_FMAP106',map_options).setView([15.8700, 100.9925], 5);
+
+  		/**
+  		* initial white theme basemap
+  		*/
+  		var mbAttr = 'Map data &copy; <a href="https://www.mapbox.com/">MapBox</a> contributors';
+  		var mbUrl = 'https://api.mapbox.com/styles/v1/servirmekong/ckecozln92fkk19mjhuoqxhuw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic2VydmlybWVrb25nIiwiYSI6ImNrYWMzenhldDFvNG4yeXBtam1xMTVseGoifQ.Wr-FBcvcircZ0qyItQTq9g';
+  		var basemap_layer_ffg01 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var basemap_layer_ffg03 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var basemap_layer_ffg06 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var basemap_layer_fmap101 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var basemap_layer_fmap103 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var basemap_layer_fmap106 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+  		basemap_layer_ffg01.addTo(map_ffg01);
+      basemap_layer_ffg03.addTo(map_ffg03);
+      basemap_layer_ffg06.addTo(map_ffg06);
+      basemap_layer_fmap101.addTo(map_fmap101);
+      basemap_layer_fmap103.addTo(map_fmap103);
+      basemap_layer_fmap106.addTo(map_fmap106);
+
+
+
+  		// Load geographic coverage area Geojson
+      var basin_style = {
+         fillColor: '#9999ff',
+         weight: 0.2,
+         opacity: 1,
+         color: 'white',
+         fillOpacity: 0.1
+       };
+  		var storm_boundingbox;
+      var mrcbasins;
+  		 // $.getJSON('data/mrcffg_basins.geojson')
+  			// .done(function (data, status) {
+       //    mrcbasins = data;
+  			// 	var basins_ffg01 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg01);
+       //    var basins_ffg03 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg03);
+       //    var basins_ffg06 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg06);
+       //    var basins_fmap101 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap101);
+       //    var basins_fmap103 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap103);
+       //    var basins_fmap106 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap106);
+  			// });
+
+
 
   function CSVToArray(strData, strDelimiter) {
 		// Check to see if the delimiter is defined. If not,
@@ -323,48 +387,48 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       // angular controller
       var lines = data.split('\n')//.replace("\r", "");
       var FFGS_url = "http://ffw.mrcmekong.org/ffg_new/";
-      var _ffgs_prod_fcst_ffr_outlook1_12hr_regional = []
-      var _ffgs_prod_fcst_ffr_outlook1_24hr_regional = []
-      var _ffgs_prod_obs_map_merged_01hr_regional = []
-      var _ffgs_prod_obs_map_merged_24hr_regional = []
-      var _ffgs_prod_est_asm_sacsma_06hr_regional = []
-      var _ffgs_prod_fcst_map_forecast1_01hr_regional = []
-      var _ffgs_prod_fcst_map_forecast1_03hr_regional = []
-      var _ffgs_prod_fcst_map_forecast1_06hr_regional = []
-      _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
-      _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
-
-      _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_01hr_regional.png');
-      _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_24hr_regional.png');
-      _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_est_asm_sacsma_06hr_regional.png');
-
-      _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
-      _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
-      _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
-
-      if(_ffgs_prod_fcst_ffr_outlook1_12hr_regional.length === 0){
-        _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
-        _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
-
-        _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_01hr_regional.png');
-        _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_24hr_regional.png');
-        _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_est_asm_sacsma_06hr_regional.png');
-
-        _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
-        _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
-        _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
-      }
-
-      $("#ffgs_prod_fcst_ffr_outlook1_12hr_regional").attr("src",FFGS_url + _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
-      $("#ffgs_prod_fcst_ffr_outlook1_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
-
-      $("#ffgs_prod_obs_map_merged_01hr_regional").attr("src",FFGS_url + _ffgs_prod_obs_map_merged_01hr_regional.at(-1));
-      $("#ffgs_prod_obs_map_merged_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_obs_map_merged_24hr_regional.at(-1));
-      $("#ffgs_prod_est_asm_sacsma_06hr_regional").attr("src",FFGS_url + _ffgs_prod_est_asm_sacsma_06hr_regional.at(-1));
-
-      $("#ffgs_prod_fcst_map_forecast1_01hr_regional").attr("src", FFGS_url +  _ffgs_prod_fcst_map_forecast1_01hr_regional.at(-1));
-      $("#ffgs_prod_fcst_map_forecast1_03hr_regional").attr("src", FFGS_url + _ffgs_prod_fcst_map_forecast1_03hr_regional.at(-1));
-      $("#ffgs_prod_fcst_map_forecast1_06hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_map_forecast1_06hr_regional.at(-1));
+      // var _ffgs_prod_fcst_ffr_outlook1_12hr_regional = []
+      // var _ffgs_prod_fcst_ffr_outlook1_24hr_regional = []
+      // var _ffgs_prod_obs_map_merged_01hr_regional = []
+      // var _ffgs_prod_obs_map_merged_24hr_regional = []
+      // var _ffgs_prod_est_asm_sacsma_06hr_regional = []
+      // var _ffgs_prod_fcst_map_forecast1_01hr_regional = []
+      // var _ffgs_prod_fcst_map_forecast1_03hr_regional = []
+      // var _ffgs_prod_fcst_map_forecast1_06hr_regional = []
+      // _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
+      // _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
+      //
+      // _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_01hr_regional.png');
+      // _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_24hr_regional.png');
+      // _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_est_asm_sacsma_06hr_regional.png');
+      //
+      // _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
+      // _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
+      // _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
+      //
+      // if(_ffgs_prod_fcst_ffr_outlook1_12hr_regional.length === 0){
+      //   _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
+      //   _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
+      //
+      //   _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_01hr_regional.png');
+      //   _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_24hr_regional.png');
+      //   _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_est_asm_sacsma_06hr_regional.png');
+      //
+      //   _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
+      //   _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
+      //   _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
+      // }
+      //
+      // $("#ffgs_prod_fcst_ffr_outlook1_12hr_regional").attr("src",FFGS_url + _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
+      // $("#ffgs_prod_fcst_ffr_outlook1_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
+      //
+      // $("#ffgs_prod_obs_map_merged_01hr_regional").attr("src",FFGS_url + _ffgs_prod_obs_map_merged_01hr_regional.at(-1));
+      // $("#ffgs_prod_obs_map_merged_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_obs_map_merged_24hr_regional.at(-1));
+      // $("#ffgs_prod_est_asm_sacsma_06hr_regional").attr("src",FFGS_url + _ffgs_prod_est_asm_sacsma_06hr_regional.at(-1));
+      //
+      // $("#ffgs_prod_fcst_map_forecast1_01hr_regional").attr("src", FFGS_url +  _ffgs_prod_fcst_map_forecast1_01hr_regional.at(-1));
+      // $("#ffgs_prod_fcst_map_forecast1_03hr_regional").attr("src", FFGS_url + _ffgs_prod_fcst_map_forecast1_03hr_regional.at(-1));
+      // $("#ffgs_prod_fcst_map_forecast1_06hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_map_forecast1_06hr_regional.at(-1));
 
     },
     error: function() {
@@ -374,6 +438,203 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
 
 	$scope.getNumberofStorms('realtime');
+
+
+
+   var country_data;
+  $scope.fetchFFG = function () {
+    $.ajax("/FFGS/mrcffg.csv", {
+      success: function(data) {
+        var fetchFFG_data = JSON.parse(CSV2JSON(data));
+				var no_country = 0;
+				var no_province = 0;
+				var basin_features=[]
+
+        country_data = mrcbasins;
+        for(var i=0; i< mrcbasins.length; i++){
+          for(var j=0; j< fetchFFG_data.length; j++){
+            if(mrcbasins[i]["properties"]["value"] === parseInt(fetchFFG_data[j]["BASIN"])){
+              country_data[i]["properties"] = fetchFFG_data[j]
+            }
+          }
+        }
+
+
+        var ffg_basins_style = {
+           fillColor: '#FFF',
+           weight: 0.5,
+           opacity: 0,
+           color: 'white',
+           fillOpacity: 1
+         };
+
+         if(map_ffg01.hasLayer(mrc_ffg01)){
+           map_ffg01.removeLayer(mrc_ffg01);
+         }
+
+        var mrc_ffg01 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FFG01 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FFG01 <= 15) {
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }else if (feature.properties.FFG01 <= 30){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            }else if (feature.properties.FFG01 <= 60){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FFG01 <= 100){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FFG01 <= 160){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            } else if (feature.properties.FFG01 <= 220){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            } else  if (feature.properties.FFG01 <= 1000){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }
+          }
+        }).addTo(map_ffg01);
+
+        if(map_ffg03.hasLayer(mrc_ffg03)){
+          map_ffg03.removeLayer(mrc_ffg03);
+        }
+        var mrc_ffg03 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FFG03 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FFG03 <= 15) {
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }else if (feature.properties.FFG03 <= 30){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            }else if (feature.properties.FFG03 <= 60){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FFG03 <= 100){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FFG03 <= 160){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            } else if (feature.properties.FFG03 <= 220){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            } else  if (feature.properties.FFG03 <= 1000){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }
+          }
+        }).addTo(map_ffg03);
+
+        if(map_ffg06.hasLayer(mrc_ffg06)){
+          map_ffg06.removeLayer(mrc_ffg06);
+        }
+        var mrc_ffg06 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FFG01 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FFG06 <= 15) {
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }else if (feature.properties.FFG06 <= 30){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            }else if (feature.properties.FFG06 <= 60){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FFG06 <= 100){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FFG06 <= 160){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            } else if (feature.properties.FFG06 <= 220){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            } else  if (feature.properties.FFG06 <= 1000){
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }
+          }
+        }).addTo(map_ffg06);
+
+        if(map_fmap101.hasLayer(mrc_fmap101)){
+          map_fmap101.removeLayer(mrc_fmap101);
+        }
+        var mrc_fmap101 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FMAP101 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FMAP101 <= 30) {
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }else if (feature.properties.FMAP101 <= 70){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            }else if (feature.properties.FMAP101 <= 120){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FMAP101 <= 180){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FMAP101 <= 240){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            } else if (feature.properties.FMAP101 <= 300){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            } else  if (feature.properties.FMAP101 <= 1000){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }
+          }
+        }).addTo(map_fmap101);
+
+        if(map_fmap103.hasLayer(mrc_fmap103)){
+          map_fmap103map_fmap103.removeLayer(mrc_fmap103);
+        }
+        var mrc_fmap103 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FMAP103 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FMAP103 <= 30) {
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }else if (feature.properties.FMAP103 <= 70){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            }else if (feature.properties.FMAP103 <= 120){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FMAP103 <= 180){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FMAP103 <= 240){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            } else if (feature.properties.FMAP103 <= 300){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            } else  if (feature.properties.FMAP103 <= 1000){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }
+          }
+        }).addTo(map_fmap103);
+
+        if(map_fmap106.hasLayer(mrc_fmap106)){
+          map_fmap106.removeLayer(mrc_fmap106);
+        }
+        var mrc_fmap106 = L.geoJSON(country_data, {
+          style: ffg_basins_style,
+          onEachFeature: function (feature, layer) {
+            if (feature.properties.FMAP106 <= 0) {
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+            }else if (feature.properties.FMAP106 <= 30) {
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+            }else if (feature.properties.FMAP106 <= 70){
+                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+            }else if (feature.properties.FMAP106 <= 120){
+                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+            }else if (feature.properties.FMAP106 <= 180){
+                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+            }else if (feature.properties.FMAP106 <= 240){
+                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+            } else if (feature.properties.FMAP106 <= 300){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            } else  if (feature.properties.FMAP106 <= 1000){
+                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+            }
+          }
+        }).addTo(map_fmap106);
+        // mrcffg_features.addTo(map_ffg03);
+			},
+			function (error) {
+				// Error Callback
+				console.log('ERROR: ' + error);
+			}
+    });
+	};
+
+  // $scope.fetchFFG();
+  var mrcbasins;
 
   $scope.fetchEvents = function (type) {
     if(type === 'realtime'){
@@ -530,6 +791,32 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 	};
 
 
+  $("#country_select").change(function() {
+    var selected_country = $(this).val();
+     $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
+      .done(function (data, status) {
+        mrcbasins = data.features;
+        // if(map_ffg01.hasLayer(mrc_ffg01)){
+        //   map_ffg01.removeLayer(mrc_ffg01);
+        // }
+        // if(map_ffg03.hasLayer(mrc_ffg03)){
+        //   map_ffg03.removeLayer(mrc_ffg03);
+        // }
+        // if(map_ffg06.hasLayer(mrc_ffg06)){
+        //   map_ffg06.removeLayer(mrc_ffg06);
+        // }
+        // if(map_fmap101.hasLayer(mrc_fmap101)){
+        //   map_fmap101.removeLayer(mrc_fmap101);
+        // }
+        // if(map_fmap103.hasLayer(mrc_fmap103)){
+        //   map_fmap103.removeLayer(mrc_fmap103);
+        // }
+        // if(map_fmap106.hasLayer(mrc_fmap106)){
+        //   map_fmap106.removeLayer(mrc_fmap106);
+        // }
+        $scope.fetchFFG();
+      });
+  });
 
   $("#nearrealtime_data").click(function(){
     totalEvents = 0;
@@ -552,7 +839,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
   $("#btnSave").click(function() {
       $scope.showLoader = true;
-      var node = document.getElementById('section1');
+      var node = document.getElementById('div_savepng');
       domtoimage.toPng(node)
           .then(function (dataUrl) {
               var img = new Image();
@@ -560,7 +847,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
               var a = document.createElement("a");
               a.href = dataUrl;
               var newDate = new Date();
-              var pngfilename = "MDCW-REPORT: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".png";
+              var pngfilename = "Flash-Flood-Bulletin-Mekong: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".png";
               a.setAttribute("download", pngfilename);
               a.click();
               $scope.showLoader = false;
@@ -572,28 +859,80 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
   $("#btnExport").click(function() {
     $scope.showLoader = true;
-    var pdf = new jsPDF("l", "mm", "a4");
+    var pdf = new jsPDF("p", "mm", "a4");
     var width = pdf.internal.pageSize.getWidth();
     var height = pdf.internal.pageSize.getHeight();
 
     var currentMap = document.getElementById('section1');
+
+    var divHeight = currentMap.clientHeight
+    var divWidth = currentMap.clientWidth
+    var ratio = divHeight / divWidth;
+    height = ratio * width;
+    var imgReportHeader;
+
+    var reportheader = document.getElementById('report-header');
+    var divHeight_reporthead = reportheader.clientHeight
+    var divWidth_reporthead = reportheader.clientWidth
+    var ratio_reporthead = divHeight_reporthead / divWidth_reporthead;
+    var height_reporthead = ratio_reporthead * width;
+    domtoimage.toPng(reportheader)
+        .then(function (dataUrl) {
+            imgReportHeader = new Image();
+            imgReportHeader.src = dataUrl;
+        })
+        .catch(function (error) {
+            console.error('oops, something went wrong!', error);
+      });
+
+
     domtoimage.toPng(currentMap)
         .then(function (dataUrl) {
             var img = new Image();
             img.src = dataUrl;
-            pdf.addImage(img, 'JPEG', 10, 10, width-10, height-20);
+            pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
+            pdf.addImage(img, 'PNG', 15, 20, width - 25, height - 15);
 
             var outlookMap = document.getElementById('section2');
+            var divHeight = outlookMap.clientHeight
+            var divWidth = outlookMap.clientWidth
+            var ratio = divHeight / divWidth;
+            height = ratio * width;
+
             domtoimage.toPng(outlookMap)
                 .then(function (dataUrl) {
                     var imgOutlok = new Image();
                     imgOutlok.src = dataUrl;
                     pdf.addPage();
-                    pdf.addImage(imgOutlok, 'JPEG', 10, 10, width-10, height-20);
-                    var newDate = new Date();
-                    var pdffilename = "FFG-REPORT: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".pdf";
-                    pdf.save(pdffilename);
-                    $scope.showLoader = false;
+                    pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
+                    pdf.addImage(imgOutlok, 'PNG', 15, 20, width - 25, height - 15);
+
+                    var section3 = document.getElementById('section3');
+                    var divHeight = section3.clientHeight
+                    var divWidth = section3.clientWidth
+                    var ratio = divHeight / divWidth;
+                    height = ratio * width;
+
+                    domtoimage.toPng(section3)
+                        .then(function (dataUrl) {
+                            var imgsection3 = new Image();
+                            imgsection3.src = dataUrl;
+                            pdf.addPage();
+                            pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
+                            pdf.addImage(imgsection3, 'PNG', 15, 20, width - 25, height - 15);
+
+                            var newDate = new Date();
+                            var pdffilename = "Flash-Flood-Bulletin-Mekong: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".pdf";
+                            pdf.save(pdffilename);
+                            $scope.showLoader = false;
+
+
+                        })
+                        .catch(function (error) {
+                            console.error('oops, something went wrong!', error);
+                      });
+
+
                 })
                 .catch(function (error) {
                     console.error('oops, something went wrong!', error);
@@ -605,7 +944,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       });
 
   });
-
 
 
 });

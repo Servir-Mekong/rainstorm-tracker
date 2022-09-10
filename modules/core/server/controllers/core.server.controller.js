@@ -109,6 +109,21 @@ exports.getRealTimeEvents = function (req, res) {
 	});
 };
 
+exports.getFFG = function (req, res) {
+  //var query = "SELECT * FROM tbl_operational_events WHERE 1=1 AND  mcmax > 45.44";
+  var query = "SELECT ffg.* , ST_AsGeoJSON(geom) as geom from mrcffg ffg left join mrcffg_basins on ffg.basin_id= mrcffg_basins.value limit 100;";
+	db.any(query)
+	.then(data => {
+		// success
+		res.setHeader("Content-Type", "application/json");
+		res.send(JSON.stringify(data));
+	})
+	.catch(error => {
+		console.log('ERROR:', error); // print the error;
+		console.log('ERROR');
+	});
+};
+
 
 exports.getDetail = function (req, res) {
   var params = req.params;
@@ -417,4 +432,3 @@ exports.realtimeintersectArea = function(req, res) {
       console.log('ERROR');
     });
 }
-

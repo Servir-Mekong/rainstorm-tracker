@@ -2,367 +2,408 @@
   <div class="home" style="margin-top: 60px;">
 
 
-      <div class="container" style="padding-top:50px;color: #000;">
-        <input type="button" id="btnExport" value="Export PDF" style="background: #f2b464;border: none;color: #FFF;margin-bottom:15px;"/>
-<input type="button" id="btnSave" value="Save PNG" style="background: #f2b464;border: none;color: #FFF;margin-bottom:15px;"/>
-        <div class="" id="section1">
-          <div class="row justify-content-md-center" style="background: #f5f5f5; padding: 5px 0;">
-            <div class="col-lg-6 col-md-6">
-              <p style="margin-bottom: 1px;"><b>Mekong River Commission Secretariat (MRCS)</b></p>
-              <p>Regional Flood and Drought Management Center (RFDMC)</p>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <img src="modules/bulletin/client/img/partners/mrc-logo.png" style="width:50px;float: right;" alt="">
-            </div>
-          </div>
-          <div class="row justify-content-md-center">
-            <div class="col-lg-6 col-md-6">
-              <h1 style="font-size: 56px; font-weight: 800;">Flash Flood Bulletin Mekong</h1>
-              <p>On <span id="_date"></span> <span id="_month"></span> <span id="_year"></span> at <span id="timehour"></span> PM Local time</p>
-              <h4>Main conclusion and guidance for flash flood in the Lower Mekong Basin (LMB):</h4>
-              <ul>
-                <li>In the next 1-hr, 3-hr, and 6-hr, flash flood has been detected in some areas in Thailand, Lao PDR, and Viet Nam.</li>
-                <li>Details on the location of the flash flood risk areas in the LMB are in the attached excel file and on the webpage: <a href="http://ffw.mrcmekong.org/ffg.php">http://ffw.mrcmekong.org/ffg.php</a></li>
-                <li>In the next 12-hr and 24-hr, flash floods will likely occur in some areas in the LMB</li>
-                <li>The updated flash flood information will be provided at 8:00 am on 11 August 2022; and available on the webpage.</li>
-              </ul>
+  <div class="container" style="padding-top:50px;color: #000;">
 
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <h2 style="color:#333;">Flash Flood Risk</h2>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label style="color: #000;">COUNTRY </label>
               <div class="row">
-                <div class="col-lg-6 col-md-6">
-                  <img id="ffgs_prod_fcst_ffr_outlook1_12hr_regional" src="" style="width:100%" alt="">
-                  <p>12-hour Flash Flood Risk (12-hr FFR)</p>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                  <img id="ffgs_prod_fcst_ffr_outlook1_24hr_regional" src="" style="width:100%" alt="">
-                  <p>24-hour Flash Flood Risk (24-hr FFR)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <hr>
-        <div class="row justify-content-md-center" id="section2">
-          <div class="col-lg-6 col-md-6">
-            <div class="col-lg-12 align-items-center">
-              <h2 style="color:#333;">RainStorms (24-48 hours)</h2>
-                <ul  class="switchbutton" style="list-style: none;padding-inline-start: 0px; cursor: pointer;float: left;">
-                  <li class="active" id="realtime_data">REAL TIME</li>
-                  <li id="nearrealtime_data">NEAR REAL TIME</li>
-                </ul>
-            </div>
-          <div class="col-lg-12 col-md-6">
-            <div id="container" style="height: 400px; width: 500px"></div>
-          </div>
-          <div class="col-lg-12 col-md-6">
-            <div class="row">
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  THAILAND
-                  <div class="no-storms" id="Thailand"></div>
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  LAOS
-                  <div class="no-storms" id="Laos"></div>
-                </div>
-              </div>
-            </div>
-            <br>
-            <div class="row">
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  MYANMAR
-                  <div class="no-storms" id="Myanmar"></div>
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  CAMBODIA
-                  <div class="no-storms" id="Cambodia"></div>
-                </div>
-              </div>
-
-            </div>
-            <br>
-            <div class="row">
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  VIETNAM
-                  <div class="no-storms" id="Vietnam"></div>
-                </div>
-              </div>
-
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-1">
-                  OCEAN
-                  <div class="no-storms" id="China-Ocean"></div>
+                <div class="col-sm-12">
+                  <select class="form-control" id="country_select" style="font-size: 12px; padding: 0; padding-left: 10px;">
+                    <option value="mekong"></option>
+                    <option value="cambodia">Cambodia</option>
+                    <option value="laos">Laos</option>
+                    <option value="thailand">Thailand</option>
+                    <option value="vietnam">Vietnam</option>
+                  </select>
                 </div>
               </div>
             </div>
           </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6">
-            <h2 style="color:#333;">Critical Infrastructure</h2>
-            <div class="row">
-              <div class="col-lg-12 col-md-6">
-                <h4>Population Exposed</h4>
-                <div id="pop-age-chart" class="col-lg-4 text-center">
-                  <img src="modules/bulletin/client/img/pop.png" style="width: 100%" alt="">
-                </div>
-                <div id="pop-age-chart" class="col-lg-8" >
-                  <h4>Total Population</h4>
-                  <h1 style="font-size: 40px; font-weight: 700;color: #2f80ed;" id="total_pop">300000</h1>
-                </div>
-              </div>
-              </div>
-              <hr>
-              <div class="row">
-              <div class="col-lg-12 col-md-6">
-                <div id="pop-age-chart" class="col-lg-4 text-center">
-                  <img src="modules/bulletin/client/img/female.png" style="width: 80%" alt="">
-                </div>
-                <div id="pop-age-chart" class="col-lg-8" >
-                  <h4>Female Population</h4>
-                  <h2 style="color: #bb6bd9;" id="female_total_pop">1455555</h2>
-                  <div class="row">
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">0-15</p>
-                      <p><b id="female_pop_age1">0-15</b></p>
-                    </div>
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">15-65</p>
-                      <p><b id="female_pop_age2">0-15</b></p>
-                    </div>
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">> 65</p>
-                      <p><b id="female_pop_age3">0-15</b></p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div class="col-lg-12 col-md-6">
-
-                <div id="pop-age-chart" class="col-lg-4 text-center">
-                  <img src="modules/bulletin/client/img/male.png" style="width: 80%" alt="">
-                </div>
-                <div id="pop-age-chart" class="col-lg-8" >
-                  <h4>Male Population</h4>
-                  <h2 style="color: #2d9cdb;" id="male_total_pop">1455555</h2>
-                  <div class="row">
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">0-15</p>
-                      <p><b  id="male_pop_age1">0-15</b></p>
-                    </div>
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">15-65</p>
-                      <p><b id="male_pop_age2">0-15</b></p>
-                    </div>
-                    <div class="col-lg-4">
-                      <p style="margin-bottom: 0;">> 65</p>
-                      <p><b id="male_pop_age3">0-15</b></p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              </div>
-              <br>
-              <hr>
-            <div class="row">
-              <div class="col-lg-12 col-md-6">
-                <h4>Critical Infrastructure</h4>
-                <p>Hospital <span id="critical_hospital" style="float: right;"></p>
-
-                <p>Roads</p>
-                <ul>
-                  <li>Trunks: <span id="critical_road_trucks" style="float: right;"></span></li>
-                  <li>Primary: <span id="critical_road_primary" style="float: right;"></span></li>
-                  <li>Seconday: <span id="critical_road_secondary" style="float: right;"></span></li>
-                </ul>
-              </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label style="color: #000;">DATE</label>
+              <input class="form-control"  type="text" name="start_date" id="start_date" value="">
             </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label style="color: #000;">EXPORT </label><br>
+              <input class="form-control" type="button" id="btnExport" value="Export PDF"style="width:150px;display:inline;" />
+              <input class="form-control"  type="button" id="btnSave" value="Save PNG" style="width:150px;display:inline;"/>
+            </div>
+
           </div>
         </div>
+      </div>
 
-        <hr>
+    <div id="report-header" class="row justify-content-md-center" style="background: #eee; padding: 5px 0; border:0 solid #FFF;">
+      <div class="col-lg-6 col-md-6">
+        <p style="margin-bottom: 1px;"><b>Mekong River Commission Secretariat (MRCS)</b></p>
+        <p>Regional Flood and Drought Management Center (RFDMC)</p>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <img src="modules/bulletin/client/img/partners/mrc-logo.png" style="width:50px;float: right;" alt="">
+      </div>
+    </div>
+
+    <div class="" id="div_savepng">
+      <div class=""  id="section1">
         <div class="row justify-content-md-center">
-          <div class="col-lg-6 col-md-6">
-            <h2 style="color:#333;">FFGS Outputs</h2>
-            <div class="row">
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_obs_map_merged_01hr_regional" src="" style="width:100%" alt="">
-                <p>01-hour Mean Areal Precipitation (1-hr MAP)</p>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_obs_map_merged_24hr_regional" src="" style="width:100%" alt="">
-                <p>24-hours Mean Areal Precipitation (24-hr MAP) </p>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_est_asm_sacsma_06hr_regional" src="" style="width:100%" alt="">
-                <p>06-hours Average Soil Moisture (6-hr ASM) </p>
-              </div>
-              </div>
-            </div>
+          <div class="col-lg-12 col-md-6">
+            <h1 style="font-size: 56px; font-weight: 800;">Flash Flood Bulletin Mekong</h1>
+            <p>On <span id="_date"></span> <span id="_month"></span> <span id="_year"></span> at <span id="timehour"></span> PM Local time</p>
+            <h4>Main conclusion and guidance for flash flood in the Lower Mekong Basin (LMB):</h4>
+            <ul>
+              <li>In the next 1-hr, 3-hr, and 6-hr, flash flood has been detected in some areas in Thailand, Lao PDR, and Viet Nam.</li>
+              <li>Details on the location of the flash flood risk areas in the LMB are in the attached excel file and on the webpage: <a href="http://ffw.mrcmekong.org/ffg.php">http://ffw.mrcmekong.org/ffg.php</a></li>
+              <li>In the next 12-hr and 24-hr, flash floods will likely occur in some areas in the LMB</li>
+              <li>The updated flash flood information will be provided at 8:00 am on 11 August 2022; and available on the webpage.</li>
+            </ul>
 
-            <div class="col-lg-6 col-md-6">
-              <h2 style="color:#333;">Regional Rainfall Forecast</h2>
-            <div class="row">
-
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_fcst_map_forecast1_01hr_regional" src="" style="width:100%" alt="">
-                <p>01-hour Forecast Mean Areal Precipitation (1-hr FMAP)</p>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_fcst_map_forecast1_03hr_regional" src="" style="width:100%" alt="">
-                <p>03-hours Forecast Mean Areal Precipitation (3-hr FMAP) </p>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                <img id="ffgs_prod_fcst_map_forecast1_06hr_regional" src="" style="width:100%" alt="">
-                <p>06-hour Forecast Mean Areal Precipitation (6-hr FMAP)</p>
-              </div>
-            </div>
           </div>
-
-
-        </div>
-
-        <hr>
-        <div class="row justify-content-md-center">
           <!-- <div class="col-lg-6 col-md-6">
-            <h2 style="color:#333;">Reports</h2>
-          </div> -->
-
-          <div class="col-lg-12 col-md-6">
-            <h2 style="color:#333;">Flash Flood Risk by Province</h2>
-            <div class="row">
-              <div class="col-lg-12 col-md-6" style="display:none;">
-                <h4>01-Hour Flash Flood Risk and Location</h4>
-                <table id="ffg-01h-table">
-                  <tr>
-                    <th>Province</th>
-                    <th>District</th>
-                    <th>Hospital</th>
-                    <th>Total Pop</th>
-                    <th>Female > 65</th>
-                    <th>Male > 65</th>
-                    <th>Primary road</th>
-                    <th>Seconday road</th>
-                    <th>Level Risk</th>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-lg-12 col-md-6" style="display:none;">
-                <h4>03-Hour Flash Flood Risk and Location</h4>
-                <table id="ffg-03h-table">
-                  <tr>
-                    <th>Province</th>
-                    <th>District</th>
-                    <th>Hospital</th>
-                    <th>Total Pop</th>
-                    <th>Female > 65</th>
-                    <th>Male > 65</th>
-                    <th>Primary road</th>
-                    <th>Seconday road</th>
-                    <th>Level Risk</th>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-lg-12 col-md-6">
-                <h4>06-Hour Flash Flood Risk and Location</h4>
-                <table id="ffg-06h-table">
-                  <tr>
-                    <th>Province</th>
-                    <th>District</th>
-                    <th>Hospital</th>
-                    <th>Total Pop</th>
-                    <th>Female > 65</th>
-                    <th>Male > 65</th>
-                    <th>Primary road</th>
-                    <th>Seconday road</th>
-                    <th>Level Risk</th>
-                  </tr>
-                </table>
-              </div>
-
-            </div>
-          </div>
-
-
-
-        </div>
-
-
-      </div>
-
-    <br><br><br>
-
-
-      <footer id="footer">
-
-			<div class="footer-top" style="background-image: url('modules/bulletin/client/img/dark-blue-bg.png');height: 100px;background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%;">
-        <div class="container">
-        </div>
-      </div>
-			<div class="footer-top" style="background:#243549;">
-        <div class="container">
+          <h2 style="color:#333;">Flash Flood Risk</h2>
           <div class="row">
+          <div class="col-lg-6 col-md-6">
+          <div class="" id="map_ffg01" style="height:400px; width: 100%;"></div>
+          <p>12-hour Flash Flood Risk (12-hr FFR)</p>
+        </div>
+        <div class="col-lg-6 col-md-6">
+        <div class="" id="map_ffg03" style="height:400px; width: 100%;"></div>
+        <p>24-hour Flash Flood Risk (24-hr FFR)</p>
+      </div>
+    </div>
+  </div> -->
+</div>
 
-            <div class="col-lg-6 col-md-6 footer-info">
-              <h3><img src="modules/bulletin/client/img/partners/servir-mekong.png" alt="" style="width:auto; height:35px;"></h3>
+<hr>
 
-              <p>
-                <b>ASIAN DISASTER PREPAREDNESS CENTER (ADPC)</b> <br>
-                SM Tower, 24th Floor, 979/69 Paholyothin Road, Samsen Nai Phayathai,<br>
-                Bangkok 10400 Thailand<br>
-                BTS Skytrain: Sanam Pao, Exit 1<br>
-                <strong>Phone:</strong> +66 2 298 0681-92<br>
-                <strong>Fax:</strong> +66 2 298 0012<br>
-								<strong>For technical queries: </strong>miguel.barajas@adpc.net
-              </p>
-              <div class="social-links mt-3">
-              </div>
-            </div>
+<div class="row justify-content-md-center" style="background-color: white;">
+  <div class="col-lg-6 col-md-6">
+    <div class="col-lg-12 align-items-center">
+      <h2 style="color:#333;">RainStorms (24-48 hours)</h2>
+      <ul  class="switchbutton" style="list-style: none;padding-inline-start: 0px; cursor: pointer;float: left;">
+        <li class="active" id="realtime_data">REAL TIME</li>
+        <li id="nearrealtime_data">NEAR REAL TIME</li>
+      </ul>
+    </div>
+    <div class="col-lg-12 col-md-6">
+      <div id="container" style="height: 400px; width: 500px"></div>
+    </div>
+    <div class="col-lg-12 col-md-6">
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            THAILAND
+            <div class="no-storms" id="Thailand"></div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            LAOS
+            <div class="no-storms" id="Laos"></div>
+          </div>
+        </div>
 
-            <div class="col-lg-3 col-md-6 footer-links">
-              <h4>Menu Links</h4>
-              <ul>
-                <li><i class="bx bx-chevron-right"></i> <a href="/map" target="_blank">Historical Map</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="/operational-map" target="_blank">Operational Map</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="/realtime-map" target="_blank">Near-real Time Map</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="https://docs.google.com/document/d/e/2PACX-1vQ-SUPsHBc488TO8pcqUfYuqUgYSm77lfHhKF3zN33rG20v6l6rStmQmIDt_kOMnCrgYhsRj235YhrL/pub" target="_blank">How to use</a></li>
-              </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-6 footer-links">
-              <h4>Our Services</h4>
-              <ul>
-                <li><i class="bx bx-chevron-right"></i> <a href="http://hydrafloods-servir.adpc.net/" target="_blank">HyDraFloods</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="https://hfa.adpc.net/en/" target="_blank">Historical Flood Analysis Tool</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="http://surface-water-servir.adpc.net/" target="_blank">Surface Water Mapping Tool</a></li>
-                <li><i class="bx bx-chevron-right"></i> <a href="http://damtool-servir.adpc.net/" target="_blank">Reservoir Mapping Tool</a></li>
-              </ul>
-            </div>
-
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            MYANMAR
+            <div class="no-storms" id="Myanmar"></div>
           </div>
         </div>
       </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            CAMBODIA
+            <div class="no-storms" id="Cambodia"></div>
+          </div>
+        </div>
 
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            VIETNAM
+            <div class="no-storms" id="Vietnam"></div>
+          </div>
+        </div>
 
-      <div class="container">
-        <div class="copyright">
-          &copy; Copyright <strong><span>Rainstroms Tracker</span></strong>. All Rights Reserved
+        <div class="col-lg-4 col-md-6">
+          <div class="dashboard-1">
+            OCEAN
+            <div class="no-storms" id="China-Ocean"></div>
+          </div>
         </div>
       </div>
-    </footer><!-- End Footer -->
+    </div>
+  </div>
 
+  <div class="col-lg-6 col-md-6">
+    <h2 style="color:#333;">Critical Infrastructure</h2>
+    <div class="row">
+      <div class="col-lg-12 col-md-6">
+        <h4>Population Exposed</h4>
+        <div id="pop-age-chart" class="col-lg-4 text-center">
+          <img src="modules/bulletin/client/img/pop.png" style="width: 100%" alt="">
+        </div>
+        <div id="pop-age-chart" class="col-lg-8" >
+          <h4>Total Population</h4>
+          <h1 style="font-size: 40px; font-weight: 700;color: #2f80ed;" id="total_pop">300000</h1>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-lg-12 col-md-6">
+        <div id="pop-age-chart" class="col-lg-4 text-center">
+          <img src="modules/bulletin/client/img/female.png" style="width: 80%" alt="">
+        </div>
+        <div id="pop-age-chart" class="col-lg-8" >
+          <h4>Female Population</h4>
+          <h2 style="color: #bb6bd9;" id="female_total_pop">1455555</h2>
+          <div class="row">
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">0-15</p>
+              <p><b id="female_pop_age1">0-15</b></p>
+            </div>
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">15-65</p>
+              <p><b id="female_pop_age2">0-15</b></p>
+            </div>
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">> 65</p>
+              <p><b id="female_pop_age3">0-15</b></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-lg-12 col-md-6">
+
+        <div id="pop-age-chart" class="col-lg-4 text-center">
+          <img src="modules/bulletin/client/img/male.png" style="width: 80%" alt="">
+        </div>
+        <div id="pop-age-chart" class="col-lg-8" >
+          <h4>Male Population</h4>
+          <h2 style="color: #2d9cdb;" id="male_total_pop">1455555</h2>
+          <div class="row">
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">0-15</p>
+              <p><b  id="male_pop_age1">0-15</b></p>
+            </div>
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">15-65</p>
+              <p><b id="male_pop_age2">0-15</b></p>
+            </div>
+            <div class="col-lg-4">
+              <p style="margin-bottom: 0;">> 65</p>
+              <p><b id="male_pop_age3">0-15</b></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <br>
+    <hr>
+    <div class="row">
+      <div class="col-lg-12 col-md-6">
+        <h4>Critical Infrastructure</h4>
+        <p>Hospital <span id="critical_hospital" style="float: right;"></p>
+
+          <p>Roads</p>
+          <ul>
+            <li>Trunks: <span id="critical_road_trucks" style="float: right;"></span></li>
+            <li>Primary: <span id="critical_road_primary" style="float: right;"></span></li>
+            <li>Seconday: <span id="critical_road_secondary" style="float: right;"></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+<div class="row justify-content-md-center" id="section2">
+  <div class="col-lg-12 col-md-6">
+    <h2 style="color:#333;">FFGS Outputs</h2>
+    <div class="row">
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_obs_map_merged_01hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FFG01" style="height:500px; width: 100%;"></div>
+        <p>01-hour Mean Areal Precipitation (1-hr MAP)</p>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_obs_map_merged_24hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FFG03" style="height:500px; width: 100%;"></div>
+        <p>03-hour Mean Areal Precipitation (3-hr MAP)</p>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_est_asm_sacsma_06hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FFG06" style="height:500px; width: 100%;"></div>
+        <p>06-hour Mean Areal Precipitation (6-hr MAP)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-12 col-md-6">
+    <h2 style="color:#333;">Regional Rainfall Forecast</h2>
+    <div class="row">
+
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_fcst_map_forecast1_01hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FMAP101" style="height:500px; width: 100%;"></div>
+        <p>01-hour Forecast Mean Areal Precipitation (1-hr FMAP)</p>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_fcst_map_forecast1_03hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FMAP103" style="height:500px; width: 100%;"></div>
+        <p>03-hours Forecast Mean Areal Precipitation (3-hr FMAP) </p>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <!-- <img id="ffgs_prod_fcst_map_forecast1_06hr_regional" src="" style="width:100%" alt=""> -->
+        <div class="" id="map_FMAP106" style="height:500px; width: 100%;"></div>
+        <p>06-hour Forecast Mean Areal Precipitation (6-hr FMAP)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+<div class="row justify-content-md-center" id="section3">
+  <!-- <div class="col-lg-6 col-md-6">
+  <h2 style="color:#333;">Reports</h2>
+</div> -->
+
+<div class="col-lg-12 col-md-6">
+  <h2 style="color:#333;">Flash Flood Risk by Province</h2>
+  <div class="row">
+    <div class="col-lg-12 col-md-6" style="display:none;">
+      <h4>01-Hour Flash Flood Risk and Location</h4>
+      <table id="ffg-01h-table" style="border-collapse: collapse;">
+        <tr>
+          <th>Province</th>
+          <th>District</th>
+          <th>Hospital</th>
+          <th>Total Pop</th>
+          <th>Female > 65</th>
+          <th>Male > 65</th>
+          <th>Primary road</th>
+          <th>Seconday road</th>
+          <th>Level Risk</th>
+        </tr>
+      </table>
+    </div>
+    <div class="col-lg-12 col-md-6" style="display:none;">
+      <h4>03-Hour Flash Flood Risk and Location</h4>
+      <table id="ffg-03h-table">
+        <tr>
+          <th>Province</th>
+          <th>District</th>
+          <th>Hospital</th>
+          <th>Total Pop</th>
+          <th>Female > 65</th>
+          <th>Male > 65</th>
+          <th>Primary road</th>
+          <th>Seconday road</th>
+          <th>Level Risk</th>
+        </tr>
+      </table>
+    </div>
+    <div class="col-lg-12 col-md-6">
+      <h4>06-Hour Flash Flood Risk and Location</h4>
+      <table id="ffg-06h-table">
+        <tr>
+          <th>Province</th>
+          <th>District</th>
+          <th>Hospital</th>
+          <th>Total Pop</th>
+          <th>Female > 65</th>
+          <th>Male > 65</th>
+          <th>Primary road</th>
+          <th>Seconday road</th>
+          <th>Level Risk</th>
+        </tr>
+      </table>
+    </div>
 
   </div>
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+<br><br><br>
+
+<footer id="footer">
+
+  <div class="footer-top" style="background-image: url('modules/bulletin/client/img/dark-blue-bg.png');height: 100px;background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%;">
+    <div class="container">
+    </div>
+  </div>
+  <div class="footer-top" style="background:#243549;">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-6 col-md-6 footer-info">
+          <h3><img src="modules/bulletin/client/img/partners/servir-mekong.png" alt="" style="width:auto; height:35px;"></h3>
+
+          <p>
+            <b>ASIAN DISASTER PREPAREDNESS CENTER (ADPC)</b> <br>
+            SM Tower, 24th Floor, 979/69 Paholyothin Road, Samsen Nai Phayathai,<br>
+            Bangkok 10400 Thailand<br>
+            BTS Skytrain: Sanam Pao, Exit 1<br>
+            <strong>Phone:</strong> +66 2 298 0681-92<br>
+            <strong>Fax:</strong> +66 2 298 0012<br>
+            <strong>For technical queries: </strong>miguel.barajas@adpc.net
+          </p>
+          <div class="social-links mt-3">
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Menu Links</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="/map" target="_blank">Historical Map</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/operational-map" target="_blank">Operational Map</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="/realtime-map" target="_blank">Near-real Time Map</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://docs.google.com/document/d/e/2PACX-1vQ-SUPsHBc488TO8pcqUfYuqUgYSm77lfHhKF3zN33rG20v6l6rStmQmIDt_kOMnCrgYhsRj235YhrL/pub" target="_blank">How to use</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="http://hydrafloods-servir.adpc.net/" target="_blank">HyDraFloods</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://hfa.adpc.net/en/" target="_blank">Historical Flood Analysis Tool</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="http://surface-water-servir.adpc.net/" target="_blank">Surface Water Mapping Tool</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="http://damtool-servir.adpc.net/" target="_blank">Reservoir Mapping Tool</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="copyright">
+      &copy; Copyright <strong><span>Rainstroms Tracker</span></strong>. All Rights Reserved
+    </div>
+  </div>
+</footer><!-- End Footer -->
+
+
+</div>
 </div>
