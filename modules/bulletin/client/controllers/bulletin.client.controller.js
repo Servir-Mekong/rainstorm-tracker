@@ -3,7 +3,7 @@
 angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $(".navbar-brand.navmenu").html("");
   $(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
-  $("#start_date").datepicker({
+  $("#select_date").datepicker({
     format: 'dd/mm/yyyy'
   });
   $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
@@ -13,7 +13,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   var totalEvents = 0;
   var totalEventLand = 0;
   var totalEventOcean = 0;
-
   	/**
   		* initialize leaflet map
   		*/
@@ -51,7 +50,62 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       basemap_layer_fmap103.addTo(map_fmap103);
       basemap_layer_fmap106.addTo(map_fmap106);
 
+      var GEOSERVER_ADDRESS= "https://geoserver.adpc.net/geoserver/mekong-admin/wms";
+      var WMSCONFIG ={
+							'transparent': true,
+							'service':'WMS',
+							'version':'1.1.0',
+							'request':'GetMap',
+							'layers':'mekong-admin:mrcffg_basins_simplify',
+							'format':'image/png',
+							'tiled' : true,
+						};
 
+      var mrcBasinsWMS_1 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      var mrcBasinsWMS_2 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      var mrcBasinsWMS_3 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      var mrcBasinsWMS_4 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      var mrcBasinsWMS_5 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      var mrcBasinsWMS_6 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+
+      mrcBasinsWMS_1.addTo(map_ffg01);
+      mrcBasinsWMS_2.addTo(map_ffg03);
+      mrcBasinsWMS_3.addTo(map_ffg06);
+      mrcBasinsWMS_4.addTo(map_fmap101);
+      mrcBasinsWMS_5.addTo(map_fmap103);
+      mrcBasinsWMS_6.addTo(map_fmap106);
+
+      var selected_country = sessionStorage.getItem("selected_country");
+      var selected_date = sessionStorage.getItem("selected_date");
+      console.log(selected_date)
+      // map_ffg01.addLayer(mrcBasinsWMS);
+
+      var country_bb;
+      $.getJSON('data/'+selected_country+'_bb.geojson')
+       .done(function (data, status) {
+         country_bb = L.geoJSON(data, {});
+         map_ffg01.fitBounds(country_bb.getBounds());
+         map_ffg03.fitBounds(country_bb.getBounds());
+         map_ffg06.fitBounds(country_bb.getBounds());
+         map_fmap101.fitBounds(country_bb.getBounds());
+         map_fmap103.fitBounds(country_bb.getBounds());
+         map_fmap106.fitBounds(country_bb.getBounds());
+       });
+
+
+      var mrcbasins;
+      var basin_style = {
+				 fillColor: '#9999ff',
+				 weight: 0.2,
+				 opacity: 1,
+				 color: 'white',
+				 fillOpacity: 0.1
+			 };
+      $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
+       .done(function (data, status) {
+         mrcbasins = data.features;
+         $scope.fetchFFG();
+       });
 
   		// Load geographic coverage area Geojson
       var basin_style = {
@@ -63,18 +117,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
        };
   		var storm_boundingbox;
       var mrcbasins;
-  		 // $.getJSON('data/mrcffg_basins.geojson')
-  			// .done(function (data, status) {
-       //    mrcbasins = data;
-  			// 	var basins_ffg01 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg01);
-       //    var basins_ffg03 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg03);
-       //    var basins_ffg06 = L.geoJSON(data, {style: basin_style}).addTo(map_ffg06);
-       //    var basins_fmap101 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap101);
-       //    var basins_fmap103 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap103);
-       //    var basins_fmap106 = L.geoJSON(data, {style: basin_style}).addTo(map_fmap106);
-  			// });
-
-
 
   function CSVToArray(strData, strDelimiter) {
 		// Check to see if the delimiter is defined. If not,
@@ -146,33 +188,38 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 			}
 
 
-      $.ajax("/FFGS/15-08-2022-07-05-19-ffgs_result_01hour.csv", {
+      $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
         success: function(data) {
           var csv =  CSVToArray(data);
+          console.log(csv)
           var risk_level = '';
           for(var i=1; i<csv.length-1; i++){
-            if(csv[i][3] === 'Low-Risk'){
+            if(csv[i][4] === 'Low-Risk'){
               risk_level = 'lightgreen'
-            }else if(csv[i][3] === 'Moderate-Risk'){
+            }else if(csv[i][4] === 'Moderate-Risk'){
               risk_level = 'yellow'
-            }else if(csv[i][3] === 'High-Risk'){
+            }else if(csv[i][4] === 'High-Risk'){
               risk_level = 'red'
-            }else if(csv[i][3] === 'Extreme-Risk'){
+            }else if(csv[i][4] === 'Extreme-Risk'){
               risk_level = 'pink'
             }
 
-            var _td = '<tr>'+
-              '  <td>'+csv[i][0]+'</td>'+
+            if(csv[i][0].toLowerCase() === selected_country){
+              var _td = '<tr>'+
               '  <td>'+csv[i][1]+'</td>'+
-              '  <td>'+csv[i][4]+'</td>'+
+              '  <td>'+csv[i][2]+'</td>'+
               '  <td>'+csv[i][5]+'</td>'+
-              '  <td>'+csv[i][10]+'</td>'+
-              '  <td>'+csv[i][13]+'</td>'+
-              '  <td>'+csv[i][15]+'</td>'+
+              '  <td>'+csv[i][6]+'</td>'+
+              '  <td>'+csv[i][11]+'</td>'+
+              '  <td>'+csv[i][14]+'</td>'+
               '  <td>'+csv[i][16]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][3]+'</td>'+
-              '</tr>'
-            $("#ffg-01h-table").append(_td)
+              '  <td>'+csv[i][17]+'</td>'+
+                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+                '</tr>'
+              $("#ffg-01h-table").append(_td)
+            }
+
+
           }
 
         },
@@ -181,32 +228,34 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
         }
       });
 
-      $.ajax("/FFGS/15-08-2022-07-05-19-ffgs_result_03hour.csv", {
+      $.ajax("/FFGS/"+selected_date+"-ffgs_result_03hour.csv", {
         success: function(data) {
           var csv =  CSVToArray(data);
           var risk_level = '';
           for(var i=1; i<csv.length-1; i++){
-            if(csv[i][3] === 'Low-Risk'){
+            if(csv[i][4] === 'Low-Risk'){
               risk_level = 'lightgreen'
-            }else if(csv[i][3] === 'Moderate-Risk'){
+            }else if(csv[i][4] === 'Moderate-Risk'){
               risk_level = 'yellow'
-            }else if(csv[i][3] === 'High-Risk'){
+            }else if(csv[i][4] === 'High-Risk'){
               risk_level = 'red'
-            }else if(csv[i][3] === 'Extreme-Risk'){
+            }else if(csv[i][4] === 'Extreme-Risk'){
               risk_level = 'pink'
             }
-            var _td = '<tr>'+
-            '  <td>'+csv[i][0]+'</td>'+
-            '  <td>'+csv[i][1]+'</td>'+
-            '  <td>'+csv[i][4]+'</td>'+
-            '  <td>'+csv[i][5]+'</td>'+
-            '  <td>'+csv[i][10]+'</td>'+
-            '  <td>'+csv[i][13]+'</td>'+
-            '  <td>'+csv[i][15]+'</td>'+
-            '  <td>'+csv[i][16]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][3]+'</td>'+
-              '</tr>'
-            $("#ffg-03h-table").append(_td)
+            if(csv[i][0].toLowerCase() === selected_country){
+              var _td = '<tr>'+
+              '  <td>'+csv[i][1]+'</td>'+
+              '  <td>'+csv[i][2]+'</td>'+
+              '  <td>'+csv[i][5]+'</td>'+
+              '  <td>'+csv[i][6]+'</td>'+
+              '  <td>'+csv[i][11]+'</td>'+
+              '  <td>'+csv[i][14]+'</td>'+
+              '  <td>'+csv[i][16]+'</td>'+
+              '  <td>'+csv[i][17]+'</td>'+
+                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+                '</tr>'
+              $("#ffg-03h-table").append(_td)
+            }
           }
 
         },
@@ -215,7 +264,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
         }
       });
 
-      $.ajax("/FFGS/15-08-2022-07-05-19-ffgs_result_06hour.csv", {
+      $.ajax("/FFGS/"+selected_date+"-ffgs_result_06hour.csv", {
         success: function(data) {
           var csv =  CSVToArray(data);
           var risk_level = '';
@@ -234,66 +283,71 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   				var M_65 =0;
 
           for(var i=1; i<csv.length-1; i++){
-            //['prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
-            if (csv[i][4] !== '') critical_hospital  += parseInt(csv[i][4])
-            if (csv[i][14] !== '') critical_road_trucks += parseInt(csv[i][14])
-            if (csv[i][15] !== '') critical_road_primary += parseInt(csv[i][15])
-            if (csv[i][16] !== '') critical_road_secondary += parseInt(csv[i][16])
+            //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
 
-            if (csv[i][5] !== '') total_pop  += parseInt(csv[i][5])
-            if (csv[i][6] !== '') Female  += parseInt(csv[i][6])
-            if (csv[i][7] !== '') Male += parseInt(csv[i][7])
-            if (csv[i][8] !== '') F_0_5 += parseInt(csv[i][8])
-            if (csv[i][9] !== '') F_15_65 += parseInt(csv[i][9])
-            if (csv[i][10] !== '') F_65  += parseInt(csv[i][10])
-            if (csv[i][11] !== '') M_0_5 += parseInt(csv[i][11])
-            if (csv[i][12] !== '') M_15_65 += parseInt(csv[i][12])
-            if (csv[i][13] !== '') M_65 += parseInt(csv[i][13])
+            if(csv[i][0].toLowerCase() === selected_country){
+              if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
+              if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
+              if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
+              if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
 
-            // critical_hospital  += parseInt(csv[i][5])
-            // critical_road_trucks += parseInt(csv[i][14])
-            // critical_road_primary += parseInt(csv[i][15])
-            // critical_road_secondary += parseInt(csv[i][16])
-            console.log(critical_road_secondary)
-            if(csv[i][3] === 'Low-Risk'){
-              risk_level = 'lightgreen'
-            }else if(csv[i][3] === 'Moderate-Risk'){
-              risk_level = 'yellow'
-            }else if(csv[i][3] === 'High-Risk'){
-              risk_level = 'red'
-            }else if(csv[i][3] === 'Extreme-Risk'){
-              risk_level = 'pink'
+              if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
+              if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
+              if (csv[i][8] !== '') Male += parseInt(csv[i][8])
+              if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
+              if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
+              if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
+              if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
+              if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
+              if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
+
+              // critical_hospital  += parseInt(csv[i][5])
+              // critical_road_trucks += parseInt(csv[i][14])
+              // critical_road_primary += parseInt(csv[i][15])
+              // critical_road_secondary += parseInt(csv[i][16])
+              if(csv[i][4] === 'Low-Risk'){
+                risk_level = 'lightgreen'
+              }else if(csv[i][4] === 'Moderate-Risk'){
+                risk_level = 'yellow'
+              }else if(csv[i][4] === 'High-Risk'){
+                risk_level = 'red'
+              }else if(csv[i][4] === 'Extreme-Risk'){
+                risk_level = 'pink'
+              }
+
+
+              var _td = '<tr>'+
+              '  <td>'+csv[i][0]+'</td>'+
+              '  <td>'+csv[i][1]+'</td>'+
+              '  <td>'+csv[i][2]+'</td>'+
+              '  <td>'+csv[i][5]+'</td>'+
+              '  <td>'+csv[i][6]+'</td>'+
+              '  <td>'+csv[i][11]+'</td>'+
+              '  <td>'+csv[i][14]+'</td>'+
+              '  <td>'+csv[i][16]+'</td>'+
+              '  <td>'+csv[i][17]+'</td>'+
+                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+                '</tr>'
+              $("#ffg-06h-table").append(_td)
+
+              $("#critical_hospital").text(critical_hospital);
+              $("#critical_road_trucks").text(critical_road_trucks);
+              $("#critical_road_primary").text(critical_road_primary);
+              $("#critical_road_secondary").text(critical_road_secondary);
+
+              $("#total_pop").text(total_pop);
+              $("#female_total_pop").text(Female);
+              $("#male_total_pop").text(Male);
+
+              $("#female_pop_age1").text(F_0_5);
+              $("#female_pop_age2").text(F_15_65);
+              $("#female_pop_age3").text(F_65);
+
+              $("#male_pop_age1").text(M_0_5);
+              $("#male_pop_age2").text(M_15_65);
+              $("#male_pop_age3").text(M_65);
             }
-            var _td = '<tr>'+
-            '  <td>'+csv[i][0]+'</td>'+
-            '  <td>'+csv[i][1]+'</td>'+
-            '  <td>'+csv[i][4]+'</td>'+
-            '  <td>'+csv[i][5]+'</td>'+
-            '  <td>'+csv[i][10]+'</td>'+
-            '  <td>'+csv[i][13]+'</td>'+
-            '  <td>'+csv[i][15]+'</td>'+
-            '  <td>'+csv[i][16]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][3]+'</td>'+
-              '</tr>'
-            $("#ffg-06h-table").append(_td)
           }
-          $("#critical_hospital").text(critical_hospital);
-          $("#critical_road_trucks").text(critical_road_trucks);
-          $("#critical_road_primary").text(critical_road_primary);
-          $("#critical_road_secondary").text(critical_road_secondary);
-
-          $("#total_pop").text(total_pop);
-          $("#female_total_pop").text(Female);
-          $("#male_total_pop").text(Male);
-
-          $("#female_pop_age1").text(F_0_5);
-          $("#female_pop_age2").text(F_15_65);
-          $("#female_pop_age3").text(F_65);
-
-          $("#male_pop_age1").text(M_0_5);
-          $("#male_pop_age2").text(M_15_65);
-          $("#male_pop_age3").text(M_65);
-
         },
         error: function() {
           alert("error")
@@ -321,7 +375,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 		apiCall(eventsURL, 'POST').then(
 			function (response) {
 				// Success Callback
-        console.log(response.data)
         var res = response.data;
         for(var i=0; i< res.length; i++){
           $("#"+res[i].name_0).text(res[i].total);
@@ -387,48 +440,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       // angular controller
       var lines = data.split('\n')//.replace("\r", "");
       var FFGS_url = "http://ffw.mrcmekong.org/ffg_new/";
-      // var _ffgs_prod_fcst_ffr_outlook1_12hr_regional = []
-      // var _ffgs_prod_fcst_ffr_outlook1_24hr_regional = []
-      // var _ffgs_prod_obs_map_merged_01hr_regional = []
-      // var _ffgs_prod_obs_map_merged_24hr_regional = []
-      // var _ffgs_prod_est_asm_sacsma_06hr_regional = []
-      // var _ffgs_prod_fcst_map_forecast1_01hr_regional = []
-      // var _ffgs_prod_fcst_map_forecast1_03hr_regional = []
-      // var _ffgs_prod_fcst_map_forecast1_06hr_regional = []
-      // _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
-      // _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
-      //
-      // _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_01hr_regional.png');
-      // _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_obs_map_merged_24hr_regional.png');
-      // _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_est_asm_sacsma_06hr_regional.png');
-      //
-      // _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
-      // _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
-      // _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-'+timecode+'_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
-      //
-      // if(_ffgs_prod_fcst_ffr_outlook1_12hr_regional.length === 0){
-      //   _ffgs_prod_fcst_ffr_outlook1_12hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_12hr_regional.png');
-      //   _ffgs_prod_fcst_ffr_outlook1_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_ffr_outlook1_24hr_regional.png');
-      //
-      //   _ffgs_prod_obs_map_merged_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_01hr_regional.png');
-      //   _ffgs_prod_obs_map_merged_24hr_regional = filterItems(lines, date+'-0000_ffgs_prod_obs_map_merged_24hr_regional.png');
-      //   _ffgs_prod_est_asm_sacsma_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_est_asm_sacsma_06hr_regional.png');
-      //
-      //   _ffgs_prod_fcst_map_forecast1_01hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_01hr_regional.png');
-      //   _ffgs_prod_fcst_map_forecast1_03hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_03hr_regional.png');
-      //   _ffgs_prod_fcst_map_forecast1_06hr_regional = filterItems(lines, date+'-0000_ffgs_prod_fcst_map_forecast1_06hr_regional.png');
-      // }
-      //
-      // $("#ffgs_prod_fcst_ffr_outlook1_12hr_regional").attr("src",FFGS_url + _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
-      // $("#ffgs_prod_fcst_ffr_outlook1_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_ffr_outlook1_24hr_regional.at(-1));
-      //
-      // $("#ffgs_prod_obs_map_merged_01hr_regional").attr("src",FFGS_url + _ffgs_prod_obs_map_merged_01hr_regional.at(-1));
-      // $("#ffgs_prod_obs_map_merged_24hr_regional").attr("src",FFGS_url +  _ffgs_prod_obs_map_merged_24hr_regional.at(-1));
-      // $("#ffgs_prod_est_asm_sacsma_06hr_regional").attr("src",FFGS_url + _ffgs_prod_est_asm_sacsma_06hr_regional.at(-1));
-      //
-      // $("#ffgs_prod_fcst_map_forecast1_01hr_regional").attr("src", FFGS_url +  _ffgs_prod_fcst_map_forecast1_01hr_regional.at(-1));
-      // $("#ffgs_prod_fcst_map_forecast1_03hr_regional").attr("src", FFGS_url + _ffgs_prod_fcst_map_forecast1_03hr_regional.at(-1));
-      // $("#ffgs_prod_fcst_map_forecast1_06hr_regional").attr("src",FFGS_url +  _ffgs_prod_fcst_map_forecast1_06hr_regional.at(-1));
 
     },
     error: function() {
@@ -443,7 +454,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
    var country_data;
   $scope.fetchFFG = function () {
-    $.ajax("/FFGS/mrcffg.csv", {
+    $.ajax("/FFGS/mrcffg_"+selected_date+"0600.csv", {
       success: function(data) {
         var fetchFFG_data = JSON.parse(CSV2JSON(data));
 				var no_country = 0;
@@ -463,7 +474,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
         var ffg_basins_style = {
            fillColor: '#FFF',
            weight: 0.5,
-           opacity: 0,
+           opacity: 0.5,
            color: 'white',
            fillOpacity: 1
          };
@@ -476,21 +487,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG01 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FFG01 <= 15) {
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG01 <= 30){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG01 <= 60){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG01 <= 100){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG01 <= 160){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FFG01 <= 220){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FFG01 <= 1000){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_ffg01);
@@ -502,21 +513,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG03 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FFG03 <= 15) {
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG03 <= 30){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG03 <= 60){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG03 <= 100){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG03 <= 160){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FFG03 <= 220){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FFG03 <= 1000){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_ffg03);
@@ -528,21 +539,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG01 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FFG06 <= 15) {
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG06 <= 30){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG06 <= 60){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG06 <= 100){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FFG06 <= 160){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FFG06 <= 220){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FFG06 <= 1000){
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_ffg06);
@@ -554,21 +565,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP101 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FMAP101 <= 30) {
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP101 <= 70){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP101 <= 120){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP101 <= 180){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP101 <= 240){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FMAP101 <= 300){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FMAP101 <= 1000){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_fmap101);
@@ -580,21 +591,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP103 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FMAP103 <= 30) {
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP103 <= 70){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP103 <= 120){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP103 <= 180){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP103 <= 240){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FMAP103 <= 300){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FMAP103 <= 1000){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_fmap103);
@@ -606,21 +617,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP106 <= 0) {
-                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#FFF'});
+                layer.setStyle({fillColor :'#FFF',fillOpacity: 0,color: '#c7c7c7'});
             }else if (feature.properties.FMAP106 <= 30) {
-                layer.setStyle({fillColor :'#2CE5E5',opacity: 1,color: '#2CE5E5'});
+                layer.setStyle({fillColor :'#2CE5E5',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP106 <= 70){
-                layer.setStyle({fillColor :'#2900D9',opacity: 1,color: '#2900D9'});
+                layer.setStyle({fillColor :'#2900D9',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP106 <= 120){
-                layer.setStyle({fillColor :'#00E200',opacity: 1,color: '#00E200'});
+                layer.setStyle({fillColor :'#00E200',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP106 <= 180){
-                layer.setStyle({fillColor :'#E5E500',opacity: 1,color: '#E5E500'});
+                layer.setStyle({fillColor :'#E5E500',opacity: 0.2,color: '#c7c7c7'});
             }else if (feature.properties.FMAP106 <= 240){
-                layer.setStyle({fillColor :'#FF0000',opacity: 1,color: '#FF0000'});
+                layer.setStyle({fillColor :'#FF0000',opacity: 0.2,color: '#c7c7c7'});
             } else if (feature.properties.FMAP106 <= 300){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             } else  if (feature.properties.FMAP106 <= 1000){
-                layer.setStyle({fillColor :'#E700E7',opacity: 1,color: '#E700E7'});
+                layer.setStyle({fillColor :'#E700E7',opacity: 0.2,color: '#c7c7c7'});
             }
           }
         }).addTo(map_fmap106);
@@ -632,9 +643,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 			}
     });
 	};
-
-  // $scope.fetchFFG();
-  var mrcbasins;
 
   $scope.fetchEvents = function (type) {
     if(type === 'realtime'){
@@ -648,7 +656,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 			function (response) {
 				// Success Callback
         var data = response.data;
-        console.log(data)
         var totalStorm = data.length;
         totalEvents = totalStorm;
         var level1 = 0;
@@ -796,26 +803,15 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
      $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
       .done(function (data, status) {
         mrcbasins = data.features;
-        // if(map_ffg01.hasLayer(mrc_ffg01)){
-        //   map_ffg01.removeLayer(mrc_ffg01);
-        // }
-        // if(map_ffg03.hasLayer(mrc_ffg03)){
-        //   map_ffg03.removeLayer(mrc_ffg03);
-        // }
-        // if(map_ffg06.hasLayer(mrc_ffg06)){
-        //   map_ffg06.removeLayer(mrc_ffg06);
-        // }
-        // if(map_fmap101.hasLayer(mrc_fmap101)){
-        //   map_fmap101.removeLayer(mrc_fmap101);
-        // }
-        // if(map_fmap103.hasLayer(mrc_fmap103)){
-        //   map_fmap103.removeLayer(mrc_fmap103);
-        // }
-        // if(map_fmap106.hasLayer(mrc_fmap106)){
-        //   map_fmap106.removeLayer(mrc_fmap106);
-        // }
-        $scope.fetchFFG();
+        // $scope.fetchFFG();
       });
+  });
+
+  $('#select_date').change(function(){
+      selected_date=$('#select_date').val().split("/");
+      selected_date=selected_date[0]+selected_date[1]+selected_date[2];
+      // $scope.fetchFFG();
+      // console.log(selected_date);
   });
 
   $("#nearrealtime_data").click(function(){
@@ -859,10 +855,13 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
   $("#btnExport").click(function() {
     $scope.showLoader = true;
+
+    // Disable #x
+    $("#btnSave").prop( "disabled", true );
+    $("#btnExport").prop( "disabled", true );
     var pdf = new jsPDF("p", "mm", "a4");
     var width = pdf.internal.pageSize.getWidth();
     var height = pdf.internal.pageSize.getHeight();
-
     var currentMap = document.getElementById('section1');
 
     var divHeight = currentMap.clientHeight
@@ -893,19 +892,19 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
             pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
             pdf.addImage(img, 'PNG', 15, 20, width - 25, height - 15);
 
-            var outlookMap = document.getElementById('section2');
-            var divHeight = outlookMap.clientHeight
-            var divWidth = outlookMap.clientWidth
+            var section2 = document.getElementById('section2');
+            var divHeight = section2.clientHeight
+            var divWidth = section2.clientWidth
             var ratio = divHeight / divWidth;
             height = ratio * width;
 
-            domtoimage.toPng(outlookMap)
+            domtoimage.toPng(section2)
                 .then(function (dataUrl) {
-                    var imgOutlok = new Image();
-                    imgOutlok.src = dataUrl;
+                    var imgsection2 = new Image();
+                    imgsection2.src = dataUrl;
                     pdf.addPage();
                     pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
-                    pdf.addImage(imgOutlok, 'PNG', 15, 20, width - 25, height - 15);
+                    pdf.addImage(imgsection2, 'PNG', 15, 20, width - 25, height - 15);
 
                     var section3 = document.getElementById('section3');
                     var divHeight = section3.clientHeight
@@ -919,20 +918,19 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
                             imgsection3.src = dataUrl;
                             pdf.addPage();
                             pdf.addImage(imgReportHeader, 'PNG', 15, 10, width - 25, 10);
-                            pdf.addImage(imgsection3, 'PNG', 15, 20, width - 25, height - 15);
+                            pdf.addImage(imgsection3, 'PNG', 15, 20, width - 25, height );
 
                             var newDate = new Date();
                             var pdffilename = "Flash-Flood-Bulletin-Mekong: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".pdf";
                             pdf.save(pdffilename);
                             $scope.showLoader = false;
-
-
+                            // Disable #x
+                            $("#btnSave").prop( "disabled", false );
+                            $("#btnExport").prop( "disabled", false );
                         })
                         .catch(function (error) {
                             console.error('oops, something went wrong!', error);
                       });
-
-
                 })
                 .catch(function (error) {
                     console.error('oops, something went wrong!', error);

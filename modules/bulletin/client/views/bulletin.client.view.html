@@ -6,7 +6,7 @@
 
       <div class="row">
         <div class="col-sm-12">
-          <div class="col-sm-4">
+          <!-- <div class="col-sm-4">
             <div class="form-group">
               <label style="color: #000;">COUNTRY </label>
               <div class="row">
@@ -25,12 +25,12 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label style="color: #000;">DATE</label>
-              <input class="form-control"  type="text" name="start_date" id="start_date" value="">
+              <input class="form-control"  type="text" name="selecte_date" id="selecte_date" value="">
             </div>
-          </div>
+          </div> -->
           <div class="col-sm-4">
             <div class="form-group">
-              <label style="color: #000;">EXPORT </label><br>
+              <label style="color: #000;">Export flash flood bulletin mekong report</label><br>
               <input class="form-control" type="button" id="btnExport" value="Export PDF"style="width:150px;display:inline;" />
               <input class="form-control"  type="button" id="btnSave" value="Save PNG" style="width:150px;display:inline;"/>
             </div>
@@ -86,8 +86,8 @@
     <div class="col-lg-12 align-items-center">
       <h2 style="color:#333;">RainStorms (24-48 hours)</h2>
       <ul  class="switchbutton" style="list-style: none;padding-inline-start: 0px; cursor: pointer;float: left;">
-        <li class="active" id="realtime_data">REAL TIME</li>
-        <li id="nearrealtime_data">NEAR REAL TIME</li>
+        <li class="active" id="realtime_data" style="font-size: 12px;">REAL TIME</li>
+        <li id="nearrealtime_data" style="font-size: 12px;">NEAR REAL TIME</li>
       </ul>
     </div>
     <div class="col-lg-12 col-md-6">
@@ -151,7 +151,7 @@
         </div>
         <div id="pop-age-chart" class="col-lg-8" >
           <h4>Total Population</h4>
-          <h1 style="font-size: 40px; font-weight: 700;color: #2f80ed;" id="total_pop">300000</h1>
+          <h1 style="font-size: 40px; font-weight: 700;color: #2f80ed;" id="total_pop"></h1>
         </div>
       </div>
     </div>
@@ -163,7 +163,7 @@
         </div>
         <div id="pop-age-chart" class="col-lg-8" >
           <h4>Female Population</h4>
-          <h2 style="color: #bb6bd9;" id="female_total_pop">1455555</h2>
+          <h2 style="color: #bb6bd9;" id="female_total_pop"></h2>
           <div class="row">
             <div class="col-lg-4">
               <p style="margin-bottom: 0;">0-15</p>
@@ -188,7 +188,7 @@
         </div>
         <div id="pop-age-chart" class="col-lg-8" >
           <h4>Male Population</h4>
-          <h2 style="color: #2d9cdb;" id="male_total_pop">1455555</h2>
+          <h2 style="color: #2d9cdb;" id="male_total_pop"></h2>
           <div class="row">
             <div class="col-lg-4">
               <p style="margin-bottom: 0;">0-15</p>
@@ -213,7 +213,6 @@
       <div class="col-lg-12 col-md-6">
         <h4>Critical Infrastructure</h4>
         <p>Hospital <span id="critical_hospital" style="float: right;"></p>
-
           <p>Roads</p>
           <ul>
             <li>Trunks: <span id="critical_road_trucks" style="float: right;"></span></li>
@@ -236,16 +235,19 @@
         <!-- <img id="ffgs_prod_obs_map_merged_01hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FFG01" style="height:500px; width: 100%;"></div>
         <p>01-hour Mean Areal Precipitation (1-hr MAP)</p>
+        <img src="modules/bulletin/client/img/ffg_01hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (1-hr MAP)">
       </div>
       <div class="col-lg-4 col-md-6">
         <!-- <img id="ffgs_prod_obs_map_merged_24hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FFG03" style="height:500px; width: 100%;"></div>
         <p>03-hour Mean Areal Precipitation (3-hr MAP)</p>
+        <img src="modules/bulletin/client/img/ffg_03hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (3-hr MAP)">
       </div>
       <div class="col-lg-4 col-md-6">
         <!-- <img id="ffgs_prod_est_asm_sacsma_06hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FFG06" style="height:500px; width: 100%;"></div>
         <p>06-hour Mean Areal Precipitation (6-hr MAP)</p>
+        <img src="modules/bulletin/client/img/ffg_06hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (6-hr MAP)">
       </div>
     </div>
   </div>
@@ -258,16 +260,19 @@
         <!-- <img id="ffgs_prod_fcst_map_forecast1_01hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FMAP101" style="height:500px; width: 100%;"></div>
         <p>01-hour Forecast Mean Areal Precipitation (1-hr FMAP)</p>
+        <img src="modules/bulletin/client/img/fmap_01hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (1-hr MAP)">
       </div>
       <div class="col-lg-4 col-md-6">
         <!-- <img id="ffgs_prod_fcst_map_forecast1_03hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FMAP103" style="height:500px; width: 100%;"></div>
         <p>03-hours Forecast Mean Areal Precipitation (3-hr FMAP) </p>
+        <img src="modules/bulletin/client/img/fmap_03hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (3-hr MAP)">
       </div>
       <div class="col-lg-4 col-md-6">
         <!-- <img id="ffgs_prod_fcst_map_forecast1_06hr_regional" src="" style="width:100%" alt=""> -->
         <div class="" id="map_FMAP106" style="height:500px; width: 100%;"></div>
         <p>06-hour Forecast Mean Areal Precipitation (6-hr FMAP)</p>
+        <img src="modules/bulletin/client/img/fmap_06hr_legend.png" style="width:100%" alt="01-hour Mean Areal Precipitation (6-hr MAP)">
       </div>
     </div>
   </div>
@@ -286,6 +291,7 @@
       <h4>01-Hour Flash Flood Risk and Location</h4>
       <table id="ffg-01h-table" style="border-collapse: collapse;">
         <tr>
+          <th>Country</th>
           <th>Province</th>
           <th>District</th>
           <th>Hospital</th>
@@ -302,6 +308,7 @@
       <h4>03-Hour Flash Flood Risk and Location</h4>
       <table id="ffg-03h-table">
         <tr>
+          <th>Country</th>
           <th>Province</th>
           <th>District</th>
           <th>Hospital</th>
@@ -318,6 +325,7 @@
       <h4>06-Hour Flash Flood Risk and Location</h4>
       <table id="ffg-06h-table">
         <tr>
+          <th>Country</th>
           <th>Province</th>
           <th>District</th>
           <th>Hospital</th>

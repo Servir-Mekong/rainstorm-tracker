@@ -189,6 +189,22 @@ exports.getNumberofStorms = function (req, res) {
 	});
 };
 
+exports.getNumberofStormsBulletine = function (req, res) {
+  var params = req.params;
+  var id = params.id;
+  var query = "SELECT adm0.name_0, count(tbl_events.id) AS total, max(tbl_events.mctime) AS mctime, max(tbl_events.mcmax) AS mcmax, max(tbl_events.mcspace) AS mcspace, max(tbl_events.mcvol) AS mcvol, max(tbl_events.total_mag) AS total_mag FROM adm0 LEFT JOIN tbl_events ON st_contains(adm0.geom, ST_SetSRID(ST_MakePoint(tbl_events.lon_start, tbl_events.lat_start),4326)) where date ='2022-08-12' GROUP BY adm0.gid;";
+	db.any(query)
+	.then(data => {
+		// success
+		res.setHeader("Content-Type", "application/json");
+		res.send(JSON.stringify(data));
+	})
+	.catch(error => {
+		console.log('ERROR:', error); // print the error;
+		console.log('ERROR');
+	});
+};
+
 exports.getRealtimeNumberofStorms = function (req, res) {
   var params = req.params;
   var id = params.id;

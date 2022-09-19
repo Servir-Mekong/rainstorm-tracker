@@ -20,6 +20,19 @@ label {
   font-size: 12px;
 }
 
+.custom-alert {
+    margin-left: 400px;
+    /* See sidebar.css .toggle-sidebar-button.is-open */
+    /* width: calc(100vw - 50%); */
+    width: auto;
+    position: fixed;
+    z-index: 402;
+    margin-top: 5px;
+    text-align: left;
+}
+.display-none {
+  display: none;
+}
 
 .sidenav .closeMenu {
   position: absolute;

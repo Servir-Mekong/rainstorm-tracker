@@ -5,6 +5,7 @@
     <div class="">
       <div class="searching-form"
       <div class="container">
+
         <div class="row">
           <div class="col-sm-12">
             <!-- <div class="col-sm-6">
@@ -23,7 +24,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <select class="form-control" id="country_select" style="font-size: 12px; padding: 0; padding-left: 10px;">
-                  <option value="mekong"></option>
+                  <option value="" ></option>
                   <option value="cambodia">Cambodia</option>
                   <option value="laos">Laos</option>
                   <option value="thailand">Thailand</option>
@@ -37,7 +38,7 @@
         <div class="col-sm-12">
           <div class="form-group">
             <label for="exampleInputEmail1">DATE</label>
-            <input class="form-control"  type="text" name="start_date" id="start_date" value="">
+            <input class="form-control"  type="text" name="select_date" id="select_date" value="">
           </div>
         </div>
 
@@ -145,7 +146,7 @@
               <label style="font-size:12px; font-weight: 700;"><b>LAYERS</b></label>
               <ul class="toggles-list">
                 <li class="toggle" id="toggle_storm_affected_area" style="display:none;"><label class="switch_layer"><input  name="affected_area" id="affected_area"  checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Affected Area of the storm event</label></li>
-                <li class="toggle"><label class="switch_layer"><input  name="storm_events" id="storm_events" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm Events </label></li>
+                <!-- <li class="toggle"><label class="switch_layer"><input  name="storm_events" id="storm_events" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm Events </label></li> -->
                 <!-- <li class="toggle" id="toggle_storm_image" style="display:none;"><label class="switch_layer"><input  name="storm_image" id="storm_image"  checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm  Image </label></li> -->
                 <li class="toggle"><label class="switch_layer"><input  name="geographic_coverage" id="geographic_coverage" type="checkbox"><span class="slider_toggle round"></span></label><label>Geographic Coverage</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_bb" id="mekong_bb" type="checkbox"><span class="slider_toggle round"></span></label><label>Lower Mekong Bounding Box</label></li>
@@ -187,7 +188,6 @@
 
   </div>
   <div class="table-detail">
-
   </div>
 </div>
 
@@ -202,13 +202,33 @@
   <p>Storm Detail</p>
 </div>
 
-
 <div class="main">
   <nav>
     <ul id="mainMenu">
     </ul>
   </nav>
   <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; width: 100%;height: 100%;">
+    <!-- Alert Container -->
+    <div id="alertBox" class="alert alert-dismissible display-none custom-alert" role="alert" style="z-index: 999;position: absolute;margin-top: 100px;">
+        <button id="closeAlert" type="button" class="close" ng-click="closeAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong id="alertType"></strong> <span id="alertContent"></span>
+    </div>
+
+    <!-- <div ng-show="showAlert" style="z-index: 999;position: absolute;margin-top: 100px;left: 35%;">
+      <div class="alert alert-success">
+          <strong>Success!</strong> This alert box could indicate a successful or positive action.
+        </div>
+        <!-- <div class="alert alert-info">
+          <strong>Info!</strong> This alert box could indicate a neutral informative change or action.
+        </div>
+        <div class="alert alert-warning">
+          <strong>Warning!</strong> This alert box could indicate a warning that might need attention.
+        </div>
+        <div class="alert alert-danger">
+          <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
+        </div> -->
+    </div> -->
+
     <div id="loader" class="map-loading" >
         <!-- <i class="loading-img fas fa-spinner fa-pulse fa-4x"></i> -->
         <div class="loading-text">
@@ -250,14 +270,14 @@
       </ul>
     </div> -->
 
-    <div class="legend-area  map-component">
+    <!-- <div class="legend-area  map-component">
       <div class="legend-map" id ="legend-marker">
         <img src="/img/legend-point-storm-class-2.png" height=40px;  alt="rainstorms legend">
       </div>
       <div class="legend-map" id="legend-img" style="display: none;">
         <img src="/img/legend-img-storm-class-2.png" height=40px;  alt="rainstorms legend">
       </div>
-    </div>
+    </div> -->
 
 
 </div>
