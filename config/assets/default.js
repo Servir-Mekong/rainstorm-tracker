@@ -28,8 +28,7 @@ module.exports = {
 				'public/lib/leaflet-timedimension/dist/leaflet.timedimension.src.js',
 				'public/lib/moment/min/moment.min.js',
 				'public/lib/moment-timezone/builds/moment-timezone-with-data.min.js',
-				'public/lib/highcharts/highcharts.js',
-
+				'public/lib/highcharts/highcharts.js'
 			]
 		},
 		css: [
