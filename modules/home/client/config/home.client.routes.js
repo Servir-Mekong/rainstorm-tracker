@@ -10,7 +10,7 @@
 	function routeConfig($stateProvider) {
 		$stateProvider
 			.state('index', {
-				url: '/',
+				url: '/home',
 				templateUrl: 'modules/home/client/views/home.client.view.html'
 			});
 	}

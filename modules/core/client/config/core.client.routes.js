@@ -15,7 +15,7 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
     $stateProvider
     .state('home', {
       url: '/',
-      templateUrl: 'modules/home/client/views/home.client.view.html'
+      templateUrl: 'modules/ffg-map/client/views/ffg-map.client.view.html'
     })
     .state('not-found', {
       url: '/not-found',

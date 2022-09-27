@@ -2,12 +2,12 @@
 
 module.exports = {
   app: {
-    title: 'Storm Tracker',
-    description: 'Web Application for tracking stroms location',
-    keywords: 'SERVIR Mekong, Stroms, Storm tracking',
+    title: 'FFGS',
+    description: 'Web Application for flash flood guidence',
+    keywords: 'SERVIR Mekong, Stroms, flash flood guidence',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID'
   },
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 8000,
   host: process.env.HOST || '0.0.0.0',
   templateEngine: 'swig',
   // Session Cookie settings

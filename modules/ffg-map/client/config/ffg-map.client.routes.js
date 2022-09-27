@@ -10,7 +10,7 @@
 	function routeConfig($stateProvider) {
 		$stateProvider
 			.state('ffg-map', {
-				url: '/ffg-map',
+				url: '/',
 				templateUrl: 'modules/ffg-map/client/views/ffg-map.client.view.html'
 			});
 	}

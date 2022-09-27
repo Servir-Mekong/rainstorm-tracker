@@ -9,23 +9,23 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
-		$(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
+		$(".navbar-brand.navmenu").text("MEKONG FLASH FLOOD GUIDANCE");
 
 		$('[data-toggle="tooltip"]').tooltip();
 		$("#select_date").datepicker({
 			format: 'yyyy/mm/dd',
+			autoclose: true
 		});
 	});
 
 
-
-	var apiCall = function (url, method) {
-		return $http({
-			method: method,
-			url: url,
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-		});
-	};
+		var apiCall = function (url, method) {
+			return $http({
+				method: method,
+				url: url,
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+			});
+		};
 
 			/**
        * Alert

@@ -2,13 +2,42 @@
 'use strict';
 angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $(".navbar-brand.navmenu").html("");
-  $(".navbar-brand.navmenu").text("RAINSTORMS TRACKER");
+  $(".navbar-brand.navmenu").text("MEKONG FLASH FLOOD GUIDANCE");
   $("#select_date").datepicker({
-    format: 'dd/mm/yyyy'
+    format: 'yyyy/mm/dd',
+    autoclose: true
   });
   $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
   // Send this header only in post requests. Specifies you are sending a JSON object
   $http.defaults.headers.post['dataType'] = 'json'
+
+  /**
+   * Alert
+   */
+   $("#closeAlert").click(function(){
+     $('.alert').addClass('display-none');
+     $("#alertContent").text('');
+    $("#alertType").text('');
+   })
+
+
+  var showErrorAlert = function (alertContent) {
+      $("#alertContent").text(alertContent);
+      $("#alertType").text("Error! ");
+      $('.alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-success').addClass('alert-danger');
+  };
+
+  var showSuccessAlert = function (alertContent) {
+      $("#alertContent").text(alertContent);
+      $("#alertType").text("Success! ");
+      $('.alert').removeClass('display-none').removeClass('alert-info').removeClass('alert-danger').addClass('alert-success');
+  };
+
+  var showInfoAlert = function (alertContent) {
+      $("#alertContent").text(alertContent);
+      $("#alertType").text("Info! ");
+      $('.alert').removeClass('display-none').removeClass('alert-success').removeClass('alert-danger').addClass('alert-info');
+  };
 
   var totalEvents = 0;
   var totalEventLand = 0;
@@ -75,37 +104,13 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       mrcBasinsWMS_5.addTo(map_fmap103);
       mrcBasinsWMS_6.addTo(map_fmap106);
 
-      var selected_country = sessionStorage.getItem("selected_country");
-      var selected_date = sessionStorage.getItem("selected_date");
-      console.log(selected_date)
+      var selected_country ='';
+      var selected_date ='';
+      sessionStorage.setItem("selected_country", '');
+      sessionStorage.setItem("selected_date", '');
+      // console.log(selected_date)
       // map_ffg01.addLayer(mrcBasinsWMS);
 
-      var country_bb;
-      $.getJSON('data/'+selected_country+'_bb.geojson')
-       .done(function (data, status) {
-         country_bb = L.geoJSON(data, {});
-         map_ffg01.fitBounds(country_bb.getBounds());
-         map_ffg03.fitBounds(country_bb.getBounds());
-         map_ffg06.fitBounds(country_bb.getBounds());
-         map_fmap101.fitBounds(country_bb.getBounds());
-         map_fmap103.fitBounds(country_bb.getBounds());
-         map_fmap106.fitBounds(country_bb.getBounds());
-       });
-
-
-      var mrcbasins;
-      var basin_style = {
-				 fillColor: '#9999ff',
-				 weight: 0.2,
-				 opacity: 1,
-				 color: 'white',
-				 fillOpacity: 0.1
-			 };
-      $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
-       .done(function (data, status) {
-         mrcbasins = data.features;
-         $scope.fetchFFG();
-       });
 
   		// Load geographic coverage area Geojson
       var basin_style = {
@@ -188,171 +193,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 			}
 
 
-      $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
-        success: function(data) {
-          var csv =  CSVToArray(data);
-          console.log(csv)
-          var risk_level = '';
-          for(var i=1; i<csv.length-1; i++){
-            if(csv[i][4] === 'Low-Risk'){
-              risk_level = 'lightgreen'
-            }else if(csv[i][4] === 'Moderate-Risk'){
-              risk_level = 'yellow'
-            }else if(csv[i][4] === 'High-Risk'){
-              risk_level = 'red'
-            }else if(csv[i][4] === 'Extreme-Risk'){
-              risk_level = 'pink'
-            }
-
-            if(csv[i][0].toLowerCase() === selected_country){
-              var _td = '<tr>'+
-              '  <td>'+csv[i][1]+'</td>'+
-              '  <td>'+csv[i][2]+'</td>'+
-              '  <td>'+csv[i][5]+'</td>'+
-              '  <td>'+csv[i][6]+'</td>'+
-              '  <td>'+csv[i][11]+'</td>'+
-              '  <td>'+csv[i][14]+'</td>'+
-              '  <td>'+csv[i][16]+'</td>'+
-              '  <td>'+csv[i][17]+'</td>'+
-                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-                '</tr>'
-              $("#ffg-01h-table").append(_td)
-            }
-
-
-          }
-
-        },
-        error: function() {
-          alert("error")
-        }
-      });
-
-      $.ajax("/FFGS/"+selected_date+"-ffgs_result_03hour.csv", {
-        success: function(data) {
-          var csv =  CSVToArray(data);
-          var risk_level = '';
-          for(var i=1; i<csv.length-1; i++){
-            if(csv[i][4] === 'Low-Risk'){
-              risk_level = 'lightgreen'
-            }else if(csv[i][4] === 'Moderate-Risk'){
-              risk_level = 'yellow'
-            }else if(csv[i][4] === 'High-Risk'){
-              risk_level = 'red'
-            }else if(csv[i][4] === 'Extreme-Risk'){
-              risk_level = 'pink'
-            }
-            if(csv[i][0].toLowerCase() === selected_country){
-              var _td = '<tr>'+
-              '  <td>'+csv[i][1]+'</td>'+
-              '  <td>'+csv[i][2]+'</td>'+
-              '  <td>'+csv[i][5]+'</td>'+
-              '  <td>'+csv[i][6]+'</td>'+
-              '  <td>'+csv[i][11]+'</td>'+
-              '  <td>'+csv[i][14]+'</td>'+
-              '  <td>'+csv[i][16]+'</td>'+
-              '  <td>'+csv[i][17]+'</td>'+
-                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-                '</tr>'
-              $("#ffg-03h-table").append(_td)
-            }
-          }
-
-        },
-        error: function() {
-          alert("error")
-        }
-      });
-
-      $.ajax("/FFGS/"+selected_date+"-ffgs_result_06hour.csv", {
-        success: function(data) {
-          var csv =  CSVToArray(data);
-          var risk_level = '';
-          var critical_hospital  = 0;
-  				var critical_road_trucks =0;
-  				var critical_road_primary =0;
-  				var critical_road_secondary =0;
-          var total_pop =0;
-          var Female  = 0;
-  				var Male =0;
-  				var F_0_5 =0;
-  				var F_15_65 =0;
-          var F_65  = 0;
-  				var M_0_5 =0;
-  				var M_15_65 =0;
-  				var M_65 =0;
-
-          for(var i=1; i<csv.length-1; i++){
-            //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
-
-            if(csv[i][0].toLowerCase() === selected_country){
-              if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
-              if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
-              if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
-              if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
-
-              if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
-              if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
-              if (csv[i][8] !== '') Male += parseInt(csv[i][8])
-              if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
-              if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
-              if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
-              if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
-              if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
-              if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
-
-              // critical_hospital  += parseInt(csv[i][5])
-              // critical_road_trucks += parseInt(csv[i][14])
-              // critical_road_primary += parseInt(csv[i][15])
-              // critical_road_secondary += parseInt(csv[i][16])
-              if(csv[i][4] === 'Low-Risk'){
-                risk_level = 'lightgreen'
-              }else if(csv[i][4] === 'Moderate-Risk'){
-                risk_level = 'yellow'
-              }else if(csv[i][4] === 'High-Risk'){
-                risk_level = 'red'
-              }else if(csv[i][4] === 'Extreme-Risk'){
-                risk_level = 'pink'
-              }
-
-
-              var _td = '<tr>'+
-              '  <td>'+csv[i][0]+'</td>'+
-              '  <td>'+csv[i][1]+'</td>'+
-              '  <td>'+csv[i][2]+'</td>'+
-              '  <td>'+csv[i][5]+'</td>'+
-              '  <td>'+csv[i][6]+'</td>'+
-              '  <td>'+csv[i][11]+'</td>'+
-              '  <td>'+csv[i][14]+'</td>'+
-              '  <td>'+csv[i][16]+'</td>'+
-              '  <td>'+csv[i][17]+'</td>'+
-                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-                '</tr>'
-              $("#ffg-06h-table").append(_td)
-
-              $("#critical_hospital").text(critical_hospital);
-              $("#critical_road_trucks").text(critical_road_trucks);
-              $("#critical_road_primary").text(critical_road_primary);
-              $("#critical_road_secondary").text(critical_road_secondary);
-
-              $("#total_pop").text(total_pop);
-              $("#female_total_pop").text(Female);
-              $("#male_total_pop").text(Male);
-
-              $("#female_pop_age1").text(F_0_5);
-              $("#female_pop_age2").text(F_15_65);
-              $("#female_pop_age3").text(F_65);
-
-              $("#male_pop_age1").text(M_0_5);
-              $("#male_pop_age2").text(M_15_65);
-              $("#male_pop_age3").text(M_65);
-            }
-          }
-        },
-        error: function() {
-          alert("error")
-        }
-      });
 
 
   var apiCall = function (url, method) {
@@ -453,14 +293,206 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
 
    var country_data;
+   var mrcbasins;
+   var country_bb;
+   var basin_style = {
+      fillColor: '#9999ff',
+      weight: 0.2,
+      opacity: 1,
+      color: 'white',
+      fillOpacity: 0.1
+    };
+
+  var mrc_ffg01 = null;
+  var mrc_ffg06 = null;
+  var mrc_fmap101 = null;
+  var mrc_fmap103 = null;
+  var mrc_fmap106 = null;
+  var mrc_ffg03 = null;
+
   $scope.fetchFFG = function () {
+    $("#ffg-01h-table").html("");
+    $("#ffg-03h-table").html("");
+    $("#ffg-06h-table").html("");
+    $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
+      success: function(data) {
+        var csv =  CSVToArray(data);
+        console.log(csv)
+        var risk_level = '';
+        for(var i=1; i<csv.length-1; i++){
+          if(csv[i][4] === 'Low-Risk'){
+            risk_level = 'lightgreen'
+          }else if(csv[i][4] === 'Moderate-Risk'){
+            risk_level = 'yellow'
+          }else if(csv[i][4] === 'High-Risk'){
+            risk_level = 'red'
+          }else if(csv[i][4] === 'Extreme-Risk'){
+            risk_level = 'pink'
+          }
+
+          if(csv[i][0].toLowerCase() === selected_country){
+            var _td = '<tr>'+
+            '  <td>'+csv[i][1]+'</td>'+
+            '  <td>'+csv[i][2]+'</td>'+
+            '  <td>'+csv[i][5]+'</td>'+
+            '  <td>'+csv[i][6]+'</td>'+
+            '  <td>'+csv[i][11]+'</td>'+
+            '  <td>'+csv[i][14]+'</td>'+
+            '  <td>'+csv[i][16]+'</td>'+
+            '  <td>'+csv[i][17]+'</td>'+
+              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+              '</tr>'
+            $("#ffg-01h-table").append(_td)
+          }
+        }
+      },
+      error: function() {
+        alert("error")
+      }
+    });
+
+    $.ajax("/FFGS/"+selected_date+"-ffgs_result_03hour.csv", {
+      success: function(data) {
+        var csv =  CSVToArray(data);
+        var risk_level = '';
+        for(var i=1; i<csv.length-1; i++){
+          if(csv[i][4] === 'Low-Risk'){
+            risk_level = 'lightgreen'
+          }else if(csv[i][4] === 'Moderate-Risk'){
+            risk_level = 'yellow'
+          }else if(csv[i][4] === 'High-Risk'){
+            risk_level = 'red'
+          }else if(csv[i][4] === 'Extreme-Risk'){
+            risk_level = 'pink'
+          }
+          if(csv[i][0].toLowerCase() === selected_country){
+            var _td = '<tr>'+
+            '  <td>'+csv[i][1]+'</td>'+
+            '  <td>'+csv[i][2]+'</td>'+
+            '  <td>'+csv[i][5]+'</td>'+
+            '  <td>'+csv[i][6]+'</td>'+
+            '  <td>'+csv[i][11]+'</td>'+
+            '  <td>'+csv[i][14]+'</td>'+
+            '  <td>'+csv[i][16]+'</td>'+
+            '  <td>'+csv[i][17]+'</td>'+
+              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+              '</tr>'
+            $("#ffg-03h-table").append(_td)
+          }
+        }
+
+      },
+      error: function() {
+        alert("error")
+      }
+    });
+
+    $.ajax("/FFGS/"+selected_date+"-ffgs_result_06hour.csv", {
+      success: function(data) {
+        var csv =  CSVToArray(data);
+        var risk_level = '';
+        var critical_hospital  = 0;
+        var critical_road_trucks =0;
+        var critical_road_primary =0;
+        var critical_road_secondary =0;
+        var total_pop =0;
+        var Female  = 0;
+        var Male =0;
+        var F_0_5 =0;
+        var F_15_65 =0;
+        var F_65  = 0;
+        var M_0_5 =0;
+        var M_15_65 =0;
+        var M_65 =0;
+
+        for(var i=1; i<csv.length-1; i++){
+          //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
+
+          if(csv[i][0].toLowerCase() === selected_country){
+            if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
+            if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
+            if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
+            if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
+
+            if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
+            if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
+            if (csv[i][8] !== '') Male += parseInt(csv[i][8])
+            if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
+            if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
+            if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
+            if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
+            if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
+            if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
+
+            // critical_hospital  += parseInt(csv[i][5])
+            // critical_road_trucks += parseInt(csv[i][14])
+            // critical_road_primary += parseInt(csv[i][15])
+            // critical_road_secondary += parseInt(csv[i][16])
+            if(csv[i][4] === 'Low-Risk'){
+              risk_level = 'lightgreen'
+            }else if(csv[i][4] === 'Moderate-Risk'){
+              risk_level = 'yellow'
+            }else if(csv[i][4] === 'High-Risk'){
+              risk_level = 'red'
+            }else if(csv[i][4] === 'Extreme-Risk'){
+              risk_level = 'pink'
+            }
+
+
+            var _td = '<tr>'+
+            '  <td>'+csv[i][0]+'</td>'+
+            '  <td>'+csv[i][1]+'</td>'+
+            '  <td>'+csv[i][2]+'</td>'+
+            '  <td>'+csv[i][5]+'</td>'+
+            '  <td>'+csv[i][6]+'</td>'+
+            '  <td>'+csv[i][11]+'</td>'+
+            '  <td>'+csv[i][14]+'</td>'+
+            '  <td>'+csv[i][16]+'</td>'+
+            '  <td>'+csv[i][17]+'</td>'+
+              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+              '</tr>'
+            $("#ffg-06h-table").append(_td)
+
+            $("#critical_hospital").text(critical_hospital);
+            $("#critical_road_trucks").text(critical_road_trucks);
+            $("#critical_road_primary").text(critical_road_primary);
+            $("#critical_road_secondary").text(critical_road_secondary);
+
+            $("#total_pop").text(total_pop);
+            $("#female_total_pop").text(Female);
+            $("#male_total_pop").text(Male);
+
+            $("#female_pop_age1").text(F_0_5);
+            $("#female_pop_age2").text(F_15_65);
+            $("#female_pop_age3").text(F_65);
+
+            $("#male_pop_age1").text(M_0_5);
+            $("#male_pop_age2").text(M_15_65);
+            $("#male_pop_age3").text(M_65);
+          }
+        }
+      },
+      error: function() {
+        alert("error")
+      }
+    });
+
+
+
     $.ajax("/FFGS/mrcffg_"+selected_date+"0600.csv", {
       success: function(data) {
         var fetchFFG_data = JSON.parse(CSV2JSON(data));
+        //check FFG csv is exist
+        var returnKeys = Object.keys(fetchFFG_data[0]);
+        if(returnKeys[0] === '<!DOCTYPE html>'){
+          showErrorAlert("No data is available for the selected date.");
+          $("#export_options").css("display", "none");
+        }else{
+          $("#export_options").css("display", "block");
+          showSuccessAlert("Show data of "+ selected_country );
 				var no_country = 0;
 				var no_province = 0;
-				var basin_features=[]
-
+				var basin_features=[];
         country_data = mrcbasins;
         for(var i=0; i< mrcbasins.length; i++){
           for(var j=0; j< fetchFFG_data.length; j++){
@@ -469,7 +501,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
             }
           }
         }
-
 
         var ffg_basins_style = {
            fillColor: '#FFF',
@@ -482,8 +513,23 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
          if(map_ffg01.hasLayer(mrc_ffg01)){
            map_ffg01.removeLayer(mrc_ffg01);
          }
+         if(map_ffg03.hasLayer(mrc_ffg03)){
+           map_ffg03.removeLayer(mrc_ffg03);
+         }
+         if(map_ffg06.hasLayer(mrc_ffg06)){
+           map_ffg06.removeLayer(mrc_ffg06);
+         }
+         if(map_fmap101.hasLayer(mrc_fmap101)){
+           map_fmap101.removeLayer(mrc_fmap101);
+         }
+         if(map_fmap103.hasLayer(mrc_fmap103)){
+           map_fmap103.removeLayer(mrc_fmap103);
+         }
+         if(map_fmap106.hasLayer(mrc_fmap106)){
+           map_fmap106.removeLayer(mrc_fmap106);
+         }
 
-        var mrc_ffg01 = L.geoJSON(country_data, {
+        mrc_ffg01 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG01 <= 0) {
@@ -506,10 +552,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_ffg01);
 
-        if(map_ffg03.hasLayer(mrc_ffg03)){
-          map_ffg03.removeLayer(mrc_ffg03);
-        }
-        var mrc_ffg03 = L.geoJSON(country_data, {
+
+        mrc_ffg03 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG03 <= 0) {
@@ -532,10 +576,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_ffg03);
 
-        if(map_ffg06.hasLayer(mrc_ffg06)){
-          map_ffg06.removeLayer(mrc_ffg06);
-        }
-        var mrc_ffg06 = L.geoJSON(country_data, {
+
+        mrc_ffg06 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FFG01 <= 0) {
@@ -558,10 +600,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_ffg06);
 
-        if(map_fmap101.hasLayer(mrc_fmap101)){
-          map_fmap101.removeLayer(mrc_fmap101);
-        }
-        var mrc_fmap101 = L.geoJSON(country_data, {
+
+        mrc_fmap101 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP101 <= 0) {
@@ -584,10 +624,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_fmap101);
 
-        if(map_fmap103.hasLayer(mrc_fmap103)){
-          map_fmap103map_fmap103.removeLayer(mrc_fmap103);
-        }
-        var mrc_fmap103 = L.geoJSON(country_data, {
+
+        mrc_fmap103 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP103 <= 0) {
@@ -610,10 +648,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_fmap103);
 
-        if(map_fmap106.hasLayer(mrc_fmap106)){
-          map_fmap106.removeLayer(mrc_fmap106);
-        }
-        var mrc_fmap106 = L.geoJSON(country_data, {
+
+        mrc_fmap106 = L.geoJSON(country_data, {
           style: ffg_basins_style,
           onEachFeature: function (feature, layer) {
             if (feature.properties.FMAP106 <= 0) {
@@ -636,6 +672,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
           }
         }).addTo(map_fmap106);
         // mrcffg_features.addTo(map_ffg03);
+      }
 			},
 			function (error) {
 				// Error Callback
@@ -800,11 +837,24 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
   $("#country_select").change(function() {
     var selected_country = $(this).val();
-     $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
-      .done(function (data, status) {
-        mrcbasins = data.features;
-        // $scope.fetchFFG();
-      });
+    $("#country_name").text("for "+ selected_country.charAt(0).toUpperCase() + selected_country.slice(1));
+    $.getJSON('data/'+selected_country+'_bb.geojson')
+     .done(function (data, status) {
+       country_bb = L.geoJSON(data, {});
+       map_ffg01.fitBounds(country_bb.getBounds());
+       map_ffg03.fitBounds(country_bb.getBounds());
+       map_ffg06.fitBounds(country_bb.getBounds());
+       map_fmap101.fitBounds(country_bb.getBounds());
+       map_fmap103.fitBounds(country_bb.getBounds());
+       map_fmap106.fitBounds(country_bb.getBounds());
+     });
+
+    $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
+     .done(function (data, status) {
+       mrcbasins = data.features;
+       // $scope.fetchFFG();
+     });
+
   });
 
   $('#select_date').change(function(){
@@ -813,6 +863,21 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       // $scope.fetchFFG();
       // console.log(selected_date);
   });
+
+  $('#search-filter-btn').click(function() {
+		// selected_date = $("#select_date").val();
+		selected_country = $("#country_select option:selected").val();
+    if(selected_country === ""){
+			showInfoAlert("Please select a country");
+      $("#export_options").css("display", "none");
+		}else if(selected_date === ""){
+			showInfoAlert("Please select date");
+      $("#export_options").css("display", "none");
+		}else if(selected_date !== "" &&  selected_country !== ""){
+			$scope.fetchFFG();
+		}
+
+	});
 
   $("#nearrealtime_data").click(function(){
     totalEvents = 0;
@@ -834,7 +899,10 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   });
 
   $("#btnSave").click(function() {
-      $scope.showLoader = true;
+    // Disable #x
+    $("#btnSave").prop( "disabled", true );
+    $("#btnExport").prop( "disabled", true );
+      showInfoAlert("Please wait for a while until the report is downloaded to your computer.");
       var node = document.getElementById('div_savepng');
       domtoimage.toPng(node)
           .then(function (dataUrl) {
@@ -846,7 +914,10 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
               var pngfilename = "Flash-Flood-Bulletin-Mekong: " + newDate.toLocaleDateString() + " @ " + newDate.toLocaleTimeString()+ ".png";
               a.setAttribute("download", pngfilename);
               a.click();
-              $scope.showLoader = false;
+              // Disable #x
+              $("#btnSave").prop( "disabled", false );
+              $("#btnExport").prop( "disabled", false );
+              showSuccessAlert("The flash flood guidence report was downloaded to your computer.");
           })
           .catch(function (error) {
               console.error('oops, something went wrong!', error);
@@ -859,6 +930,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
     // Disable #x
     $("#btnSave").prop( "disabled", true );
     $("#btnExport").prop( "disabled", true );
+    showInfoAlert("Please wait for a while until the report is downloaded to your computer.");
+
     var pdf = new jsPDF("p", "mm", "a4");
     var width = pdf.internal.pageSize.getWidth();
     var height = pdf.internal.pageSize.getHeight();
@@ -927,6 +1000,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
                             // Disable #x
                             $("#btnSave").prop( "disabled", false );
                             $("#btnExport").prop( "disabled", false );
+                            showSuccessAlert("The flash flood guidence report was downloaded to your computer.");
                         })
                         .catch(function (error) {
                             console.error('oops, something went wrong!', error);
