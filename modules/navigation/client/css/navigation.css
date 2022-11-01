@@ -122,6 +122,22 @@
 	}
 }
 
+
+.mrc {
+  background-size: auto 50px;
+  width: 40px !important;
+  float: left;
+  margin-left: 5px;
+  margin-top: 0px;
+}
+
+@media (max-width: 1024px) {
+	.mrc {
+		margin: auto;
+	}
+}
+
+
 .servir {
     float: right;
     background-size: auto 35px;
@@ -136,13 +152,6 @@
 	}
 }
 
-.jpl, .mrc {
-	background-size: auto 50px;
-    width: 60px !important;
-    float: left;
-    margin-right: 5px;
-    margin-top: 10px;
-}
 
 .sei {
     width: 130px !important;

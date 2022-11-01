@@ -53,12 +53,12 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   			timeDimension: true,
         scrollWheelZoom: false,
   		};
-  		var map_ffg01 = L.map('map_FFG01',map_options).setView([15.8700, 100.9925], 5);
-      var map_ffg03 = L.map('map_FFG03',map_options).setView([15.8700, 100.9925], 5);
-      var map_ffg06 = L.map('map_FFG06',map_options).setView([15.8700, 100.9925], 5);
-      var map_fmap101 = L.map('map_FMAP101',map_options).setView([15.8700, 100.9925], 5);
-      var map_fmap103 = L.map('map_FMAP103',map_options).setView([15.8700, 100.9925], 5);
-      var map_fmap106 = L.map('map_FMAP106',map_options).setView([15.8700, 100.9925], 5);
+  		var map_ffg01 = L.map('map_FFG01',map_options).setView([15.300, 101.9925], 5);
+      var map_ffg03 = L.map('map_FFG03',map_options).setView([15.300, 101.9925], 5);
+      var map_ffg06 = L.map('map_FFG06',map_options).setView([15.300, 101.9925], 5);
+      var map_fmap101 = L.map('map_FMAP101',map_options).setView([15.300, 101.9925], 5);
+      var map_fmap103 = L.map('map_FMAP103',map_options).setView([15.300, 101.9925], 5);
+      var map_fmap106 = L.map('map_FMAP106',map_options).setView([15.300, 101.9925], 5);
 
   		/**
   		* initial white theme basemap
@@ -79,35 +79,50 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       basemap_layer_fmap103.addTo(map_fmap103);
       basemap_layer_fmap106.addTo(map_fmap106);
 
-      var GEOSERVER_ADDRESS= "https://geoserver.adpc.net/geoserver/mekong-admin/wms";
-      var WMSCONFIG ={
-							'transparent': true,
-							'service':'WMS',
-							'version':'1.1.0',
-							'request':'GetMap',
-							'layers':'mekong-admin:mrcffg_basins_simplify',
-							'format':'image/png',
-							'tiled' : true,
-						};
+      // var GEOSERVER_ADDRESS= "https://geoserver.adpc.net/geoserver/mekong-admin/wms";
+      // var WMSCONFIG ={
+			// 				'transparent': true,
+			// 				'service':'WMS',
+			// 				'version':'1.1.0',
+			// 				'request':'GetMap',
+			// 				'layers':'mekong-admin:mrcffg_basins_simplify',
+			// 				'format':'image/png',
+			// 				'tiled' : true,
+			// 			};
+      //
+      // var mrcBasinsWMS_1 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var mrcBasinsWMS_2 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var mrcBasinsWMS_3 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var mrcBasinsWMS_4 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var mrcBasinsWMS_5 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var mrcBasinsWMS_6 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      //
+      // mrcBasinsWMS_1.addTo(map_ffg01);
+      // mrcBasinsWMS_2.addTo(map_ffg03);
+      // mrcBasinsWMS_3.addTo(map_ffg06);
+      // mrcBasinsWMS_4.addTo(map_fmap101);
+      // mrcBasinsWMS_5.addTo(map_fmap103);
+      // mrcBasinsWMS_6.addTo(map_fmap106);
 
-      var mrcBasinsWMS_1 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
-      var mrcBasinsWMS_2 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
-      var mrcBasinsWMS_3 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
-      var mrcBasinsWMS_4 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
-      var mrcBasinsWMS_5 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
-      var mrcBasinsWMS_6 = L.tileLayer.wms(GEOSERVER_ADDRESS, WMSCONFIG);
+      // var selected_country ='';
+      // var selected_date ='';
 
-      mrcBasinsWMS_1.addTo(map_ffg01);
-      mrcBasinsWMS_2.addTo(map_ffg03);
-      mrcBasinsWMS_3.addTo(map_ffg06);
-      mrcBasinsWMS_4.addTo(map_fmap101);
-      mrcBasinsWMS_5.addTo(map_fmap103);
-      mrcBasinsWMS_6.addTo(map_fmap106);
+      var selected_country =sessionStorage.getItem("selected_country");
+      var selected_date =sessionStorage.getItem("selected_date");
 
-      var selected_country ='';
-      var selected_date ='';
-      sessionStorage.setItem("selected_country", '');
-      sessionStorage.setItem("selected_date", '');
+      $(document).ready(()=>{
+        $("#country_select option[value="+selected_country+"]").attr('selected', 'selected');
+        $("#country_select").change();
+      });
+
+      var queryDate = new Date(selected_date);
+      $('#select_date').datepicker('setDate', queryDate);
+      selected_date = selected_date.replace("/","").replace("/","");
+
+
+
+      // sessionStorage.setItem("selected_country", '');
+      // sessionStorage.setItem("selected_date", '');
       // console.log(selected_date)
       // map_ffg01.addLayer(mrcBasinsWMS);
 
@@ -314,10 +329,12 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
     $("#ffg-01h-table").html("");
     $("#ffg-03h-table").html("");
     $("#ffg-06h-table").html("");
+    selected_date=$('#select_date').val().split("/");
+    selected_date=selected_date[0]+selected_date[1]+selected_date[2];
     $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
+
       success: function(data) {
         var csv =  CSVToArray(data);
-        console.log(csv)
         var risk_level = '';
         for(var i=1; i<csv.length-1; i++){
           if(csv[i][4] === 'Low-Risk'){
@@ -407,8 +424,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
         for(var i=1; i<csv.length-1; i++){
           //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
-
-          if(csv[i][0].toLowerCase() === selected_country){
+          if(selected_country === 'mekong'){
             if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
             if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
             if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
@@ -438,7 +454,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
               risk_level = 'pink'
             }
 
-
             var _td = '<tr>'+
             '  <td>'+csv[i][0]+'</td>'+
             '  <td>'+csv[i][1]+'</td>'+
@@ -452,25 +467,72 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
               '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
               '</tr>'
             $("#ffg-06h-table").append(_td)
+          }else{
+            if(csv[i][0].toLowerCase() === selected_country){
+              if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
+              if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
+              if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
+              if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
 
-            $("#critical_hospital").text(critical_hospital);
-            $("#critical_road_trucks").text(critical_road_trucks);
-            $("#critical_road_primary").text(critical_road_primary);
-            $("#critical_road_secondary").text(critical_road_secondary);
+              if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
+              if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
+              if (csv[i][8] !== '') Male += parseInt(csv[i][8])
+              if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
+              if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
+              if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
+              if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
+              if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
+              if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
 
-            $("#total_pop").text(total_pop);
-            $("#female_total_pop").text(Female);
-            $("#male_total_pop").text(Male);
+              // critical_hospital  += parseInt(csv[i][5])
+              // critical_road_trucks += parseInt(csv[i][14])
+              // critical_road_primary += parseInt(csv[i][15])
+              // critical_road_secondary += parseInt(csv[i][16])
+              if(csv[i][4] === 'Low-Risk'){
+                risk_level = 'lightgreen'
+              }else if(csv[i][4] === 'Moderate-Risk'){
+                risk_level = 'yellow'
+              }else if(csv[i][4] === 'High-Risk'){
+                risk_level = 'red'
+              }else if(csv[i][4] === 'Extreme-Risk'){
+                risk_level = 'pink'
+              }
 
-            $("#female_pop_age1").text(F_0_5);
-            $("#female_pop_age2").text(F_15_65);
-            $("#female_pop_age3").text(F_65);
-
-            $("#male_pop_age1").text(M_0_5);
-            $("#male_pop_age2").text(M_15_65);
-            $("#male_pop_age3").text(M_65);
+              var _td = '<tr>'+
+              '  <td>'+csv[i][0]+'</td>'+
+              '  <td>'+csv[i][1]+'</td>'+
+              '  <td>'+csv[i][2]+'</td>'+
+              '  <td>'+csv[i][5]+'</td>'+
+              '  <td>'+csv[i][6]+'</td>'+
+              '  <td>'+csv[i][11]+'</td>'+
+              '  <td>'+csv[i][14]+'</td>'+
+              '  <td>'+csv[i][16]+'</td>'+
+              '  <td>'+csv[i][17]+'</td>'+
+                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+                '</tr>'
+              $("#ffg-06h-table").append(_td)
+            }
           }
+
         }
+
+        $("#critical_hospital").text(critical_hospital);
+        $("#critical_road_trucks").text(critical_road_trucks);
+        $("#critical_road_primary").text(critical_road_primary);
+        $("#critical_road_secondary").text(critical_road_secondary);
+
+        $("#total_pop").text(total_pop);
+        $("#female_total_pop").text(Female);
+        $("#male_total_pop").text(Male);
+
+        $("#female_pop_age1").text(F_0_5);
+        $("#female_pop_age2").text(F_15_65);
+        $("#female_pop_age3").text(F_65);
+
+        $("#male_pop_age1").text(M_0_5);
+        $("#male_pop_age2").text(M_15_65);
+        $("#male_pop_age3").text(M_65);
+
       },
       error: function() {
         alert("error")
@@ -838,21 +900,24 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $("#country_select").change(function() {
     var selected_country = $(this).val();
     $("#country_name").text("for "+ selected_country.charAt(0).toUpperCase() + selected_country.slice(1));
-    $.getJSON('data/'+selected_country+'_bb.geojson')
-     .done(function (data, status) {
-       country_bb = L.geoJSON(data, {});
-       map_ffg01.fitBounds(country_bb.getBounds());
-       map_ffg03.fitBounds(country_bb.getBounds());
-       map_ffg06.fitBounds(country_bb.getBounds());
-       map_fmap101.fitBounds(country_bb.getBounds());
-       map_fmap103.fitBounds(country_bb.getBounds());
-       map_fmap106.fitBounds(country_bb.getBounds());
-     });
+    if(selected_country!=="mekong"){
+      $.getJSON('data/'+selected_country+'_bb.geojson')
+       .done(function (data, status) {
+         country_bb = L.geoJSON(data, {});
+         map_ffg01.fitBounds(country_bb.getBounds());
+         map_ffg03.fitBounds(country_bb.getBounds());
+         map_ffg06.fitBounds(country_bb.getBounds());
+         map_fmap101.fitBounds(country_bb.getBounds());
+         map_fmap103.fitBounds(country_bb.getBounds());
+         map_fmap106.fitBounds(country_bb.getBounds());
+       });
+    }
+
 
     $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
      .done(function (data, status) {
        mrcbasins = data.features;
-       // $scope.fetchFFG();
+       $scope.fetchFFG();
      });
 
   });

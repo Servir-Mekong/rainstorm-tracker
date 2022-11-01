@@ -7,7 +7,7 @@ module.exports = {
     keywords: 'SERVIR Mekong, Stroms, flash flood guidence',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID'
   },
-  port: process.env.PORT || 8000,
+  port: process.env.PORT || 3000,
   host: process.env.HOST || '0.0.0.0',
   templateEngine: 'swig',
   // Session Cookie settings

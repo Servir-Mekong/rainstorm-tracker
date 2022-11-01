@@ -143,6 +143,22 @@ label {
   color: #FFF;
 }
 
+.table-subprovince-detail{
+  color: #FFF;
+}
+
+.table-subprovince-detail p{
+  color: #FFF;
+  margin: 0;
+}
+
+.table-subprovince-detail h2{
+  margin: 2px;
+}
+.table-subprovince-detail h1{
+  margin: 2px;
+}
+
 .table-detail{
   background-color: rgba(0,0,0,.0);
   margin: 5px 15px;
@@ -1030,4 +1046,8 @@ content: 'LOADING...';
     border-radius: 4px;
     border: none;
     color: #333;
+}
+
+.active {
+  background-color: #717171;
 }

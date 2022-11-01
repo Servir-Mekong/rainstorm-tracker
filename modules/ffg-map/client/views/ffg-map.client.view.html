@@ -24,7 +24,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <select class="form-control" id="country_select" style="font-size: 12px; padding: 0; padding-left: 10px;">
-                  <option value="" ></option>
+                  <option value="mekong" >All</option>
                   <option value="cambodia">Cambodia</option>
                   <option value="laos">Laos</option>
                   <option value="thailand">Thailand</option>
@@ -44,31 +44,41 @@
 
         <div class="col-sm-12">
           <div class="form-group">
-            <label for="exampleInputEmail1">PARAMETER</label>
-            <br>
-            <input type="radio" id="ASMT" name="ffg_param" value="ASMT">
-            <label for="ASMT">Average soil water </label><br>
 
-            <input type="radio" id="FFG01" name="ffg_param" value="FFG01" checked>
-            <label for="FFG01">Flash flood guidance 1 hour</label><br>
+            <input type="checkbox" id="riskmap" name="riskmap" value="ffgmap" checked>
+            <label for="riskmap"> Flash flood information waning</label><br>
 
-            <input type="radio" id="FFG03" name="ffg_param" value="FFG03">
-            <label for="FFG03">Flash flood guidance 3 hour</label><br>
+            <input type="checkbox" id="ffgmap" name="ffgmap" value="ffgmap">
+            <label for="ffgmap"> Flash flood Parameter</label><br>
 
-            <input type="radio" id="FFG06" name="ffg_param" value="FFG06">
-            <label for="FFG06">Flash flood guidance 6 hour</label><br>
+            <div class="col-lg-12">
+              <!-- <label for="exampleInputEmail1">PARAMETER</label> -->
+              <!-- <br> -->
+              <input type="radio" id="ASMT" name="ffg_param" value="ASMT">
+              <label for="ASMT">Average soil water </label><br>
 
-            <input type="radio" id="FMAP101" name="ffg_param" value="FMAP101">
-            <label for="FMAP101">Area forecasted 1 hour</label><br>
+              <input type="radio" id="FFG01" name="ffg_param" value="FFG01" checked>
+              <label for="FFG01">Flash flood guidance 1 hour</label><br>
 
-            <input type="radio" id="FMAP103" name="ffg_param" value="FMAP103">
-            <label for="FMAP103">Area forecasted 3 hour</label><br>
+              <input type="radio" id="FFG03" name="ffg_param" value="FFG03">
+              <label for="FFG03">Flash flood guidance 3 hour</label><br>
 
-            <input type="radio" id="FMAP106" name="ffg_param" value="FMAP106">
-            <label for="FMAP106">Area forecasted 6 hour</label><br>
+              <input type="radio" id="FFG06" name="ffg_param" value="FFG06">
+              <label for="FFG06">Flash flood guidance 6 hour</label><br>
 
-            <input type="radio" id="FMAP124" name="ffg_param" value="FMAP124">
-            <label for="FMAP124">Area forecasted 24 hour</label><br>
+              <input type="radio" id="FMAP101" name="ffg_param" value="FMAP101">
+              <label for="FMAP101">Area forecasted 1 hour</label><br>
+
+              <input type="radio" id="FMAP103" name="ffg_param" value="FMAP103">
+              <label for="FMAP103">Area forecasted 3 hour</label><br>
+
+              <input type="radio" id="FMAP106" name="ffg_param" value="FMAP106">
+              <label for="FMAP106">Area forecasted 6 hour</label><br>
+
+              <input type="radio" id="FMAP124" name="ffg_param" value="FMAP124">
+              <label for="FMAP124">Area forecasted 24 hour</label><br>
+            </div>
+
           </div>
         </div>
 
@@ -145,12 +155,19 @@
               <span class="closeMenu">&times;</span>
               <label style="font-size:12px; font-weight: 700;"><b>LAYERS</b></label>
               <ul class="toggles-list">
+
+                <li class="toggle"><label class="switch_layer"><input  name="mainlakes" id="mainlakes"type="checkbox"><span class="slider_toggle round"></span></label><label>Main Lakes</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="river" id="river" type="checkbox"><span class="slider_toggle round"></span></label><label>River</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="mekong_basin" id="mekong_basin" type="checkbox"><span class="slider_toggle round"></span></label><label>Mekong Basin Area</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="subprovince" id="subprovince" type="checkbox"><span class="slider_toggle round"></span></label><label>Subprovince boundary</label></li>
                 <li class="toggle" id="toggle_storm_affected_area" style="display:none;"><label class="switch_layer"><input  name="affected_area" id="affected_area"  checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Affected Area of the storm event</label></li>
                 <!-- <li class="toggle"><label class="switch_layer"><input  name="storm_events" id="storm_events" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm Events </label></li> -->
                 <!-- <li class="toggle" id="toggle_storm_image" style="display:none;"><label class="switch_layer"><input  name="storm_image" id="storm_image"  checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Storm  Image </label></li> -->
                 <li class="toggle"><label class="switch_layer"><input  name="geographic_coverage" id="geographic_coverage" type="checkbox"><span class="slider_toggle round"></span></label><label>Geographic Coverage</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_bb" id="mekong_bb" type="checkbox"><span class="slider_toggle round"></span></label><label>Lower Mekong Bounding Box</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_country" id="mekong_country" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Country boundary</label></li>
+
+
               </ul>
 
             </div>
@@ -163,7 +180,7 @@
 
 <div id="sidenav-table" class="sidenav" style="right:0px;padding-bottom: 150px;">
   <div class="table-items">
-    <label>MRC Basins</label><span style="float:right;" id="found-no"></span>
+    <label>Sub-provinces</label><span style="float:right;" id="found-no"></span>
     <span class="closebtn" id="table-close">&times;</span>
     <div class="">
       <button id='DLtoExcel' class="btn btn-default btn-sm">Export Data</button>
@@ -185,11 +202,142 @@
     <p id="date-text" class="date-text-detail"></p>
     <p id="time-text" class="time-text-detail"></p>
     <div class="text-center"></div>
+  </div>
 
-  </div>
-  <div class="table-detail">
-  </div>
+  <div class="table-detail"></div>
 </div>
+
+<!--
+<div class="table-subprovince-detail">
+  <div class="info-area-class">
+
+        <div class="col-lg-12">
+          <span class="close">&times;</span>
+          <p id="area_name" style="color:#40E0D0;font-size:16px;font-weight:600;"></p>
+          <br>
+        <div class="row">
+          <div class="col-lg-12">
+            <h4>Social Vulnerability</h4>
+            <div class="row">
+                <div id="pop-age-chart" class="col-lg-3 text-center">
+                  <img src="/modules/ffg-map/client/img/pop.png" style="width: 100%" alt="">
+                </div>
+                <div id="pop-age-chart" class="col-lg-9" >
+                  <p>Total Population</p>
+                  <h1 style="font-size: 20px; font-weight: 700;color: #2f80ed;" id="total_pop">-</h1>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <div class="row">
+              <div id="pop-age-chart" class="col-lg-3 text-center">
+                <img src="/modules/ffg-map/client/img/female.png" style="width: 100%" alt="">
+              </div>
+              <div id="pop-age-chart" class="col-lg-9" >
+                <p>Female Population</p>
+                <h2 style="color: #bb6bd9;font-size: 16px;" id="female">-</h2>
+                <table style="width:100%">
+                  <tr>
+                    <td style="width:50%">Age 0-15</td>
+                    <td style="width:50%" id="F_0_15"></td>
+                  </tr>
+                  <tr>
+                    <td style="width:50%">Age 15-65</td>
+                    <td style="width:50%" id="F_15_65"></td>
+                  </tr>
+                  <tr>
+                    <td style="width:50%">Age > 65</td>
+                    <td style="width:50%" id="F__65"></td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-lg-12 col-md-6" style="margin-top: 20px;">
+            <div class="row">
+              <div id="pop-age-chart" class="col-lg-3 text-center">
+                <img src="/modules/ffg-map/client/img/male.png" style="width: 90%" alt="">
+              </div>
+              <div id="pop-age-chart" class="col-lg-9" >
+                <p>Male Population</p>
+                <h2 style="color: #2d9cdb;font-size: 16px;" id="male">-</h2>
+                <table style="width:100%">
+                  <tr>
+                    <td style="width:50%">Age 0-15</td>
+                    <td style="width:50%" id="M_0_15"></td>
+                  </tr>
+                  <tr>
+                    <td style="width:50%">Age 15-65</td>
+                    <td style="width:50%" id="M_15_65"></td>
+                  </tr>
+                  <tr>
+                    <td style="width:50%">Age > 65</td>
+                    <td style="width:50%" id="M__65"></td>
+                  </tr>
+                </table>
+
+
+              </div>
+            </div>
+            <br>
+            <table style="width:100%">
+              <tr>
+                <td style="width:50%">Hospital</td>
+                <td style="width:50%" id="hospitals"></td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+        <br>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <h4>Physical Vulnerability</h4>
+              <p>Road Type</p>
+              <table style="width:100%">
+                <tr>
+                  <td style="width:50%">Trunks</td>
+                  <td style="width:50%" id="trunks"></td>
+                </tr>
+                <tr>
+                  <td style="width:50%">Primary</td>
+                  <td style="width:50%" id="primary"></td>
+                </tr>
+                <tr>
+                  <td style="width:50%">Seconday</td>
+                  <td style="width:50%" id="secondary"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        <br>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-6">
+            <h4>Economic Vulnerability</h4>
+            <table style="width:100%">
+              <tr>
+                <td style="width:50%">Gross domestic product (GDP)</td>
+                <td style="width:50%" id="GDP_in_cur"></td>
+              </tr>
+              <tr>
+                <td style="width:50%">Crop lands</td>
+                <td style="width:50%" id="cropland_E"></td>
+              </tr>
+            </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+</div> -->
 
 <div id="minimize-detail-panel" class="sidenav hide">
   <span class="minimizebtn" id="detail-minimize-2">
@@ -282,7 +430,7 @@
 
 </div>
   <div class="slide-tab-right">
-    <p style="font-size:12px; font-weight:700;">MRC BASINS</p>
+    <p style="font-size:12px; font-weight:700;">MRC SUB-PROVINCES</p>
   </div>
   <div class="slide-tab-search" >
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFF" class="bi bi-search" viewBox="0 0 16 16">

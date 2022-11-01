@@ -21,6 +21,12 @@
 			'className': 'adpc'
 		},
 		{
+			'alt': 'Mekong River Commission',
+			'url': 'https://www.mrcmekong.org/',
+			'src': 'https://www.mrcmekong.org/mrcmekong/images/mrc/MRC-logo.svg',
+			'className': 'mrc'
+		},
+		{
 			'alt': 'SERVIR',
 			'url': 'https://servir.adpc.net/',
 			'src': 'https://servir.adpc.net/themes/svmk/images/optimized/Servir_Logo_Color.png',
