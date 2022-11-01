@@ -6,48 +6,43 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 	var filterArea = 'none';
 	var affected_district ;
-
+	var selected_date;
+	var country_data;
 	$(document).ready(function(){
 		$(".navbar-brand.navmenu").html("");
 		$(".navbar-brand.navmenu").text("MEKONG FLASH FLOOD GUIDANCE");
-
 		$('[data-toggle="tooltip"]').tooltip();
 
+		var enableDates = ["2020/08/12" ,"2020/08/14" ,"2020/08/15"];
+		var recent_date = enableDates[enableDates.length - 1];
+		var enableDatesArray=[];
 
+		$('#select_date').datepicker({
+			dateFormat: 'yyyy/mm/dd',
+			autoclose: true,
+			beforeShowDay: function (date) {
+		        var dt_ddmmyyyy = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() ;
+						var month_str = date.getMonth() + 1;
+						var date_str = date.getDate();
+						if ((date.getMonth() + 1) <= 9) {month_str = '0' + (date.getMonth() + 1);}
+						if (date.getDate() <= 9) {date_str = '0' + date.getDate();}
+						dt_ddmmyyyy =  date.getFullYear() + '/' + month_str  + '/' + date_str;
+		        if (enableDates.indexOf(dt_ddmmyyyy) !== -1) {
+		            return {
+		                tooltip: 'There is data available',
+		                classes: 'active'
+		            };
+		        } else {
+		            return false;
+		        }
+		    }
+		});
+		var ddate, mmonth, yyear, setDate;
+		var queryDate = new Date(recent_date);
+		$('#select_date').datepicker('setDate', queryDate);
 
-				var enableDates = ["2020/08/12" ,"2020/08/14" ,"2020/08/15"];
-				var recent_date = enableDates[enableDates.length - 1];
-				var enableDatesArray=[];
-
-				$('#select_date').datepicker({
-					dateFormat: 'yyyy/mm/dd',
-					autoclose: true,
-					beforeShowDay: function (date) {
-				        var dt_ddmmyyyy = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() ;
-								var month_str = date.getMonth() + 1;
-								var date_str = date.getDate();
-								if ((date.getMonth() + 1) <= 9) {month_str = '0' + (date.getMonth() + 1);}
-								if (date.getDate() <= 9) {date_str = '0' + date.getDate();}
-								dt_ddmmyyyy =  date.getFullYear() + '/' + month_str  + '/' + date_str;
-				        if (enableDates.indexOf(dt_ddmmyyyy) !== -1) {
-				            return {
-				                tooltip: 'There is data available',
-				                classes: 'active'
-				            };
-				        } else {
-				            return false;
-				        }
-				    }
-				});
-				var ddate, mmonth, yyear, setDate;
-
-				var queryDate = new Date(recent_date);
-				$('#select_date').datepicker('setDate', queryDate);
-
-				sessionStorage.setItem("selected_country", "mekong");
-				sessionStorage.setItem("selected_date", recent_date);
-
-
+		sessionStorage.setItem("selected_country", "mekong");
+		sessionStorage.setItem("selected_date", recent_date);
 
 	});
 
@@ -106,6 +101,14 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 		var basemap_layer   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 		basemap_layer.addTo(map);
 
+
+		//create map Panes
+		map.createPane('ffg_map');
+		map.getPane('ffg_map').style.zIndex = 901;
+
+		map.createPane('risk_map');
+		map.getPane('risk_map').style.zIndex = 900;
+
 		// lond country boundary
 		var adm0;
 		$.getJSON('data/adm0.geojson')
@@ -120,7 +123,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 						fillOpacity: 0.1
 					}
 			 });
-			 adm0.addTo(map);
+			 // adm0.addTo(map);
 		 });
 
 		 // Load geographic coverage area Geojson
@@ -156,6 +159,8 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
   				     fillOpacity: 0.1
   				   }
   				});
+					// $scope.fetchFFG();
+					$scope.fetchRiskSubprovinces();
   			});
 
 
@@ -335,11 +340,12 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 		$.getJSON('data/mekong_mrcffg_basins.geojson')
 		.done(function (data, status) {
-		mrcbasins = data.features;
-			if(map.hasLayer(mrcbasins_geojson)){
-				map.removeLayer(mrcbasins_geojson);
-			}
-			mrcbasins_geojson = L.geoJSON(data, {style: basin_style});
+				mrcbasins = data.features;
+				if(map.hasLayer(mrcbasins_geojson)){
+					map.removeLayer(mrcbasins_geojson);
+				}
+				mrcbasins_geojson = L.geoJSON(data, {style: basin_style});
+				$scope.fetchFFG();
 		});
 
 			function highlight (layer) {
@@ -373,8 +379,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 		 	var fetchFFG_data;
 			var mrc_ffgmap;
-			var country_data;
-			var selected_date;
+
 
 		   $scope.fetchFFG = function () {
 				 $.ajax({
@@ -383,7 +388,6 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 					var data = JSON.parse(CSV2JSON(data));
 					fetchFFG_data=  data;
-
 					//check FFG csv is exist
 					var returnKeys = Object.keys(fetchFFG_data[0]);
 					if(returnKeys[0] === '<!DOCTYPE html>'){
@@ -453,6 +457,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 						 mrc_ffgmap = L.geoJSON(country_data, {
 							 style: ffg_basins_style,
+							 pane: 'ffg_map',
 							 onEachFeature: function (feature, layer) {
 								 if (feature.properties[param] <= mapVals[param][0]) {
 										 layer.setStyle({fillColor : mapColors[param][0],fillOpacity: 0,color: mapColors[param][0]});
@@ -493,11 +498,102 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 										 this.closePopup();
 										 dehighlight(e.target);
 								 });
+								 layer.on('click', function(e) {
+									 $(".basin_rainfall_chart").css("display", "block");
+									 var param = e.target.feature.properties;
+										 Highcharts.chart('rainfall_chart', {
+										     chart: {
+										         type: 'line',
+														 height:300,
+														 backgroundColor:'rgb(0 0 0 / 0.8)',
+														 style: {
+															fontFamily: 'Roboto',
+															color: '#FFF',
+														}
+										     },
+										     title: {
+										         text: 'Rainfall Forecast Basin ID:' + param['BASIN'],
+														 style: {
+															fontFamily: 'Roboto',
+															color: '#FFF',
+														}
+										     },
+										     subtitle: {
+										         text: 'Date: '+ $("#select_date").val(),
+														 style: {
+															fontFamily: 'Roboto',
+															color: '#FFF',
+														}
+										     },
+										     xAxis: {
+										         categories: ['01', '03', '06', '24'],
+														 title: {
+										             text: 'Hours',
+																 style: {
+																	fontFamily: 'Roboto',
+																	color: '#FFF',
+																}
+										         },
+														 gridLineWidth: 0,
+										     },
+										     yAxis: {
+										         title: {
+										             text: 'Rainfall (mm/h)',
+																 style: {
+																	fontFamily: 'Roboto',
+																	color: '#FFF',
+																}
+										         },
+														 gridLineWidth: 0,
+
+										     },
+										     plotOptions: {
+										         line: {
+										             dataLabels: {
+										                 enabled: true
+										             },
+										             enableMouseTracking: false
+										         }
+										     },
+										     series: [{
+													 name: "rainfall",
+										       data: [parseFloat(param['FMAP101']), parseFloat(param['FMAP103']),parseFloat(param['FMAP106']),parseFloat(param['FMAP124'])]
+										     }],
+												 legend:{ enabled:false },
+												 credits: { enabled: false},
+												 exporting: {
+														buttons: {
+														  contextButton: {
+															menuItems: [
+																		"downloadPNG",
+																		"downloadSVG",
+																		"downloadCSV",
+																	]
+														  }
+														}
+													  },
+													responsive: {
+														rules: [{
+															condition: {
+																maxWidth: 500
+															},
+															chartOptions: {
+																legend: {
+																	layout: 'horizontal',
+																	align: 'center',
+																	verticalAlign: 'bottom'
+																}
+															}
+														}]
+													}
+										 });
+
+								 });
 							 }
 						 });
 
 						 if (document.getElementById('ffgmap').checked) {
-							 		mrcbasins_geojson.addTo(map);
+							 		// mrcbasins_geojson.addTo(map);
 			            mrc_ffgmap.addTo(map);
 			        }
 					}
@@ -517,7 +613,35 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 	 }).done(function (data, textStatus, jqXHR) {
 
 			 	 var data = JSON.parse(CSV2JSON(data));
-			 	 fetchRisk_data=  data;
+
+				 var filterData = [];
+				 if(map.hasLayer(mrc_riskmap)){
+					 map.removeLayer(mrc_riskmap);
+				 }
+				 $("#tableOperationalList").empty();
+				 $("#found-no").text("Found 0");
+
+				 if(selected_country === 'mekong'){
+					 fetchRisk_data = data;
+					 if(fetchRisk_data.length < 1){
+						 showErrorAlert("No Flash flood Waning in Mekong countries");
+					 }else{
+						 showSuccessAlert("Show Flash flood Waning (Risk level) per sub-province");
+					 }
+				 }else{
+					 for(var i=0; i<data.length-1; i++){
+						 if(data[i]["country"].toLowerCase() === selected_country){
+							 filterData.push(data[i]);
+						 }
+					 }
+					 fetchRisk_data=  filterData;
+					 if(fetchRisk_data.length < 1){
+						 showErrorAlert("No Flash flood Waning in "+ selected_country);
+					 }else{
+						 showSuccessAlert("Show Flash flood Waning (Risk level) per sub-province");
+					 }
+				 }
+
 			 	 //check FFG csv is exist
 			 	 var returnKeys = Object.keys(fetchRisk_data[0]);
 			 	 if(returnKeys[0] === '<!DOCTYPE html>'){
@@ -538,7 +662,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 				}
 			 			}
 
-			 			$("#tableOperationalList").empty();
+			 			// $("#tableOperationalList").empty();
 			 			 $("#sidenav-table").css("width", "280px");
 			 			 createLiEvents($scope.events)
 			 			 $(".detail-right").css("right", "285px");
@@ -552,12 +676,10 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 				 weight: 0.5,
 			 				 opacity: 0,
 			 				 color: 'white',
-			 				 fillOpacity: 0.2
+			 				 fillOpacity: 0.1
 			 			 };
 
-			 			 if(map.hasLayer(mrc_riskmap)){
-			 				 map.removeLayer(mrc_riskmap);
-			 			 }
+
 			 			 var param = $('input[type=radio][name=ffg_param]:checked').val();
 			 			 var param_text = $('input[type=radio][name=ffg_param]:checked').attr("id");
 			 			 param_text = $("label[for='" + param_text + "']").text();
@@ -565,6 +687,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 				 			mrc_riskmap = L.geoJSON(riskAreas, {
 			 				style: ffg_basins_style,
+							pane: 'risk_map',
 			 				onEachFeature: function (feature, layer) {
 			 					if (feature.properties["risk"] == 'Low-Risk') {
 			 							layer.setStyle({fillColor : '#3EDC3A', fillOpacity: 0.7,color:'#3EDC3A'});
@@ -866,6 +989,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 		}
 
 	});
+
 
 	$('#search-all-btn').click(function() {
 		filterArea = 'none';
@@ -1547,7 +1671,21 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 								dehighlight(e.target);
 						});
 				}
-			}).addTo(map);
+			});
+
+			if (document.getElementById('ffgmap').checked) {
+					 // mrcbasins_geojson.addTo(map);
+					 mrc_ffgmap.addTo(map);
+			 }else{
+	 				if (map.hasLayer(mrc_ffgmap)) {
+	 					map.removeLayer(mrc_ffgmap);
+	 				}
+	 				// if(map.hasLayer(mrcbasins_geojson)){
+	 				// 	map.removeLayer(mrcbasins_geojson);
+	 				// }
+			 }
+
+
 			// $("#tableOperationalList").empty();
 			// createEventList();
 
@@ -1651,6 +1789,11 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			/* Act on the event */
 			getDetail($(this).attr('data-id'));
 
+		});
+
+
+		$("#chart-close").click(function() {
+			$(".basin_rainfall_chart").css("display", "none");
 		});
 
 	// 	function createEventList() {
@@ -1801,4 +1944,12 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 		this.remove();
 		createEventList();
 	});
+
+
+	$(document).ready(function(){
+		//initial
+		$('#search-filter-btn').click();
+	});
+
+
 });
