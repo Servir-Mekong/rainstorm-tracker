@@ -380,6 +380,97 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 		 	var fetchFFG_data;
 			var mrc_ffgmap;
 
+			var showChart = function(param){
+					$(".basin_rainfall_chart").css("display", "block");
+						Highcharts.chart('rainfall_chart', {
+								chart: {
+										type: 'line',
+										height:300,
+										backgroundColor:'rgb(0 0 0 / 0.8)',
+										style: {
+										 fontFamily: 'Roboto',
+										 color: '#FFF',
+									 }
+								},
+								title: {
+										text: 'Rainfall Forecast Basin ID:' + param['BASIN'],
+										style: {
+										 fontFamily: 'Roboto',
+										 color: '#FFF',
+									 }
+								},
+								subtitle: {
+										text: 'Date: '+ $("#select_date").val(),
+										style: {
+										 fontFamily: 'Roboto',
+										 color: '#FFF',
+									 }
+								},
+								xAxis: {
+										categories: ['01', '03', '06', '24'],
+										title: {
+												text: 'Hours',
+												style: {
+												 fontFamily: 'Roboto',
+												 color: '#FFF',
+											 }
+										},
+										gridLineWidth: 0,
+								},
+								yAxis: {
+										title: {
+												text: 'Rainfall (mm/h)',
+												style: {
+												 fontFamily: 'Roboto',
+												 color: '#FFF',
+											 }
+										},
+										gridLineWidth: 0,
+
+								},
+								plotOptions: {
+										line: {
+												dataLabels: {
+														enabled: true
+												},
+												enableMouseTracking: false
+										}
+								},
+								series: [{
+									name: "rainfall",
+									data: [parseFloat(param['FMAP101']), parseFloat(param['FMAP103']),parseFloat(param['FMAP106']),parseFloat(param['FMAP124'])]
+								}],
+								legend:{ enabled:false },
+								credits: { enabled: false},
+								exporting: {
+									 buttons: {
+										 contextButton: {
+										 menuItems: [
+													 "downloadPNG",
+													 "downloadSVG",
+													 "downloadCSV",
+												 ]
+										 }
+									 }
+									 },
+								 responsive: {
+									 rules: [{
+										 condition: {
+											 maxWidth: 500
+										 },
+										 chartOptions: {
+											 legend: {
+												 layout: 'horizontal',
+												 align: 'center',
+												 verticalAlign: 'bottom'
+											 }
+										 }
+									 }]
+								 }
+						});
+
+				};
+
 
 		   $scope.fetchFFG = function () {
 				 $.ajax({
@@ -498,97 +589,9 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 										 this.closePopup();
 										 dehighlight(e.target);
 								 });
-								 layer.on('click', function(e) {
-									 $(".basin_rainfall_chart").css("display", "block");
-									 var param = e.target.feature.properties;
-										 Highcharts.chart('rainfall_chart', {
-										     chart: {
-										         type: 'line',
-														 height:300,
-														 backgroundColor:'rgb(0 0 0 / 0.8)',
-														 style: {
-															fontFamily: 'Roboto',
-															color: '#FFF',
-														}
-										     },
-										     title: {
-										         text: 'Rainfall Forecast Basin ID:' + param['BASIN'],
-														 style: {
-															fontFamily: 'Roboto',
-															color: '#FFF',
-														}
-										     },
-										     subtitle: {
-										         text: 'Date: '+ $("#select_date").val(),
-														 style: {
-															fontFamily: 'Roboto',
-															color: '#FFF',
-														}
-										     },
-										     xAxis: {
-										         categories: ['01', '03', '06', '24'],
-														 title: {
-										             text: 'Hours',
-																 style: {
-																	fontFamily: 'Roboto',
-																	color: '#FFF',
-																}
-										         },
-														 gridLineWidth: 0,
-										     },
-										     yAxis: {
-										         title: {
-										             text: 'Rainfall (mm/h)',
-																 style: {
-																	fontFamily: 'Roboto',
-																	color: '#FFF',
-																}
-										         },
-														 gridLineWidth: 0,
-
-										     },
-										     plotOptions: {
-										         line: {
-										             dataLabels: {
-										                 enabled: true
-										             },
-										             enableMouseTracking: false
-										         }
-										     },
-										     series: [{
-													 name: "rainfall",
-										       data: [parseFloat(param['FMAP101']), parseFloat(param['FMAP103']),parseFloat(param['FMAP106']),parseFloat(param['FMAP124'])]
-										     }],
-												 legend:{ enabled:false },
-												 credits: { enabled: false},
-												 exporting: {
-														buttons: {
-														  contextButton: {
-															menuItems: [
-																		"downloadPNG",
-																		"downloadSVG",
-																		"downloadCSV",
-																	]
-														  }
-														}
-													  },
-													responsive: {
-														rules: [{
-															condition: {
-																maxWidth: 500
-															},
-															chartOptions: {
-																legend: {
-																	layout: 'horizontal',
-																	align: 'center',
-																	verticalAlign: 'bottom'
-																}
-															}
-														}]
-													}
-										 });
-
-								 });
+								 layer.on('click', function(e){
+									 showChart(e.target.feature.properties);
+								 } );
 							 }
 						 });
 
@@ -1631,6 +1634,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 			mrc_ffgmap = L.geoJSON(country_data, {
 				style: ffg_basins_style,
+				pane: 'ffg_map',
 				onEachFeature: function (feature, layer) {
 					if (feature.properties[param] <= mapVals[param][0]) {
 							layer.setStyle({fillColor : mapColors[param][0],fillOpacity: 0,color: mapColors[param][0]});
@@ -1669,6 +1673,9 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 						layer.on('mouseout', function (e) {
 								this.closePopup();
 								dehighlight(e.target);
+						});
+						layer.on('click', function (e) {
+								showChart(e.target.feature.properties);
 						});
 				}
 			});

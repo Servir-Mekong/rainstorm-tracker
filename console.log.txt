@@ -896,3 +896,11 @@ Port: 3000
 Database: rainstormsdb
 PEAN.JS version: 0.0.0
 --
++ Error: NODE_ENV is not defined! Using default development environment
+--
+FFGS - Development Environment
+Environment: development
+Port: 3000
+Database: rainstormsdb
+PEAN.JS version: 0.0.0
+--
