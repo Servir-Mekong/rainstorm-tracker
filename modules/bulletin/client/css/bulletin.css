@@ -170,15 +170,3 @@ p {
   background-color: #0b1824;
   color: #FFF;
 }
-
-table {
-  font-family: arial, sans-serif;
-  /* border-collapse: collapse; */
-  width: 100%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}

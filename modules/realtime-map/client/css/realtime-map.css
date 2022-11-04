@@ -68,7 +68,7 @@ label {
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
   top: 85px;
   background-color: rgb(0 0 0 / 0.8);
   overflow-x: hidden;
@@ -1007,4 +1007,21 @@ content: 'LOADING...';
   color: #000000;
   display: block;
   transition: 0.3s;
+}
+
+.weather-area{
+  top: 120px;
+  width: 100%;
+  background: rgb(0 0 0 / 20%);
+}
+
+.weather-control{
+  margin-left: 40%;
+  width: 130px;
+  background: rgba(255,255,255,0);
+}
+.weather-area ul li {
+    list-style: none;
+    display: inline-block;
+    font-size: 14px;
 }

@@ -118,6 +118,7 @@
                 <li class="toggle"><label class="switch_layer"><input  name="geographic_coverage" id="geographic_coverage" type="checkbox"><span class="slider_toggle round"></span></label><label>Geographic Coverage</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_bb" id="mekong_bb" type="checkbox"><span class="slider_toggle round"></span></label><label>Lower Mekong Bounding Box</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_country" id="mekong_country" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Country boundary</label></li>
+                <li class="toggle"><label class="switch_layer"><input  name="weather_radar" id="weather_radar" checked="checked" type="checkbox"><span class="slider_toggle round"></span></label><label>Weather Radar</label></li>
               </ul>
 
             </div>
@@ -155,9 +156,7 @@
       <button type="button" name="button" class="btn btn-prev">prev</button>
       <button type="button" name="button" class="btn btn-play">play</button>
       <button type="button" name="button" class="btn btn-next">next</button>
-
     </div>
-
   </div>
   <div class="table-detail">
 
@@ -190,45 +189,35 @@
 
     </div>
 
-    <!-- <div class="control-panel map-component">
-      <div class="scalebar-container"></div>
-      <ul>
-        <li class="zoom-in pointer" id="zoom-in">
-          <svg class="panel-icon">
-            <use xlink:href="#icon-plus">
-              <svg id="icon-plus" viewBox="0 0 1024 1024">
-                <title>Zoom In</title>
-                <path d="M573.44 245.76h-122.88v204.8h-204.8v122.88h204.8v204.8h122.88v-204.8h204.8v-122.88h-204.8v-204.8z" class="path1"></path>
-              </svg>
-            </use>
-          </svg>
-        </li>
-        <li class="zoom-in pointer" id="zoom-out">
-          <svg class="panel-icon">
-            <svg id="icon-minus" viewBox="0 0 1024 1024">
-              <title>Zoom Out</title>
-              <path d="M778.24 573.44h-532.48v-122.88h532.48v122.88z" class="path1"></path>
-            </svg>
-          </svg>
-        </li>
-        <li class="zoom-in pointer" id="layer-control">
-          <svg class="panel-icon">
-            <svg width="1.5em" height="1.5em" viewBox="-5 -5 20 20" class="bi bi-layers-fill" fill="#333" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M7.765 1.559a.5.5 0 0 1 .47 0l7.5 4a.5.5 0 0 1 0 .882l-7.5 4a.5.5 0 0 1-.47 0l-7.5-4a.5.5 0 0 1 0-.882l7.5-4z"/>
-              <path fill-rule="evenodd" d="M2.125 8.567l-1.86.992a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882l-1.86-.992-5.17 2.756a1.5 1.5 0 0 1-1.41 0l-5.17-2.756z"/>
-            </svg>
-
-          </svg>
-        </li>
-      </ul>
-    </div> -->
-
     <div class="legend-area  map-component">
       <div class="legend-map" id ="legend-marker">
         <img src="/img/legend-point-storm-class-2.png" height=40px;  alt="rainstorms legend">
       </div>
       <div class="legend-map" id="legend-img" style="display: none;">
         <img src="/img/legend-img-storm-class-2.png" height=40px;  alt="rainstorms legend">
+      </div>
+    </div>
+
+    <div class="weather-area map-component">
+      <div class="weather-control">
+        <ul style="text-align:center; position: absolute;top: 0; left: 0; right: 0; height: 50px;">
+            <li style="color:#FFF;"><input type="radio" name="kind" value="radar" checked="checked">Radar (Past + Future) <input type="radio" name="kind" value="satellite">Infrared Satellite</li>
+            <li><input id="weather_previous" type="button" value="&lt;" /></li>
+            <li><input id="weather_playstop" type="button" value="Play / Stop" /></li>
+            <li><input id="weather_next" type="button" value="&gt;" /></li>
+            <li><select id="colors" onchange="setColors(); return;">
+                <option value="0">Black and White Values</option>
+                <option value="1">Original</option>
+                <option value="2" selected="selected">Universal Blue</option>
+                <option value="3">TITAN</option>
+                <option value="4">The Weather Channel</option>
+                <option value="5">Meteored</option>
+                <option value="6">NEXRAD Level-III</option>
+                <option value="7">RAINBOW @ SELEX-SI</option>
+                <option value="8">Dark Sky</option>
+            </select></li>
+        </ul>
+        <div id="timestamp" style="text-align:center; position: absolute;top: 50px; left: 0; right: 0; height: 80px;">FRAME TIME</div>
       </div>
     </div>
 
