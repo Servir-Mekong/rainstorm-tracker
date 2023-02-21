@@ -155,7 +155,7 @@
               <span class="closeMenu">&times;</span>
               <label style="font-size:12px; font-weight: 700;"><b>LAYERS</b></label>
               <ul class="toggles-list">
-
+                <li class="toggle"><label class="switch_layer"><input  name="rainacc" id="rainacc"type="checkbox"><span class="slider_toggle round"></span></label><label>Realtime Accumulated Rainfall (GSMAP)</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mainlakes" id="mainlakes"type="checkbox"><span class="slider_toggle round"></span></label><label>Main Lakes</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="river" id="river" type="checkbox"><span class="slider_toggle round"></span></label><label>River</label></li>
                 <li class="toggle"><label class="switch_layer"><input  name="mekong_basin" id="mekong_basin" type="checkbox"><span class="slider_toggle round"></span></label><label>Mekong Basin Area</label></li>
@@ -199,13 +199,28 @@
   </span>
   <span class="closebtn box-closebtn" id="detail-close">&times;</span>
   <div class="">
-    <p id="date-text" class="date-text-detail"></p>
-    <p id="time-text" class="time-text-detail"></p>
+  
     <div class="text-center"></div>
   </div>
 
   <div class="table-detail"></div>
 </div>
+
+<div id="rainacc-control-panel" class="sidenav detail-right" style="display:none; left: 320px; height: auto; top: 90px; padding-top: 10px; width: 300px; max-height: 600px; overflow-y: scroll;">
+  <div class="">
+    <br>
+    <p id="date-text" class="date-text-detail"></p>
+    <p id="time-text" class="time-text-detail"></p>
+    <p id="raindata_name" class="text-center" style="color: #FFF;">Rainfall Accumulation Now (GSMAP)</p>
+    <div class="text-center">
+      <button type="button" name="button" class="btn btn-prev">prev</button>
+      <button type="button" name="button" class="btn btn-play">play</button>
+      <button type="button" name="button" class="btn btn-next">next</button>
+    </div>
+    <br>
+  </div>
+</div>
+
 
 
 <div class="basin_rainfall_chart">

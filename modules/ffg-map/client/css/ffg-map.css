@@ -21,7 +21,7 @@ label {
 }
 
 .custom-alert {
-    margin-left: 400px;
+    margin-left: 40%;
     /* See sidebar.css .toggle-sidebar-button.is-open */
     /* width: calc(100vw - 50%); */
     width: auto;
@@ -327,7 +327,7 @@ label {
 .sidenav li{
   margin-bottom: 10px;
   margin-top: 10px;
-  background: rgb(0 0 0 / 0.3);
+  background: rgb(0 0 0 / 0);
   padding: 0;
 }
 

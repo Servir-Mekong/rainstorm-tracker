@@ -20,6 +20,7 @@ coverage/
 # MEAN.js app and assets
 # ======================
 public/dist/
+public/FFGS/
 public/op-xray/
 public/real-time-xray/
 public/op-tracks_csv/

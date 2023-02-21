@@ -13,36 +13,49 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 		$(".navbar-brand.navmenu").text("MEKONG FLASH FLOOD GUIDANCE");
 		$('[data-toggle="tooltip"]').tooltip();
 
-		var enableDates = ["2020/08/12" ,"2020/08/14" ,"2020/08/15"];
-		var recent_date = enableDates[enableDates.length - 1];
-		var enableDatesArray=[];
+		var enableDates = [];
+		$.ajax({
+			 url: "/FFGS/fileList.csv",
+		 }).done(function (data, textStatus, jqXHR) {
 
-		$('#select_date').datepicker({
-			dateFormat: 'yyyy/mm/dd',
-			autoclose: true,
-			beforeShowDay: function (date) {
-		        var dt_ddmmyyyy = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() ;
-						var month_str = date.getMonth() + 1;
-						var date_str = date.getDate();
-						if ((date.getMonth() + 1) <= 9) {month_str = '0' + (date.getMonth() + 1);}
-						if (date.getDate() <= 9) {date_str = '0' + date.getDate();}
-						dt_ddmmyyyy =  date.getFullYear() + '/' + month_str  + '/' + date_str;
-		        if (enableDates.indexOf(dt_ddmmyyyy) !== -1) {
-		            return {
-		                tooltip: 'There is data available',
-		                classes: 'active'
-		            };
-		        } else {
-		            return false;
-		        }
-		    }
-		});
-		var ddate, mmonth, yyear, setDate;
-		var queryDate = new Date(recent_date);
-		$('#select_date').datepicker('setDate', queryDate);
+			 var data = CSVToArray(data);
+			 for(var i=0; i<data.length; i++){
+				 enableDates.push(data[i][0])
+			 }
 
-		sessionStorage.setItem("selected_country", "mekong");
-		sessionStorage.setItem("selected_date", recent_date);
+			 //var enableDates = ["2020/08/12" ,"2020/08/14" ,"2020/08/15"];
+	 		var recent_date = enableDates[enableDates.length - 2];
+	 		var enableDatesArray=[];
+
+	 		$('#select_date').datepicker({
+	 			dateFormat: 'yyyy/mm/dd',
+	 			autoclose: true,
+	 			beforeShowDay: function (date) {
+	 		        var dt_ddmmyyyy = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() ;
+	 						var month_str = date.getMonth() + 1;
+	 						var date_str = date.getDate();
+	 						if ((date.getMonth() + 1) <= 9) {month_str = '0' + (date.getMonth() + 1);}
+	 						if (date.getDate() <= 9) {date_str = '0' + date.getDate();}
+	 						dt_ddmmyyyy =  date.getFullYear() + '/' + month_str  + '/' + date_str;
+	 		        if (enableDates.indexOf(dt_ddmmyyyy) !== -1) {
+	 		            return {
+	 		                tooltip: 'There is data available',
+	 		                classes: 'active'
+	 		            };
+	 		        } else {
+	 		            return false;
+	 		        }
+	 		    }
+	 		});
+	 		var ddate, mmonth, yyear, setDate;
+	 		var queryDate = new Date(recent_date);
+	 		$('#select_date').datepicker('setDate', queryDate);
+
+	 		sessionStorage.setItem("selected_country", "mekong");
+	 		sessionStorage.setItem("selected_date", recent_date);
+
+	 });
+
 
 	});
 
@@ -384,7 +397,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 					$(".basin_rainfall_chart").css("display", "block");
 						Highcharts.chart('rainfall_chart', {
 								chart: {
-										type: 'line',
+										type: 'column',
 										height:300,
 										backgroundColor:'rgb(0 0 0 / 0.8)',
 										style: {
@@ -429,7 +442,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 								},
 								plotOptions: {
-										line: {
+										column: {
 												dataLabels: {
 														enabled: true
 												},
@@ -472,13 +485,117 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 				};
 
 
+			$scope.showRainAcc = function() {
+				var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/rainacc/Rain_accumulation_GSMAP_NOW.nc", {
+						layers: 'rain',
+						format: 'image/png',
+						
+						transparent: true,
+						styles: 'boxfill/rainbow',
+						opacity:1,
+						version:'1.3.0',
+						zIndex:100,
+						colorscalerange:'0,150',
+						bounds: [[0, 90], [22, 120]],
+						logscale: false,
+						abovemaxcolor:'extend',
+						belowmincolor:'extend',
+						numcolorbands: 150,
+					});
+					//console.log(date+'T'+_time+':00:00.000Z')
+
+					if(map.hasLayer(tdWmsLayer)){
+						map.removeLayer(tdWmsLayer);
+					}
+			
+					var timeDimension = new L.TimeDimension();
+						map.timeDimension = timeDimension;
+
+						var player = new L.TimeDimension.Player({
+								loop: true,
+								startOver: true
+						}, timeDimension);
+
+							$('.btn-prev').click(function() {
+									map.timeDimension.previousTime(1);
+							});
+							$('.btn-next').click(function() {
+									map.timeDimension.nextTime();
+							});
+
+							$('.btn-play').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
+							$('.btn-pause').click(function() {
+									var btn = $(this);
+									if (player.isPlaying()) {
+											btn.removeClass("btn-pause");
+											btn.addClass("btn-play");
+											btn.html("Play");text
+											player.stop();
+									} else {
+											btn.removeClass("btn-play");
+											btn.addClass("btn-pause");
+											btn.html("Pause");
+											player.start();
+									}
+							});
+
+
+					tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
+					updateTimeDimension: true,
+					setDefaultTime: true,
+					cache: 365,
+					zIndex: 100,
+	        	});
+	       		 tdWmsLayer.addTo(map);
+
+				var firstLoad = 0;
+				map.timeDimension.on('timeload', function(data) {
+							var date = new Date(map.timeDimension.getCurrentTime());
+							var zone = "Europe/London" //UTC
+							$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
+							$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
+
+							firstLoad += 1;
+							setTimeout(function(){
+								if(firstLoad === 1){
+								$('.btn-prev').click();
+								}
+							}, 5);
+
+							if (data.time == map.timeDimension.getCurrentTime()) {
+									$('.map-loading').css('display', 'none');
+							}
+					});
+					map.timeDimension.on('timeloading', function(data) {
+							if (data.time == map.timeDimension.getCurrentTime()) {
+									$('.map-loading').css('display', 'block');
+							}
+					});
+			}
+
 		   $scope.fetchFFG = function () {
+
 				 $.ajax({
-				    url: "/FFGS/mrcffg_"+selected_date+"0600.csv",
+				    url: "/FFGS/mrcffg_"+selected_date+"06.csv",
 					}).done(function (data, textStatus, jqXHR) {
 
 					var data = JSON.parse(CSV2JSON(data));
 					fetchFFG_data=  data;
+
 					//check FFG csv is exist
 					var returnKeys = Object.keys(fetchFFG_data[0]);
 					if(returnKeys[0] === '<!DOCTYPE html>'){
@@ -614,9 +731,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 	$.ajax({
 			 		 url: "/FFGS/"+selected_date+"-0600_ff_risk.csv",
 			 	 }).done(function (data, textStatus, jqXHR) {
-
 			 	 var data = JSON.parse(CSV2JSON(data));
-
 				 var filterData = [];
 				 if(map.hasLayer(mrc_riskmap)){
 					 map.removeLayer(mrc_riskmap);
@@ -1578,6 +1693,23 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			}
 		});
 
+
+		$('input[type=checkbox][name=rainacc]').click(function(){
+			$scope.showRainAcc();
+			if(this.checked) {
+				$scope.showRainAcc();
+				// map.addLayer(tdWmsLayer);
+				$("#rainacc-control-panel").css("display", "block");
+			}else{
+				if (map.hasLayer(tdWmsLayer)) {
+					map.removeLayer(tdWmsLayer);
+				}
+				$("#rainacc-control-panel").css("display", "none");
+			}
+		});
+
+
+
 		$('input[type=checkbox][name=river]').click(function(){
 			if(this.checked) {
 				map.addLayer(river);
@@ -1803,98 +1935,6 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			$(".basin_rainfall_chart").css("display", "none");
 		});
 
-	// 	function createEventList() {
-	// 		var endNumber = loadCount + 10;
-	// 		if($scope.events.length < endNumber){
-	// 			endNumber = $scope.events.length;
-	// 		}else{
-	// 			endNumber = endNumber;
-	// 		}
-	// 		for(var i = loadCount; i< endNumber; i++){
-	// 			loadCount += 1;
-	// 			var basin_id =  $scope.events[i]["BASIN"];
-	// 			var ASMT = $scope.events[i]["ASMT"];
-	// 			var FFG01 = $scope.events[i]["FFG01"];
-	// 			var FFG03 = $scope.events[i]["FFG03"];
-	// 			var FFG06 = $scope.events[i]["FFG06"];
-	// 			var FMAP101 = $scope.events[i]["FMAP101"];
-	// 			var FMAP103 = $scope.events[i]["FMAP103"];
-	// 			var FMAP106 = $scope.events[i]["FMAP106"];
-	// 			var FMAP124 = $scope.events[i]["FMAP124"];
-	// 			var class_color = '';
-	//
-	// 			var mapVals =  {
-	// 				"ASMT" : [0, 0.30, 0.65, 0.85, 0.90, 0.95, 1, 1000],
-	// 				"FFG01" : [0, 15, 30, 60, 100, 160, 220, 1000],
-	// 				"FFG03" : [0, 15, 30, 60, 100, 160, 220, 1000],
-	// 				"FFG06" : [0, 15, 30, 60, 100, 160, 220, 1000],
-	// 				"FMAP101" : [0, 30, 70, 120, 180, 240, 300, 1000],
-	// 				"FMAP103" : [0, 30, 70, 120, 180, 240, 300, 1000],
-	// 				"FMAP106" : [0, 30, 70, 120, 180, 240, 300, 1000],
-	// 				"FMAP124" : [0, 30, 70, 120, 180, 240, 300, 1000],
-	// 			}
-	//
-	// 			var mapColors =  {
-	// 				"ASMT" : ['#FFF', '#DEDC28', '#B59700', '#3EDC3A', '#006200', '#304AFC', '#170078', '#170078'],
-	// 				"FFG01" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
-	// 				"FFG03" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
-	// 				"FFG06" : ['#FFF', '#E700E7', '#FF0000', '#E5E500', '#00E200', '#2900D9', '#2CE5E5', '#2CE5E5'],
-	// 				"FMAP101" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
-	// 				"FMAP103" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
-	// 				"FMAP106" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
-	// 				"FMAP124" : ['#FFF', '#2CE5E5', '#2900D9', '#00E200', '#E5E500', '#FF0000', '#E700E7', '#E700E7'],
-	// 			}
-	//
-	// 			var param = $('input[type=radio][name=ffg_param]:checked').val();
-	// 			var param_text = $('input[type=radio][name=ffg_param]:checked').attr("id");
-	// 			param_text = $("label[for='" + param_text + "']").text();
-	// 			showSuccessAlert("Show "+ param_text);
-	//
-	// 			var selected_param = $scope.events[i][param];
-	// 			if (selected_param <= mapVals[param][0]) {
-	// 					class_color = mapColors[param][0];
-	// 			}else if (selected_param <= mapVals[param][1]) {
-	// 					class_color = mapColors[param][1];
-	// 			}else if (selected_param <= mapVals[param][2]){
-	// 					class_color = mapColors[param][2];
-	// 			}else if (selected_param <= mapVals[param][3]){
-	// 					class_color = mapColors[param][3];
-	// 			}else if (selected_param <= mapVals[param][4]){
-	// 					class_color = mapColors[param][4];
-	// 			}else if (selected_param <= mapVals[param][5]){
-	// 					class_color = mapColors[param][5];
-	// 			} else if (selected_param <= mapVals[param][6]){
-	// 				class_color = mapColors[param][6];
-	// 			} else  if (selected_param <= mapVals[param][7]){
-	// 					class_color = mapColors[param][7];
-	// 			}
-	//
-	// 			$("#tableOperationalList").append('<li>'+
-	// 			'<a href="#" class="liPlaceName" data-id="'+basin_id+'">'+
-	// 			'<div class="row">'+
-	// 			'<div class="col-sm-3"><div class="meg-number" style="background-color:'+class_color+'"><p>'+selected_param+'</p></div></div>'+
-	// 			'<div class="col-sm-9">'+
-	// 			'<p class="place-name-list">'+ basin_id + '</p>'+
-	// 			'<p class="place-location-list"><b>Fash flood guidance 1 hour:</b> '+ FFG01+ ' </p>'+
-	// 			'<p class="place-location-list"><b>Area forecasted 1 hour:</b> '+ FMAP101+' </p>'+
-	// 			'<p class="place-location-list"><b>Average soil water:</b> '+ ASMT+'</p>'+
-	// 			'</div>'+
-	// 			'</div>'+
-	// 			'</a>'+
-	// 			'</li>')
-	// 		}
-	// 		if($scope.events.length > endNumber){
-	// 			$("#tableOperationalList").append('<li id="loadmore-op-btn" style="text-align:center;cursor: pointer;color: #40e0d0;">'+
-	// 			'Load More'+
-	// 			'</li>');
-	// 		}
-	// 	}
-	// 	$(document).on('click', '#loadmore-op-btn', function() {
-	// 		this.remove();
-	// 		createEventList();
-	// 	});
-	// });
-
 
 
 	function createEventList() {
@@ -1910,7 +1950,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			var country = $scope.events[i]["country"];
 			var name_1 = $scope.events[i]["name_1"];
 			var name_2 = $scope.events[i]["name_2"];
-			var name_3 = $scope.events[i]["name_3"];
+			var no_basins = $scope.events[i]["no_basin"];
 			var risk_level = $scope.events[i]["risk"];
 			var class_color = '';
 
@@ -1933,8 +1973,8 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			'<div class="col-sm-9">'+
 			'<p class="place-name-list">'+ risk_level + '</p>'+
 			'<p class="place-location-list"><b>Country:</b> '+ country+ ' </p>'+
-			'<p class="place-location-list"><b>Province:</b> '+ name_1+' </p>'+
-			'<p class="place-location-list"><b>Location:</b> '+ name_2+', '+ name_3+' </p>'+
+			'<p class="place-location-list"><b>Subprovince:</b> '+ name_2+' </p>'+
+			'<p class="place-location-list"><b>Number of Basin:</b> '+ no_basins+' </p>'+
 			'</div>'+
 			'</div>'+
 			'</a>'+
