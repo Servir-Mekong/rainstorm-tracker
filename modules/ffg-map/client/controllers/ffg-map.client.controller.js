@@ -158,10 +158,10 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 
 			// Load geographic coverage area Geojson
   		var subprovince_map;
-			var subprovince;
-  		 $.getJSON('data/subprovincesFFGS_MK.geojson')
+		var subprovince;
+  		 $.getJSON('data/subprovincesFFGS_mekong.geojson')
   			.done(function (data, status) {
-					subprovince = data.features;
+				subprovince = data.features;
   				subprovince_map = L.geoJSON(data, {
   					style: {
   				     fillColor: '#9999ff',
@@ -172,107 +172,91 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
   				     fillOpacity: 0.1
   				   }
   				});
-					// $scope.fetchFFG();
-					$scope.fetchRiskSubprovinces();
+				// $scope.fetchFFG();
+				$scope.fetchRiskSubprovinces();
   			});
 
 
 				// Load geographic coverage area Geojson
 	  		var risk_subprovince;
-	  		 $.getJSON('data/subprovincesFFGS_MK.geojson')
+	  		 $.getJSON('data/subprovincesFFGS_mekong.geojson')
 	  			.done(function (data, status) {
 	  				risk_subprovince = L.geoJSON(data, {
 	  					style: {
-	  				     fillColor: '#9999ff',
-	  				     weight: 1,
-	  				     opacity: 1,
-	  				     color: '#FFF',
-	  				     dashArray: '3',
-	  				     fillOpacity: 0.1
+							fillColor: '#9999ff',
+							weight: 1,
+							opacity: 1,
+							color: '#FFF',
+							dashArray: '3',
+							fillOpacity: 0.1
 	  				   }
 	  				});
 					risk_subprovince.addTo(map);
 	  			});
 
+				// Load geographic coverage area Geojson
+				var xray_data ={};
+				var adm2_summary_layer;
+				$.getJSON('data/adm2_summary.geojson')
+				.done(function (data, status) {
+					var features = data.features
+					for(var i=0; i<features.length; i++){
+						xray_data[features[i]["properties"]["AREA_ID"]] = {
+							"AREA_ID" : features[i]["properties"]["AREA_ID"],
+							"NAME_0" : features[i]["properties"]["NAME_0"],
+							"NAME_1" : features[i]["properties"]["NAME_1"],
+							"NAME_2" : features[i]["properties"]["NAME_2"],
+							"NAME_3" : features[i]["properties"]["NAME_3"],
+							"Bulding" : features[i]["properties"]["Bulding_nu"],
+							"Cropland" : features[i]["properties"]["Cropland_E"],
+							"F_0_15" : features[i]["properties"]["F_0_15"],
+							"F_15_65" : features[i]["properties"]["F_15_65"],
+							"F__65" : features[i]["properties"]["F__65"],
+							"M_0_15" : features[i]["properties"]["M_0_15"],
+							"M_15_65" : features[i]["properties"]["M_15_65"],
+							"M__65" : features[i]["properties"]["M__65"],
+							"Female" : features[i]["properties"]["Female"],
+							"Male" : features[i]["properties"]["Male"],
+							"total_pop" : features[i]["properties"]["total_pop"],
+							"GDP" : features[i]["properties"]["GDP_in_cur"],
+							"Primary" : features[i]["properties"]["Primary"],
+							"Secondary" : features[i]["properties"]["Secondary"],
+							"Trunks" : features[i]["properties"]["Trunks"]
+						}
+					}
+				});
 
+				var oneachSummaryPopup = function(feature, layer) {
+					layer.on('mouseover', function (e) {
+							// this.openPopup(e.latlng);
+							this.openPopup();
+							highlight(e.target);
 
-					// Load geographic coverage area Geojson
-					var xray_data ={};
-					var adm2_summary_layer;
-					 $.getJSON('data/adm2_summary.geojson')
-						.done(function (data, status) {
-							var features = data.features
-							for(var i=0; i<features.length; i++){
-								xray_data[features[i]["properties"]["AREA_ID"]] = {
-									"AREA_ID" : features[i]["properties"]["AREA_ID"],
-									"NAME_0" : features[i]["properties"]["NAME_0"],
-									"NAME_1" : features[i]["properties"]["NAME_1"],
-									"NAME_2" : features[i]["properties"]["NAME_2"],
-									"NAME_3" : features[i]["properties"]["NAME_3"],
-									"Bulding" : features[i]["properties"]["Bulding_nu"],
-									"Cropland" : features[i]["properties"]["Cropland_E"],
-									"F_0_15" : features[i]["properties"]["F_0_15"],
-									"F_15_65" : features[i]["properties"]["F_15_65"],
-									"F__65" : features[i]["properties"]["F__65"],
-									"M_0_15" : features[i]["properties"]["M_0_15"],
-									"M_15_65" : features[i]["properties"]["M_15_65"],
-									"M__65" : features[i]["properties"]["M__65"],
-									"Female" : features[i]["properties"]["Female"],
-									"Male" : features[i]["properties"]["Male"],
-									"total_pop" : features[i]["properties"]["total_pop"],
-									"GDP" : features[i]["properties"]["GDP_in_cur"],
-									"Primary" : features[i]["properties"]["Primary"],
-									"Secondary" : features[i]["properties"]["Secondary"],
-									"Trunks" : features[i]["properties"]["Trunks"]
-								}
-							}
-							// adm2_summary_layer = L.geoJSON(data, {
-							// 	style: {
-							// 		 fillColor: '#9999ff',
-							// 		 weight: 1,
-							// 		 opacity: 1,
-							// 		 color: '#FFF',
-							// 		 dashArray: '3',
-							// 		 fillOpacity: 0.1
-							// 	 },
-							// 	 	onEachFeature: oneachSummaryPopup,
-							// 		autoPan: false
-							// });
-							// adm2_summary_layer.addTo(map);
-						});
-
-
-					var oneachSummaryPopup = function(feature, layer) {
-						layer.on('mouseover', function (e) {
-								// this.openPopup(e.latlng);
-								this.openPopup();
-								highlight(e.target);
-
-						});
-						layer.on('mouseout', function (e) {
-								this.closePopup();
-								dehighlight(e.target, adm2_summary_layer);
-						});
-						layer.on('click', function (e) {
-								// this.closePopup();
-								$(".info-area-class").css("display", "block");
-								$("#area_name").text( e.target.feature.properties.NAME_0+", "+e.target.feature.properties.NAME_1+", " +e.target.feature.properties.NAME_2);
-								$("#total_pop").text( e.target.feature.properties.total_pop);
-								$("#female").text( e.target.feature.properties.Female);
-								$("#F_0_15").text( e.target.feature.properties.F_0_15);
-								$("#F_15_65").text( e.target.feature.properties.F_15_65);
-								$("#F__65").text( e.target.feature.properties.F__65);
-								$("#male").text( e.target.feature.properties.Male);
-								$("#M_0_15").text( e.target.feature.properties.M_0_15);
-								$("#M_15_65").text( e.target.feature.properties.M_15_65);
-								$("#M__65").text( e.target.feature.properties.M__65);
-								$("#hospitals").text( e.target.feature.properties.Hospitals);
-								$("#GDP_in_cur").text( e.target.feature.properties.GDP_in_cur);
-								$("#cropland_E").text( e.target.feature.properties.Cropland_E);
-								$("#primary").text( e.target.feature.properties.Primary);
-								$("#secondary").text( e.target.feature.properties.Secondary);
-								$("#trunks").text( e.target.feature.properties.Trunks);
-						});
+					});
+					layer.on('mouseout', function (e) {
+							this.closePopup();
+							dehighlight(e.target, adm2_summary_layer);
+					});
+					layer.on('click', function (e) {
+						// this.closePopup();
+						$(".info-area-class").css("display", "block");
+						$("#area_name").text( e.target.feature.properties.NAME_0+", "+e.target.feature.properties.NAME_1+", " +e.target.feature.properties.NAME_2);
+						$("#total_pop").text( e.target.feature.properties.total_pop);
+						$("#female").text( e.target.feature.properties.Female);
+						$("#F_0_15").text( e.target.feature.properties.F_0_15);
+						$("#F_15_65").text( e.target.feature.properties.F_15_65);
+						$("#F__65").text( e.target.feature.properties.F__65);
+						$("#male").text( e.target.feature.properties.Male);
+						$("#M_0_15").text( e.target.feature.properties.M_0_15);
+						$("#M_15_65").text( e.target.feature.properties.M_15_65);
+						$("#M__65").text( e.target.feature.properties.M__65);
+						$("#hospitals").text( e.target.feature.properties.Hospitals);
+						$("#GDP_in_cur").text( e.target.feature.properties.GDP_in_cur);
+						$("#cropland_E").text( e.target.feature.properties.Cropland_E);
+						$("#primary").text( e.target.feature.properties.Primary);
+						$("#secondary").text( e.target.feature.properties.Secondary);
+						$("#trunks").text( e.target.feature.properties.Trunks);
+					});
 				};
 
 
@@ -324,25 +308,26 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 				});
 			});
 
-			// Load mekong BBox area Geojson
-			var mekong_bb;
-			 $.getJSON('data/mekong_bb.geojson')
-				.done(function (data, status) {
-					mekong_bb = L.geoJSON(data, {
-						style: {
-					     fillColor: '#9999ff',
-					     weight: 1,
-					     opacity: 1,
-					     color: 'white',
-					     dashArray: '3',
-					     fillOpacity: 0.1
-					   }
-					});
-					//mekong_bb.addTo(map);
+		// Load mekong BBox area Geojson
+		var mekong_bb;
+		$.getJSON('data/mekong_bb.geojson')
+		.done(function (data, status) {
+			mekong_bb = L.geoJSON(data, {
+				style: {
+					fillColor: '#9999ff',
+					weight: 1,
+					opacity: 1,
+					color: 'white',
+					dashArray: '3',
+					fillOpacity: 0.1
+				}
+			});
+			//mekong_bb.addTo(map);
 
-				});
+		});
 
 
+		//////////////////////// adding mekong basin boundaries ///////////////////////////////////////////////
 		var basin_style = {
 			fillColor: '#9999ff',
 			weight: 0.2,
@@ -350,7 +335,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			color: 'white',
 			fillOpacity: 0.1
 		};
-
+	
 		$.getJSON('data/mekong_mrcffg_basins.geojson')
 		.done(function (data, status) {
 				mrcbasins = data.features;
@@ -389,213 +374,212 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			}
 
 			var selected = null;
-
 		 	var fetchFFG_data;
 			var mrc_ffgmap;
+			//////////////////////// END adding mekong basin boundaries ///////////////////////////////////////////////
 
+			//////////////////////// Creat rainfall chart ///////////////////////////////////////////////
 			var showChart = function(param){
-					$(".basin_rainfall_chart").css("display", "block");
-						Highcharts.chart('rainfall_chart', {
-								chart: {
-										type: 'column',
-										height:300,
-										backgroundColor:'rgb(0 0 0 / 0.8)',
-										style: {
-										 fontFamily: 'Roboto',
-										 color: '#FFF',
-									 }
-								},
-								title: {
-										text: 'Rainfall Forecast Basin ID:' + param['BASIN'],
-										style: {
-										 fontFamily: 'Roboto',
-										 color: '#FFF',
-									 }
-								},
-								subtitle: {
-										text: 'Date: '+ $("#select_date").val(),
-										style: {
-										 fontFamily: 'Roboto',
-										 color: '#FFF',
-									 }
-								},
-								xAxis: {
-										categories: ['01', '03', '06', '24'],
-										title: {
-												text: 'Hours',
-												style: {
-												 fontFamily: 'Roboto',
-												 color: '#FFF',
-											 }
-										},
-										gridLineWidth: 0,
-								},
-								yAxis: {
-										title: {
-												text: 'Rainfall (mm/h)',
-												style: {
-												 fontFamily: 'Roboto',
-												 color: '#FFF',
-											 }
-										},
-										gridLineWidth: 0,
+				$(".basin_rainfall_chart").css("display", "block");
+					Highcharts.chart('rainfall_chart', {
+						chart: {
+							type: 'column',
+							height:300,
+							backgroundColor:'rgb(0 0 0 / 0.8)',
+							style: {
+								fontFamily: 'Roboto',
+								color: '#FFF',
+							}
+						},
+						title: {
+							text: 'Rainfall Forecast Basin ID:' + param['BASIN'],
+							style: {
+								fontFamily: 'Roboto',
+								color: '#FFF',
+							}
+						},
+						subtitle: {
+							text: 'Date: '+ $("#select_date").val(),
+							style: {
+								fontFamily: 'Roboto',
+								color: '#FFF',
+							}
+						},
+						xAxis: {
+							categories: ['01', '03', '06', '24'],
+							title: {
+									text: 'Hours',
+									style: {
+										fontFamily: 'Roboto',
+										color: '#FFF',
+									}
+							},
+							gridLineWidth: 0,
+						},
+						yAxis: {
+							title: {
+									text: 'Rainfall (mm/h)',
+									style: {
+										fontFamily: 'Roboto',
+										color: '#FFF',
+									}
+							},
+							gridLineWidth: 0,
 
+						},
+						plotOptions: {
+							column: {
+									dataLabels: {
+											enabled: true
+									},
+									enableMouseTracking: false
+							}
+						},
+						series: [{
+							name: "rainfall",
+							data: [parseFloat(param['FMAP101']), parseFloat(param['FMAP103']),parseFloat(param['FMAP106']),parseFloat(param['FMAP124'])]
+						}],
+						legend:{ enabled:false },
+						credits: { enabled: false},
+						exporting: {
+							buttons: {
+								contextButton: {
+								menuItems: [
+											"downloadPNG",
+											"downloadSVG",
+											"downloadCSV",
+										]
+								}
+							}
+						},
+						responsive: {
+							rules: [{
+								condition: {
+									maxWidth: 500
 								},
-								plotOptions: {
-										column: {
-												dataLabels: {
-														enabled: true
-												},
-												enableMouseTracking: false
-										}
-								},
-								series: [{
-									name: "rainfall",
-									data: [parseFloat(param['FMAP101']), parseFloat(param['FMAP103']),parseFloat(param['FMAP106']),parseFloat(param['FMAP124'])]
-								}],
-								legend:{ enabled:false },
-								credits: { enabled: false},
-								exporting: {
-									 buttons: {
-										 contextButton: {
-										 menuItems: [
-													 "downloadPNG",
-													 "downloadSVG",
-													 "downloadCSV",
-												 ]
-										 }
-									 }
-									 },
-								 responsive: {
-									 rules: [{
-										 condition: {
-											 maxWidth: 500
-										 },
-										 chartOptions: {
-											 legend: {
-												 layout: 'horizontal',
-												 align: 'center',
-												 verticalAlign: 'bottom'
-											 }
-										 }
-									 }]
-								 }
-						});
+								chartOptions: {
+									legend: {
+										layout: 'horizontal',
+										align: 'center',
+										verticalAlign: 'bottom'
+									}
+								}
+							}]
+						}
+					});
 
 				};
+			//////////////////////// END create highChart ///////////////////////////////////////////////
 
-
+			//////////////////////// Adding Rain ACC data ///////////////////////////////////////////////
 			$scope.showRainAcc = function() {
 				var tdWmsRainLayer = L.tileLayer.wms("https://thredds-servir.adpc.net/thredds/wms/RAINSTORM/rainacc/Rain_accumulation_GSMAP_NOW.nc", {
-						layers: 'rain',
-						format: 'image/png',
-						
-						transparent: true,
-						styles: 'boxfill/rainbow',
-						opacity:1,
-						version:'1.3.0',
-						zIndex:100,
-						colorscalerange:'0,150',
-						bounds: [[0, 90], [22, 120]],
-						logscale: false,
-						abovemaxcolor:'extend',
-						belowmincolor:'extend',
-						numcolorbands: 150,
-					});
-					//console.log(date+'T'+_time+':00:00.000Z')
+					layers: 'rain',
+					format: 'image/png',
+					transparent: true,
+					styles: 'boxfill/rainbow',
+					opacity:1,
+					version:'1.3.0',
+					zIndex:100,
+					colorscalerange:'0,150',
+					bounds: [[0, 90], [22, 120]],
+					logscale: false,
+					abovemaxcolor:'extend',
+					belowmincolor:'extend',
+					numcolorbands: 150,
+				});
+				//console.log(date+'T'+_time+':00:00.000Z')
 
-					if(map.hasLayer(tdWmsLayer)){
-						map.removeLayer(tdWmsLayer);
+				if(map.hasLayer(tdWmsLayer)){
+					map.removeLayer(tdWmsLayer);
+				}
+		
+				var timeDimension = new L.TimeDimension();
+					map.timeDimension = timeDimension;
+
+				var player = new L.TimeDimension.Player({
+					loop: true,
+					startOver: true
+				}, timeDimension);
+
+				$('.btn-prev').click(function() {
+					map.timeDimension.previousTime(1);
+				});
+				$('.btn-next').click(function() {
+					map.timeDimension.nextTime();
+				});
+
+				$('.btn-play').click(function() {
+					var btn = $(this);
+					if (player.isPlaying()) {
+						btn.removeClass("btn-pause");
+						btn.addClass("btn-play");
+						btn.html("Play");
+						player.stop();
+					} else {
+						btn.removeClass("btn-play");
+						btn.addClass("btn-pause");
+						btn.html("Pause");
+						player.start();
 					}
-			
-					var timeDimension = new L.TimeDimension();
-						map.timeDimension = timeDimension;
+				});
 
-						var player = new L.TimeDimension.Player({
-								loop: true,
-								startOver: true
-						}, timeDimension);
+				$('.btn-pause').click(function() {
+					var btn = $(this);
+					if (player.isPlaying()) {
+						btn.removeClass("btn-pause");
+						btn.addClass("btn-play");
+						btn.html("Play");text
+						player.stop();
+					} else {
+						btn.removeClass("btn-play");
+						btn.addClass("btn-pause");
+						btn.html("Pause");
+						player.start();
+					}
+				});
 
-							$('.btn-prev').click(function() {
-									map.timeDimension.previousTime(1);
-							});
-							$('.btn-next').click(function() {
-									map.timeDimension.nextTime();
-							});
-
-							$('.btn-play').click(function() {
-									var btn = $(this);
-									if (player.isPlaying()) {
-											btn.removeClass("btn-pause");
-											btn.addClass("btn-play");
-											btn.html("Play");
-											player.stop();
-									} else {
-											btn.removeClass("btn-play");
-											btn.addClass("btn-pause");
-											btn.html("Pause");
-											player.start();
-									}
-							});
-
-							$('.btn-pause').click(function() {
-									var btn = $(this);
-									if (player.isPlaying()) {
-											btn.removeClass("btn-pause");
-											btn.addClass("btn-play");
-											btn.html("Play");text
-											player.stop();
-									} else {
-											btn.removeClass("btn-play");
-											btn.addClass("btn-pause");
-											btn.html("Pause");
-											player.start();
-									}
-							});
-
-
-					tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
+				tdWmsLayer = L.timeDimension.layer.wms(tdWmsRainLayer, {
 					updateTimeDimension: true,
 					setDefaultTime: true,
 					cache: 365,
 					zIndex: 100,
 	        	});
-	       		 tdWmsLayer.addTo(map);
+	       		tdWmsLayer.addTo(map);
 
 				var firstLoad = 0;
 				map.timeDimension.on('timeload', function(data) {
-							var date = new Date(map.timeDimension.getCurrentTime());
-							var zone = "Europe/London" //UTC
-							$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
-							$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
+					var date = new Date(map.timeDimension.getCurrentTime());
+					var zone = "Europe/London" //UTC
+					$("#date-text").html(moment(date).tz(zone).utc().format("YYYY/MM/DD"));
+					$("#time-text").html(moment(date).tz(zone).utc().format('HH:mm'));
 
-							firstLoad += 1;
-							setTimeout(function(){
-								if(firstLoad === 1){
-								$('.btn-prev').click();
-								}
-							}, 5);
+					firstLoad += 1;
+					setTimeout(function(){
+						if(firstLoad === 1){
+							$('.btn-prev').click();
+						}
+					}, 5);
 
-							if (data.time == map.timeDimension.getCurrentTime()) {
-									$('.map-loading').css('display', 'none');
-							}
-					});
-					map.timeDimension.on('timeloading', function(data) {
-							if (data.time == map.timeDimension.getCurrentTime()) {
-									$('.map-loading').css('display', 'block');
-							}
-					});
+					if (data.time == map.timeDimension.getCurrentTime()) {
+						$('.map-loading').css('display', 'none');
+					}
+				});
+				map.timeDimension.on('timeloading', function(data) {
+					if (data.time == map.timeDimension.getCurrentTime()) {
+						$('.map-loading').css('display', 'block');
+					}
+				});
 			}
 
-		   $scope.fetchFFG = function () {
+			////////////////////////END Adding Rain ACC data ///////////////////////////////////////////////
 
+		   $scope.fetchFFG = function () {
 				 $.ajax({
 				    url: "/FFGS/mrcffg_"+selected_date+"06.csv",
 					}).done(function (data, textStatus, jqXHR) {
-
 					var data = JSON.parse(CSV2JSON(data));
 					fetchFFG_data=  data;
-
 					//check FFG csv is exist
 					var returnKeys = Object.keys(fetchFFG_data[0]);
 					if(returnKeys[0] === '<!DOCTYPE html>'){
@@ -604,28 +588,15 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 						var param_text = $('input[type=radio][name=ffg_param]:checked').attr("id");
 						param_text = $("label[for='" + param_text + "']").text();
 						showSuccessAlert("Show "+ param_text );
-
 						loadCount = 0;
-						// $scope.events=[];
 						 country_data = mrcbasins;
 						 for(var i=0; i< mrcbasins.length; i++){
 							 for(var j=0; j< fetchFFG_data.length; j++){
 								 if(mrcbasins[i]["properties"]["value"] === parseInt(fetchFFG_data[j]["BASIN"])){
 									 country_data[i]["properties"] = fetchFFG_data[j]
-									 // $scope.events.push(fetchFFG_data[j])
 								 }
 							 }
 						 }
-
-						 // $("#tableOperationalList").empty();
-							// $("#sidenav-table").css("width", "280px");
-							// createLiEvents($scope.events)
-							// $(".detail-right").css("right", "285px");
-							// $(".detail-right").css("height", "auto");
-							// $(".detail-right").css("top", "90px");
-							// $(".detail-right").css("padding-top", "10px");
-							// $(".slide-tab-right").css("display", "none");
-
 						 var ffg_basins_style = {
 								fillColor: '#FFF',
 								weight: 0.5,
@@ -694,11 +665,9 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 													 "<td style='padding-right:5px;padding-left:5px;'>"+feature.properties[item]+"</td>"+
 												 "</tr>";
 							 });
-							 var popuptableHTML = "<table style='font-size: 10px;'><colgroup><col style='background-color: #000000'><col span='2'></colgroup>"+tr_html+"</table>"
-
-								 layer.bindPopup(popuptableHTML);
-
-								 layer.on('mouseover', function (e) {
+								var popuptableHTML = "<table style='font-size: 10px;'><colgroup><col style='background-color: #000000'><col span='2'></colgroup>"+tr_html+"</table>"
+								layer.bindPopup(popuptableHTML);
+								layer.on('mouseover', function (e) {
 										 this.openPopup(e.latlng);
 										 highlight(e.target);
 								 });
@@ -710,32 +679,32 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 									 showChart(e.target.feature.properties);
 								 } );
 							 }
-						 });
-
-						 if (document.getElementById('ffgmap').checked) {
-							 		// mrcbasins_geojson.addTo(map);
-			            mrc_ffgmap.addTo(map);
-			        }
-					}
-				 })
-				 .fail(function (jqXHR, textStatus, errorThrown) {
+						 	});
+						 	if (document.getElementById('ffgmap').checked) {
+			            	mrc_ffgmap.addTo(map);
+			       		 }
+						}
+					 })
+				 	.fail(function (jqXHR, textStatus, errorThrown) {
 					 alert("rest")
-    		})
+    			})
 		 	};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			 var riskAreas;
 			 var mrc_riskmap;
 			 var fetchRisk_data;
 			 $scope.fetchRiskSubprovinces = function () {
+				if(map.hasLayer(mrc_riskmap)){
+					map.removeLayer(mrc_riskmap);
+				}
+
 			 	$.ajax({
 			 		 url: "/FFGS/"+selected_date+"-0600_ff_risk.csv",
 			 	 }).done(function (data, textStatus, jqXHR) {
 			 	 var data = JSON.parse(CSV2JSON(data));
 				 var filterData = [];
-				 if(map.hasLayer(mrc_riskmap)){
-					 map.removeLayer(mrc_riskmap);
-				 }
+				
 				 $("#tableOperationalList").empty();
 				 $("#found-no").text("Found 0");
 
@@ -765,21 +734,19 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 	 if(returnKeys[0] === '<!DOCTYPE html>'){
 			 		 showErrorAlert("No data is available for the selected date.");
 			 	 }else{
-
 			 		 showSuccessAlert("Show "+ param_text );
-
 			 		 loadCount = 0;
 			 		 $scope.events=[];
-			 			riskAreas = subprovince;
-			 			for(var i=0; i< subprovince.length; i++){
-			 				for(var j=0; j< fetchRisk_data.length; j++){
-			 					if(subprovince[i]["properties"]["area_id"] === parseInt(fetchRisk_data[j]["area_id"])){
-			 						riskAreas[i]["properties"]["risk"] = fetchRisk_data[j]["risk"];
-			 						$scope.events.push(fetchRisk_data[j])
-			 					}
-			 				}
-			 			}
-
+					riskAreas = subprovince;
+			
+					for(var i=0; i< subprovince.length; i++){
+						for(var j=0; j< fetchRisk_data.length; j++){
+							if(subprovince[i]["properties"]["area_id"] === parseInt(fetchRisk_data[j]["area_id"])){
+								riskAreas[i]["properties"]["risk"] = fetchRisk_data[j]["risk"];
+								$scope.events.push(fetchRisk_data[j])
+							}
+						}
+					}
 			 			// $("#tableOperationalList").empty();
 			 			 $("#sidenav-table").css("width", "280px");
 			 			 createLiEvents($scope.events)
@@ -789,6 +756,8 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 			 $(".detail-right").css("padding-top", "10px");
 			 			 $(".slide-tab-right").css("display", "none");
 
+						
+
 			 			var ffg_basins_style = {
 			 				 fillColor: '#FFF',
 			 				 weight: 0.5,
@@ -796,7 +765,6 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 				 color: 'white',
 			 				 fillOpacity: 0.1
 			 			 };
-
 
 			 			 var param = $('input[type=radio][name=ffg_param]:checked').val();
 			 			 var param_text = $('input[type=radio][name=ffg_param]:checked').attr("id");
@@ -821,14 +789,12 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 			 				var tr_html = "";
 			 				properties_keys.forEach(function (item, index) {
 			 					tr_html += "<tr>"+
-			 										"<td style='padding-right:5px;padding-left:5px;'>"+item+"</td>"+
-			 										"<td style='padding-right:5px;padding-left:5px;'>"+feature.properties[item]+"</td>"+
-			 									"</tr>";
+												"<td style='padding-right:5px;padding-left:5px;'>"+item+"</td>"+
+												"<td style='padding-right:5px;padding-left:5px;'>"+feature.properties[item]+"</td>"+
+											"</tr>";
 			 				});
 			 				var popuptableHTML = "<table style='font-size: 10px;'><colgroup><col style='background-color: #000000'><col span='2'></colgroup>"+tr_html+"</table>"
-
 			 					layer.bindPopup(popuptableHTML);
-
 			 					layer.on('mouseover', function (e) {
 			 							this.openPopup(e.latlng);
 			 							highlight(e.target);
@@ -1908,6 +1874,7 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 				// console.log(selected_date);
 		});
 		var selected_country;
+
 		$("#country_select").change(function() {
 			selected_country = $(this).val();
 			sessionStorage.setItem("selected_country", selected_country);
@@ -1920,6 +1887,24 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 					}
 					mrcbasins_geojson = L.geoJSON(data, {style: basin_style});
 				});
+
+			$.getJSON('data/subprovincesFFGS_'+selected_country+'.geojson')
+			.done(function (data, status) {
+				subprovince = data.features;
+				if(map.hasLayer(subprovince_map)){
+					map.removeLayer(subprovince_map);
+				}
+				subprovince_map = L.geoJSON(data, {
+					style: {
+					 fillColor: '#9999ff',
+					 weight: 1,
+					 opacity: 1,
+					 color: 'gray',
+					 dashArray: '3',
+					 fillOpacity: 0.1
+				   }
+				});
+			});
 		});
 
 		$(document).on('click', '.liPlaceName', function(event) {

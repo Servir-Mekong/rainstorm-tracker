@@ -118,9 +118,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
       var queryDate = new Date(selected_date);
       $('#select_date').datepicker('setDate', queryDate);
       selected_date = selected_date.replace("/","").replace("/","");
-
-
-
       // sessionStorage.setItem("selected_country", '');
       // sessionStorage.setItem("selected_date", '');
       // console.log(selected_date)
@@ -135,7 +132,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
          color: 'white',
          fillOpacity: 0.1
        };
-  		var storm_boundingbox;
       var mrcbasins;
 
   function CSVToArray(strData, strDelimiter) {
@@ -200,10 +196,8 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 						objArray[i - 1][key] = array[i][k]
 					}
 				}
-
 				var json = JSON.stringify(objArray);
 				var str = json.replace(/},/g, "},\r\n");
-
 				return str;
 			}
 
@@ -308,7 +302,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
 
 
    var country_data;
-   var mrcbasins;
+
    var country_bb;
    var basin_style = {
       fillColor: '#9999ff',
@@ -331,82 +325,143 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
     $("#ffg-06h-table").html("");
     selected_date=$('#select_date').val().split("/");
     selected_date=selected_date[0]+selected_date[1]+selected_date[2];
-    $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
 
-      success: function(data) {
-        var csv =  CSVToArray(data);
-        var risk_level = '';
-        for(var i=1; i<csv.length-1; i++){
-          if(csv[i][4] === 'Low-Risk'){
-            risk_level = 'lightgreen'
-          }else if(csv[i][4] === 'Moderate-Risk'){
-            risk_level = 'yellow'
-          }else if(csv[i][4] === 'High-Risk'){
-            risk_level = 'red'
-          }else if(csv[i][4] === 'Extreme-Risk'){
-            risk_level = 'pink'
-          }
+    // $.ajax("/FFGS/"+selected_date+"-ffgs_result_01hour.csv", {
+    //   success: function(data) {
+    //     var csv =  CSVToArray(data);
+    //     var risk_level = '';
+    //     for(var i=1; i<csv.length-1; i++){
+    //       if(csv[i][4] === 'Low-Risk'){
+    //         risk_level = 'lightgreen'
+    //       }else if(csv[i][4] === 'Moderate-Risk'){
+    //         risk_level = 'yellow'
+    //       }else if(csv[i][4] === 'High-Risk'){
+    //         risk_level = 'red'
+    //       }else if(csv[i][4] === 'Extreme-Risk'){
+    //         risk_level = 'pink'
+    //       }
 
-          if(csv[i][0].toLowerCase() === selected_country){
-            var _td = '<tr>'+
-            '  <td>'+csv[i][1]+'</td>'+
-            '  <td>'+csv[i][2]+'</td>'+
-            '  <td>'+csv[i][5]+'</td>'+
-            '  <td>'+csv[i][6]+'</td>'+
-            '  <td>'+csv[i][11]+'</td>'+
-            '  <td>'+csv[i][14]+'</td>'+
-            '  <td>'+csv[i][16]+'</td>'+
-            '  <td>'+csv[i][17]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-              '</tr>'
-            $("#ffg-01h-table").append(_td)
+    //       if(csv[i][0].toLowerCase() === selected_country){
+    //         var _td = '<tr>'+
+    //         '  <td>'+csv[i][1]+'</td>'+
+    //         '  <td>'+csv[i][2]+'</td>'+
+    //         '  <td>'+csv[i][5]+'</td>'+
+    //         '  <td>'+csv[i][6]+'</td>'+
+    //         '  <td>'+csv[i][11]+'</td>'+
+    //         '  <td>'+csv[i][14]+'</td>'+
+    //         '  <td>'+csv[i][16]+'</td>'+
+    //         '  <td>'+csv[i][17]+'</td>'+
+    //           '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+    //           '</tr>'
+    //         $("#ffg-01h-table").append(_td)
+    //       }
+    //     }
+    //   },
+    //   error: function() {
+    //     alert("error")
+    //   }
+    // });
+
+    // $.ajax("/FFGS/"+selected_date+"-ffgs_result_03hour.csv", {
+    //   success: function(data) {
+    //     var csv =  CSVToArray(data);
+    //     var risk_level = '';
+    //     for(var i=1; i<csv.length-1; i++){
+    //       if(csv[i][4] === 'Low-Risk'){
+    //         risk_level = 'lightgreen'
+    //       }else if(csv[i][4] === 'Moderate-Risk'){
+    //         risk_level = 'yellow'
+    //       }else if(csv[i][4] === 'High-Risk'){
+    //         risk_level = 'red'
+    //       }else if(csv[i][4] === 'Extreme-Risk'){
+    //         risk_level = 'pink'
+    //       }
+    //       if(csv[i][0].toLowerCase() === selected_country){
+    //         var _td = '<tr>'+
+    //         '  <td>'+csv[i][1]+'</td>'+
+    //         '  <td>'+csv[i][2]+'</td>'+
+    //         '  <td>'+csv[i][5]+'</td>'+
+    //         '  <td>'+csv[i][6]+'</td>'+
+    //         '  <td>'+csv[i][11]+'</td>'+
+    //         '  <td>'+csv[i][14]+'</td>'+
+    //         '  <td>'+csv[i][16]+'</td>'+
+    //         '  <td>'+csv[i][17]+'</td>'+
+    //           '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+    //           '</tr>'
+    //         $("#ffg-03h-table").append(_td)
+    //       }
+    //     }
+
+    //   },
+    //   error: function() {
+    //     alert("error")
+    //   }
+    // });
+
+    var subprovince;
+
+    $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
+				.done(function (data, status) {
+			    mrcbasins = data.features;
+				});
+
+			$.getJSON('data/subprovincesFFGS_'+selected_country+'.geojson')
+			.done(function (data, status) {
+				subprovince = data.features;
+        $scope.fetchRiskSubprovinces();
+				
+			});
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var riskAreas;
+    var mrc_riskmap;
+    var fetchRisk_data;
+    $scope.fetchRiskSubprovinces = function () {
+      $.ajax({
+         url: "/FFGS/"+selected_date+"-0600_ff_risk.csv",
+       }).done(function (data, textStatus, jqXHR) {
+       var data = JSON.parse(CSV2JSON(data));
+      var filterData = [];
+
+      if(selected_country === 'mekong'){
+        fetchRisk_data = data;
+        if(fetchRisk_data.length < 1){
+          showErrorAlert("No Flash flood Waning in Mekong countries");
+        }else{
+          showSuccessAlert("Show Flash flood Waning (Risk level) per sub-province");
+        }
+      }else{
+        for(var i=0; i<data.length-1; i++){
+          if(data[i]["country"].toLowerCase() === selected_country){
+            filterData.push(data[i]);
           }
         }
-      },
-      error: function() {
-        alert("error")
+        fetchRisk_data=  filterData;
+        if(fetchRisk_data.length < 1){
+          showErrorAlert("No Flash flood Waning in "+ selected_country);
+        }else{
+          showSuccessAlert("Show Flash flood Waning (Risk level) per sub-province");
+        }
       }
-    });
 
-    $.ajax("/FFGS/"+selected_date+"-ffgs_result_03hour.csv", {
-      success: function(data) {
-        var csv =  CSVToArray(data);
-        var risk_level = '';
-        for(var i=1; i<csv.length-1; i++){
-          if(csv[i][4] === 'Low-Risk'){
-            risk_level = 'lightgreen'
-          }else if(csv[i][4] === 'Moderate-Risk'){
-            risk_level = 'yellow'
-          }else if(csv[i][4] === 'High-Risk'){
-            risk_level = 'red'
-          }else if(csv[i][4] === 'Extreme-Risk'){
-            risk_level = 'pink'
-          }
-          if(csv[i][0].toLowerCase() === selected_country){
-            var _td = '<tr>'+
-            '  <td>'+csv[i][1]+'</td>'+
-            '  <td>'+csv[i][2]+'</td>'+
-            '  <td>'+csv[i][5]+'</td>'+
-            '  <td>'+csv[i][6]+'</td>'+
-            '  <td>'+csv[i][11]+'</td>'+
-            '  <td>'+csv[i][14]+'</td>'+
-            '  <td>'+csv[i][16]+'</td>'+
-            '  <td>'+csv[i][17]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-              '</tr>'
-            $("#ffg-03h-table").append(_td)
+       //check FFG csv is exist
+       var returnKeys = Object.keys(fetchRisk_data[0]);
+       if(returnKeys[0] === '<!DOCTYPE html>'){
+         showErrorAlert("No data is available for the selected date.");
+       }else{
+
+        // showSuccessAlert("Show "+ param_text );
+
+        riskAreas = subprovince;
+        for(var i=0; i< subprovince.length; i++){
+          for(var j=0; j< fetchRisk_data.length; j++){
+            if(subprovince[i]["properties"]["area_id"] === parseInt(fetchRisk_data[j]["area_id"])){
+              riskAreas[i]["properties"]["risk"] = fetchRisk_data[j]["risk"];
+            }
           }
         }
-
-      },
-      error: function() {
-        alert("error")
-      }
-    });
-
-    $.ajax("/FFGS/"+selected_date+"-ffgs_result_06hour.csv", {
-      success: function(data) {
-        var csv =  CSVToArray(data);
+       
         var risk_level = '';
         var critical_hospital  = 0;
         var critical_road_trucks =0;
@@ -421,100 +476,65 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
         var M_0_5 =0;
         var M_15_65 =0;
         var M_65 =0;
+        var count_cities = 0;
 
-        for(var i=1; i<csv.length-1; i++){
+        for(var i=1; i<riskAreas.length-1; i++){
+          var row = riskAreas[i].properties;
           //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
-          if(selected_country === 'mekong'){
-            if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
-            if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
-            if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
-            if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
-
-            if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
-            if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
-            if (csv[i][8] !== '') Male += parseInt(csv[i][8])
-            if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
-            if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
-            if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
-            if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
-            if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
-            if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
-
-            // critical_hospital  += parseInt(csv[i][5])
-            // critical_road_trucks += parseInt(csv[i][14])
-            // critical_road_primary += parseInt(csv[i][15])
-            // critical_road_secondary += parseInt(csv[i][16])
-            if(csv[i][4] === 'Low-Risk'){
-              risk_level = 'lightgreen'
-            }else if(csv[i][4] === 'Moderate-Risk'){
-              risk_level = 'yellow'
-            }else if(csv[i][4] === 'High-Risk'){
-              risk_level = 'red'
-            }else if(csv[i][4] === 'Extreme-Risk'){
-              risk_level = 'pink'
-            }
-
-            var _td = '<tr>'+
-            '  <td>'+csv[i][0]+'</td>'+
-            '  <td>'+csv[i][1]+'</td>'+
-            '  <td>'+csv[i][2]+'</td>'+
-            '  <td>'+csv[i][5]+'</td>'+
-            '  <td>'+csv[i][6]+'</td>'+
-            '  <td>'+csv[i][11]+'</td>'+
-            '  <td>'+csv[i][14]+'</td>'+
-            '  <td>'+csv[i][16]+'</td>'+
-            '  <td>'+csv[i][17]+'</td>'+
-              '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
-              '</tr>'
-            $("#ffg-06h-table").append(_td)
-          }else{
-            if(csv[i][0].toLowerCase() === selected_country){
-              if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
-              if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
-              if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
-              if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
-
-              if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
-              if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
-              if (csv[i][8] !== '') Male += parseInt(csv[i][8])
-              if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
-              if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
-              if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
-              if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
-              if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
-              if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
-
+          if(row["risk"] === 'High-Risk' || row["risk"] === 'Extreme-Risk'){
+            count_cities += 1;
+              if (row["Hospitals"] !== '') critical_hospital  += parseInt(row["Hospitals"])
+              if (row["Trunks"] !== '') critical_road_trucks += parseInt(row["Trunks"])
+              if (row["Primary"] !== '') critical_road_primary += parseInt(row["Primary"])
+              if (row["Secondary"] !== '') critical_road_secondary += parseInt(row["Secondary"])
+              if (row["total_pop"] !== '') total_pop  += parseInt(row["total_pop"])
+              if (row["Female"] !== '') Female  += parseInt(row["Female"])
+              if (row["Male"] !== '') Male += parseInt(row["Male"])
+              if (row["F_0_15"] !== '') F_0_5 += parseInt(row["F_0_15"])
+              if (row["F_15_65"] !== '') F_15_65 += parseInt(row["F_15_65"])
+              if (row["F__65"] !== '') F_65  += parseInt(row["F__65"])
+              if (row["M_0_15"] !== '') M_0_5 += parseInt(row["M_0_15"])
+              if (row["M_15_65"] !== '') M_15_65 += parseInt(row["M_15_65"])
+              if (row["M__65"] !== '') M_65 += parseInt(row["M__65"])
+  
               // critical_hospital  += parseInt(csv[i][5])
               // critical_road_trucks += parseInt(csv[i][14])
               // critical_road_primary += parseInt(csv[i][15])
               // critical_road_secondary += parseInt(csv[i][16])
-              if(csv[i][4] === 'Low-Risk'){
+              if(row["risk"] === 'Low-Risk'){
                 risk_level = 'lightgreen'
-              }else if(csv[i][4] === 'Moderate-Risk'){
+              }else if(row["risk"] === 'Moderate-Risk'){
                 risk_level = 'yellow'
-              }else if(csv[i][4] === 'High-Risk'){
+              }else if(row["risk"] === 'High-Risk'){
                 risk_level = 'red'
-              }else if(csv[i][4] === 'Extreme-Risk'){
-                risk_level = 'pink'
+              }else if(row["risk"] === 'Extreme-Risk'){
+                risk_level = '#E700E7'
               }
-
+  
               var _td = '<tr>'+
-              '  <td>'+csv[i][0]+'</td>'+
-              '  <td>'+csv[i][1]+'</td>'+
-              '  <td>'+csv[i][2]+'</td>'+
-              '  <td>'+csv[i][5]+'</td>'+
-              '  <td>'+csv[i][6]+'</td>'+
-              '  <td>'+csv[i][11]+'</td>'+
-              '  <td>'+csv[i][14]+'</td>'+
-              '  <td>'+csv[i][16]+'</td>'+
-              '  <td>'+csv[i][17]+'</td>'+
-                '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+              '  <td>'+row["NAME_0"]+'</td>'+
+              '  <td>'+row["NAME_1"]+'</td>'+
+              '  <td>'+row["NAME_2"]+'</td>'+
+              '  <td>'+row["total_pop"]+'</td>'+
+              '  <td>'+row["Male"]+'</td>'+
+              '  <td>'+row["Female"]+'</td>'+
+              // '  <td>'+row["Hospitals"]+'</td>'+
+              // '  <td>'+row["GDP_in_cur"]+'</td>'+
+              // '  <td>'+row["Cropland_E"]+'</td>'+
+              // '  <td>'+row["Bulding_nu"]+'</td>'+
+              // '  <td>'+row["Primary"]+'</td>'+
+              // '  <td>'+row["Secondary"]+'</td>'+
+              // '  <td>'+row["Trunks"]+'</td>'+
+                '  <td style="background:'+risk_level+';">'+row["risk"]+'</td>'+
                 '</tr>'
               $("#ffg-06h-table").append(_td)
-            }
+            
           }
 
+          
+
         }
+        $("#cities_located_in_highrisk").text(count_cities);
 
         $("#critical_hospital").text(critical_hospital);
         $("#critical_road_trucks").text(critical_road_trucks);
@@ -533,15 +553,151 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
         $("#male_pop_age2").text(M_15_65);
         $("#male_pop_age3").text(M_65);
 
-      },
-      error: function() {
-        alert("error")
-      }
-    });
+       }
+      })
+     
+    };
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $.ajax("/FFGS/mrcffg_"+selected_date+"0600.csv", {
+
+    // $.ajax("/FFGS/"+selected_date+"-ffgs_result_06hour.csv", {
+    //   success: function(data) {
+    //     var csv =  CSVToArray(data);
+    //     var risk_level = '';
+    //     var critical_hospital  = 0;
+    //     var critical_road_trucks =0;
+    //     var critical_road_primary =0;
+    //     var critical_road_secondary =0;
+    //     var total_pop =0;
+    //     var Female  = 0;
+    //     var Male =0;
+    //     var F_0_5 =0;
+    //     var F_15_65 =0;
+    //     var F_65  = 0;
+    //     var M_0_5 =0;
+    //     var M_15_65 =0;
+    //     var M_65 =0;
+
+    //     for(var i=1; i<csv.length-1; i++){
+    //       //['name_0', 'prov', 'district', 'region', 'levelrisk','Hospitals', 'total_pop','Female', 'Male','F_0-15', 'F_15-65','F_>65', 'M_0-15', 'M_15-65','M_>65', 'trunks', 'primary','secondary']
+    //       if(selected_country === 'mekong'){
+    //         if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
+    //         if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
+    //         if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
+    //         if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
+
+    //         if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
+    //         if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
+    //         if (csv[i][8] !== '') Male += parseInt(csv[i][8])
+    //         if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
+    //         if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
+    //         if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
+    //         if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
+    //         if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
+    //         if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
+
+    //         // critical_hospital  += parseInt(csv[i][5])
+    //         // critical_road_trucks += parseInt(csv[i][14])
+    //         // critical_road_primary += parseInt(csv[i][15])
+    //         // critical_road_secondary += parseInt(csv[i][16])
+    //         if(csv[i][4] === 'Low-Risk'){
+    //           risk_level = 'lightgreen'
+    //         }else if(csv[i][4] === 'Moderate-Risk'){
+    //           risk_level = 'yellow'
+    //         }else if(csv[i][4] === 'High-Risk'){
+    //           risk_level = 'red'
+    //         }else if(csv[i][4] === 'Extreme-Risk'){
+    //           risk_level = 'pink'
+    //         }
+
+    //         var _td = '<tr>'+
+    //         '  <td>'+csv[i][0]+'</td>'+
+    //         '  <td>'+csv[i][1]+'</td>'+
+    //         '  <td>'+csv[i][2]+'</td>'+
+    //         '  <td>'+csv[i][5]+'</td>'+
+    //         '  <td>'+csv[i][6]+'</td>'+
+    //         '  <td>'+csv[i][11]+'</td>'+
+    //         '  <td>'+csv[i][14]+'</td>'+
+    //         '  <td>'+csv[i][16]+'</td>'+
+    //         '  <td>'+csv[i][17]+'</td>'+
+    //           '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+    //           '</tr>'
+    //         $("#ffg-06h-table").append(_td)
+    //       }else{
+    //         if(csv[i][0].toLowerCase() === selected_country){
+    //           if (csv[i][5] !== '') critical_hospital  += parseInt(csv[i][5])
+    //           if (csv[i][15] !== '') critical_road_trucks += parseInt(csv[i][15])
+    //           if (csv[i][16] !== '') critical_road_primary += parseInt(csv[i][16])
+    //           if (csv[i][17] !== '') critical_road_secondary += parseInt(csv[i][17])
+
+    //           if (csv[i][6] !== '') total_pop  += parseInt(csv[i][6])
+    //           if (csv[i][7] !== '') Female  += parseInt(csv[i][7])
+    //           if (csv[i][8] !== '') Male += parseInt(csv[i][8])
+    //           if (csv[i][9] !== '') F_0_5 += parseInt(csv[i][9])
+    //           if (csv[i][10] !== '') F_15_65 += parseInt(csv[i][10])
+    //           if (csv[i][11] !== '') F_65  += parseInt(csv[i][11])
+    //           if (csv[i][12] !== '') M_0_5 += parseInt(csv[i][12])
+    //           if (csv[i][13] !== '') M_15_65 += parseInt(csv[i][13])
+    //           if (csv[i][14] !== '') M_65 += parseInt(csv[i][14])
+
+    //           // critical_hospital  += parseInt(csv[i][5])
+    //           // critical_road_trucks += parseInt(csv[i][14])
+    //           // critical_road_primary += parseInt(csv[i][15])
+    //           // critical_road_secondary += parseInt(csv[i][16])
+    //           if(csv[i][4] === 'Low-Risk'){
+    //             risk_level = 'lightgreen'
+    //           }else if(csv[i][4] === 'Moderate-Risk'){
+    //             risk_level = 'yellow'
+    //           }else if(csv[i][4] === 'High-Risk'){
+    //             risk_level = 'red'
+    //           }else if(csv[i][4] === 'Extreme-Risk'){
+    //             risk_level = 'pink'
+    //           }
+
+    //           var _td = '<tr>'+
+    //           '  <td>'+csv[i][0]+'</td>'+
+    //           '  <td>'+csv[i][1]+'</td>'+
+    //           '  <td>'+csv[i][2]+'</td>'+
+    //           '  <td>'+csv[i][5]+'</td>'+
+    //           '  <td>'+csv[i][6]+'</td>'+
+    //           '  <td>'+csv[i][11]+'</td>'+
+    //           '  <td>'+csv[i][14]+'</td>'+
+    //           '  <td>'+csv[i][16]+'</td>'+
+    //           '  <td>'+csv[i][17]+'</td>'+
+    //             '  <td style="background:'+risk_level+';">'+csv[i][4]+'</td>'+
+    //             '</tr>'
+    //           $("#ffg-06h-table").append(_td)
+    //         }
+    //       }
+
+    //     }
+
+    //     $("#critical_hospital").text(critical_hospital);
+    //     $("#critical_road_trucks").text(critical_road_trucks);
+    //     $("#critical_road_primary").text(critical_road_primary);
+    //     $("#critical_road_secondary").text(critical_road_secondary);
+
+    //     $("#total_pop").text(total_pop);
+    //     $("#female_total_pop").text(Female);
+    //     $("#male_total_pop").text(Male);
+
+    //     $("#female_pop_age1").text(F_0_5);
+    //     $("#female_pop_age2").text(F_15_65);
+    //     $("#female_pop_age3").text(F_65);
+
+    //     $("#male_pop_age1").text(M_0_5);
+    //     $("#male_pop_age2").text(M_15_65);
+    //     $("#male_pop_age3").text(M_65);
+
+    //   },
+    //   error: function() {
+    //     alert("error")
+    //   }
+    // });
+
+    $.ajax("/FFGS/mrcffg_"+selected_date+"06.csv", {
       success: function(data) {
         var fetchFFG_data = JSON.parse(CSV2JSON(data));
         //check FFG csv is exist
@@ -563,7 +719,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
             }
           }
         }
-
         var ffg_basins_style = {
            fillColor: '#FFF',
            weight: 0.5,
@@ -912,7 +1067,6 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
          map_fmap106.fitBounds(country_bb.getBounds());
        });
     }
-
 
     $.getJSON('data/'+selected_country+'_mrcffg_basins.geojson')
      .done(function (data, status) {
