@@ -322,7 +322,7 @@ angular.module('bulletin').controller('bulletinCtl', function ($scope, $http) {
   $scope.fetchFFG = function () {
     $("#ffg-01h-table").html("");
     $("#ffg-03h-table").html("");
-    $("#ffg-06h-table").html("");
+    // $("#ffg-06h-table").html("");
     selected_date=$('#select_date').val().split("/");
     selected_date=selected_date[0]+selected_date[1]+selected_date[2];
 

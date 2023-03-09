@@ -1421,10 +1421,6 @@ angular.module('core').controller('mapFFGCtrl', function ($scope, $http) {
 							'<td>Sub-province</td>'+
 							'<td style="text-align: right;">'+ items["name_2"]+ '</td>'+
 							'</tr>'+
-							'<tr>'+
-							'<td>Sub-district</td>'+
-							'<td style="text-align: right;">'+ items["name_3"]+ '</td>'+
-							'</tr>'+
 							'</table>'+
 							'</div>'+
 							'</div>' +
