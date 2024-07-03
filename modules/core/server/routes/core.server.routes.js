@@ -1,17 +1,9 @@
 'use strict';
 
 module.exports = function (app) {
+
   // Root routing
   var core = require('../controllers/core.server.controller');
-
-  // Define error pages
-  app.route('/server-error').get(core.renderServerError);
-
-  // Return a 404 for all undefined api, module or lib routes
-  app.route('/:url(api|modules|lib)/*').get(core.renderNotFound);
-
-  // Define application route
-  app.route('/*').get(core.renderIndex);
 
   // APIs
   // app.route('/action=map-data&index=:index?&timeFrequency=:timeFrequency&date=:date?').post(core.getMapData);
@@ -32,4 +24,13 @@ module.exports = function (app) {
   app.route('/action=get-realtime-number-events').post(core.getRealtimeNumberofStorms);
   app.route('/action=get-intersect-area&id=:id?').post(core.intersectArea);
   app.route('/action=get-realtime-intersect-area&id=:id?').post(core.realtimeintersectArea);
+
+  // Define error pages
+  app.route('/server-error').get(core.renderServerError);
+
+  // Return a 404 for all undefined api, module or lib routes
+  app.route('/:url(api|modules|lib)/*').get(core.renderNotFound);
+
+  // Define application route
+  app.route('/*').get(core.renderIndex);
 };
