@@ -29,5 +29,10 @@ module.exports = {
   sessionKey: 'sessionId',
   sessionCollection: 'sessions',
   favicon: 'modules/core/client/img/brand/favicon.png',
+  // Mapbox basemap settings: set the MAPBOX_ACCESS_TOKEN environment variable
+  mapbox: {
+    accessToken: process.env.MAPBOX_ACCESS_TOKEN || '',
+    styleUrl: 'https://api.mapbox.com/styles/v1/servirmekong/ckecozln92fkk19mjhuoqxhuw/tiles/256/{z}/{x}/{y}@2x'
+  },
 
 };
